@@ -1,16 +1,16 @@
 {
   "name": "@soundxyz/codegen-fragments",
   "version": "1.0.0",
-  "type": "module",
   "private": true,
   "keywords": [],
   "license": "MIT",
   "author": "PabloSzx <pablosaez1995@gmail.com>",
   "scripts": {
-    "prepack": "bob-tsm build.ts"
+    "prepare": "bob-tsm build.ts"
   },
   "devDependencies": {
     "@graphql-codegen/core": "^3.0.0",
+    "@graphql-codegen/plugin-helpers": "^4.0.0",
     "@types/node": "^18.13.0",
     "bob-ts": "^4.1.1",
     "bob-tsm": "^1.1.2",
@@ -21,5 +21,16 @@
   "peerDependencies": {
     "@graphql-codegen/core": "^3.0.0",
     "graphql": "^16.6.0"
+  },
+  "publishConfig": {
+    "directory": "dist",
+    "linkDirectory": true
+  },
+  "dependencies": {
+    "@graphql-codegen/gql-tag-operations": "^2.0.0",
+    "@graphql-codegen/typescript": "^3.0.0",
+    "@graphql-codegen/typescript-operations": "^3.0.0",
+    "@graphql-codegen/visitor-plugin-common": "^3.0.0",
+    "@graphql-tools/utils": "^9.2.1"
   }
 }

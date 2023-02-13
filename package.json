@@ -9,6 +9,7 @@
   },
   "scripts": {
     "prettier:check": "prettier \"**/*.{ts,tsx,js,cjs,mjs,json}\" --check",
-    "prettier:write": "prettier \"**/*.{ts,tsx,js,cjs,mjs,json}\" --write"
+    "prettier:write": "prettier \"**/*.{ts,tsx,js,cjs,mjs,json}\" --write",
+    "clean": "pnpm dlx rimraf@^2 \"**/node_modules\" && pnpm i"
   }
 }
