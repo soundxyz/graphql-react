@@ -1,11 +1,14 @@
 {
   "name": "graphql-react-query",
   "version": "1.0.0",
+  "type": "module",
   "private": true,
   "keywords": [],
   "license": "MIT",
   "author": "PabloSzx <pablosaez1995@gmail.com>",
-  "scripts": {},
+  "scripts": {
+    "prepack": "bob-tsm build.ts"
+  },
   "devDependencies": {
     "@tanstack/react-query": "^4.24.4",
     "@types/node": "^18.13.0",

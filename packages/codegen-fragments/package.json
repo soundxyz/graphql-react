@@ -1,11 +1,14 @@
 {
   "name": "@soundxyz/codegen-fragments",
   "version": "1.0.0",
+  "type": "module",
   "private": true,
   "keywords": [],
   "license": "MIT",
   "author": "PabloSzx <pablosaez1995@gmail.com>",
-  "scripts": {},
+  "scripts": {
+    "prepack": "bob-tsm build.ts"
+  },
   "devDependencies": {
     "@graphql-codegen/core": "^3.0.0",
     "@types/node": "^18.13.0",
