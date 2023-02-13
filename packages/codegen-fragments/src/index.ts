@@ -6,9 +6,9 @@ import * as typescriptOperationPlugin from '@graphql-codegen/typescript-operatio
 import { join } from 'path';
 import { writeFile } from 'fs/promises';
 
-const pendingDebug: string[] = [];
+const pendingDebug: unknown[] = [];
 const debug = (msg: unknown) => {
-  pendingDebug.push(JSON.stringify(msg, null, 2));
+  pendingDebug.push(msg);
 };
 
 export const preset: Types.OutputPreset<{}> = {
@@ -45,7 +45,7 @@ export const preset: Types.OutputPreset<{}> = {
       ...options.plugins,
     ];
 
-    await writeFile('./debug.txt', pendingDebug.join('\n'), 'utf-8');
+    await writeFile('./debug.json', JSON.stringify(pendingDebug, null, 2), 'utf-8');
 
     return [
       {

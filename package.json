@@ -3,7 +3,8 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "clean": "pnpm dlx rimraf@^2 \"**/node_modules\" && pnpm i",
+    "clean": "pnpm dlx rimraf@^2 \"**/node_modules\" && pnpm i && pnpm generate",
+    "generate": "pnpm -r --workspace-concurrency=Infinity generate",
     "prettier:check": "prettier \"**/*.{ts,tsx,js,cjs,mjs,json}\" --check",
     "prettier:write": "prettier \"**/*.{ts,tsx,js,cjs,mjs,json}\" --write",
     "watch": "pnpm -r --no-sort --no-bail --workspace-concurrency=Infinity watch"
