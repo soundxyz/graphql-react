@@ -7,7 +7,8 @@
   "author": "PabloSzx <pablosaez1995@gmail.com>",
   "scripts": {
     "dev": "next",
-    "generate": "graphql-codegen"
+    "generate": "graphql-codegen",
+    "watch": "graphql-codegen --watch"
   },
   "dependencies": {
     "@graphql-codegen/typescript": "^3.0.0",

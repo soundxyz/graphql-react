@@ -4,9 +4,17 @@ import { ClientSideBaseVisitor } from '@graphql-codegen/visitor-plugin-common';
 import * as typescriptPlugin from '@graphql-codegen/typescript';
 import * as typescriptOperationPlugin from '@graphql-codegen/typescript-operations';
 import { join } from 'path';
+import { writeFile } from 'fs/promises';
+
+const pendingDebug: string[] = [];
+const debug = (msg: unknown) => {
+  pendingDebug.push(JSON.stringify(msg, null, 2));
+};
 
 export const preset: Types.OutputPreset<{}> = {
   async buildGeneratesSection(options) {
+    pendingDebug.splice(0, pendingDebug.length);
+
     const visitor = new ClientSideBaseVisitor(
       options.schemaAst!,
       [],
@@ -22,6 +30,8 @@ export const preset: Types.OutputPreset<{}> = {
     });
     const sources = sourcesWithOperations.map(({ source }) => source);
 
+    debug(sources);
+
     const pluginMap = {
       ...options.pluginMap,
 
@@ -34,6 +44,8 @@ export const preset: Types.OutputPreset<{}> = {
       { [`typescript-operations`]: {} },
       ...options.plugins,
     ];
+
+    await writeFile('./debug.txt', pendingDebug.join('\n'), 'utf-8');
 
     return [
       {
