@@ -6137,7 +6137,9 @@ export type ZodValidationError = Error & {
   message: Scalars['String'];
 };
 
+export type TestFragmentFragment = { __typename?: 'Query', now: number };
+
 export type TestQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type TestQuery = { __typename: 'Query' };
+export type TestQuery = { __typename: 'Query', now: number };

@@ -18,6 +18,7 @@ importers:
       '@graphql-codegen/core': ^3.0.0
       '@graphql-codegen/typescript': ^3.0.0
       '@soundxyz/codegen-fragments': workspace:*
+      '@soundxyz/graphql-react-query': workspace:^1.0.0
       '@types/node': ^18.13.0
       '@types/react': ^18.0.27
       '@types/react-dom': ^18.0.10
@@ -29,6 +30,7 @@ importers:
       typescript: ^4.9.5
     dependencies:
       '@graphql-codegen/typescript': 3.0.0_graphql@16.6.0
+      '@soundxyz/graphql-react-query': link:../../packages/graphql-react-query
       graphql-tag: 2.12.6_graphql@16.6.0
     devDependencies:
       '@graphql-codegen/cli': 3.0.0_oagga47ridy4omgf45pd3y74j4
@@ -966,7 +968,6 @@ packages:
       '@graphql-tools/utils': 9.2.1_graphql@16.6.0
       graphql: 16.6.0
       tslib: 2.4.1
-    dev: false
 
   /@graphql-codegen/typescript-operations/3.0.0_graphql@16.6.0:
     resolution: {integrity: sha512-t+Lk+lxkUFDh6F0t8CErowOccP3bZwxhl66qmEeBcOrC7jQrSCnRZoFvOXhFKFBJe/y4DIJiizgSr34AqjiJIQ==}
@@ -982,7 +983,6 @@ packages:
     transitivePeerDependencies:
       - encoding
       - supports-color
-    dev: false
 
   /@graphql-codegen/typescript/3.0.0_graphql@16.6.0:
     resolution: {integrity: sha512-FQWyuIUy1y+fxb9+EZfvdBHBQpYExlIBHV5sg2WGNCsyVyCqBTl0mO8icyOtsQPVg6YFMFe8JJO69vQbwHma5w==}
@@ -998,7 +998,6 @@ packages:
     transitivePeerDependencies:
       - encoding
       - supports-color
-    dev: false
 
   /@graphql-codegen/visitor-plugin-common/3.0.0_graphql@16.6.0:
     resolution: {integrity: sha512-ZoNlCmmkGClB137SpJT9og/nkihLN7Z4Ynl9Ir3OlbDuI20dbpyXsclpr9QGLcxEcfQeVfhGw9CooW7wZJJ8LA==}
@@ -3860,6 +3859,8 @@ packages:
     dependencies:
       '@graphql-codegen/core': 3.0.0_graphql@16.6.0
       '@graphql-codegen/gql-tag-operations': 2.0.0_graphql@16.6.0
+      '@graphql-codegen/typescript': 3.0.0_graphql@16.6.0
+      '@graphql-codegen/typescript-operations': 3.0.0_graphql@16.6.0
       '@graphql-codegen/visitor-plugin-common': 3.0.0_graphql@16.6.0
       '@graphql-tools/utils': 9.2.1_graphql@16.6.0
       graphql: 16.6.0

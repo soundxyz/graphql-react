@@ -6,7 +6,15 @@
   "license": "MIT",
   "author": "PabloSzx <pablosaez1995@gmail.com>",
   "scripts": {
-    "prepare": "bob-tsm build.ts"
+    "prepare": "bob-tsm build.ts",
+    "watch": "bob-tsm --watch=src build.ts"
+  },
+  "dependencies": {
+    "@graphql-codegen/gql-tag-operations": "^2.0.0",
+    "@graphql-codegen/typescript": "^3.0.0",
+    "@graphql-codegen/typescript-operations": "^3.0.0",
+    "@graphql-codegen/visitor-plugin-common": "^3.0.0",
+    "@graphql-tools/utils": "^9.2.1"
   },
   "devDependencies": {
     "@graphql-codegen/core": "^3.0.0",
@@ -25,12 +33,5 @@
   "publishConfig": {
     "directory": "dist",
     "linkDirectory": true
-  },
-  "dependencies": {
-    "@graphql-codegen/gql-tag-operations": "^2.0.0",
-    "@graphql-codegen/typescript": "^3.0.0",
-    "@graphql-codegen/typescript-operations": "^3.0.0",
-    "@graphql-codegen/visitor-plugin-common": "^3.0.0",
-    "@graphql-tools/utils": "^9.2.1"
   }
 }

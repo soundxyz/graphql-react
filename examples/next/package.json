@@ -9,6 +9,11 @@
     "dev": "next",
     "generate": "graphql-codegen"
   },
+  "dependencies": {
+    "@graphql-codegen/typescript": "^3.0.0",
+    "@soundxyz/graphql-react-query": "workspace:^1.0.0",
+    "graphql-tag": "^2.12.6"
+  },
   "devDependencies": {
     "@graphql-codegen/cli": "^3.0.0",
     "@graphql-codegen/core": "^3.0.0",
@@ -26,9 +31,5 @@
     "@soundxyz/codegen-fragments": {
       "injected": true
     }
-  },
-  "dependencies": {
-    "@graphql-codegen/typescript": "^3.0.0",
-    "graphql-tag": "^2.12.6"
   }
 }
