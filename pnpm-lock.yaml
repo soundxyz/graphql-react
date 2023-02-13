@@ -17,6 +17,7 @@ importers:
       '@graphql-codegen/cli': ^3.0.0
       '@graphql-codegen/core': ^3.0.0
       '@graphql-codegen/typescript': ^3.0.0
+      '@graphql-typed-document-node/core': ^3.1.1
       '@soundxyz/codegen-fragments': workspace:*
       '@soundxyz/graphql-react-query': workspace:^1.0.0
       '@types/node': ^18.13.0
@@ -30,6 +31,7 @@ importers:
       typescript: ^4.9.5
     dependencies:
       '@graphql-codegen/typescript': 3.0.0_graphql@16.6.0
+      '@graphql-typed-document-node/core': 3.1.1_graphql@16.6.0
       '@soundxyz/graphql-react-query': link:../../packages/graphql-react-query
       graphql-tag: 2.12.6_graphql@16.6.0
     devDependencies:
@@ -56,6 +58,7 @@ importers:
       '@graphql-codegen/typescript': ^3.0.0
       '@graphql-codegen/typescript-operations': ^3.0.0
       '@graphql-codegen/visitor-plugin-common': ^3.0.0
+      '@graphql-tools/relay-operation-optimizer': ^6.5.17
       '@graphql-tools/utils': ^9.2.1
       '@types/node': ^18.13.0
       bob-ts: ^4.1.1
@@ -68,6 +71,7 @@ importers:
       '@graphql-codegen/typescript': 3.0.0_graphql@16.6.0
       '@graphql-codegen/typescript-operations': 3.0.0_graphql@16.6.0
       '@graphql-codegen/visitor-plugin-common': 3.0.0_graphql@16.6.0
+      '@graphql-tools/relay-operation-optimizer': 6.5.17_graphql@16.6.0
       '@graphql-tools/utils': 9.2.1_graphql@16.6.0
     devDependencies:
       '@graphql-codegen/core': 3.0.0_graphql@16.6.0

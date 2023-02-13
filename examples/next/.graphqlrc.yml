@@ -1,10 +1,6 @@
 schema:
-  - 'https://cdn.graphql-hive.com/24a54ecd-97fa-40e6-b90e-c83bb9670003/sdl':
-      headers:
-        X-Hive-CDN-Key: gI+GZOMDcfIunOAj4q4Hd6fxhEg3ivV1aRU6Ir3XsBY=
-      handleAsSDL: true
+  - './schema.graphql'
 documents:
-  # Keep in sync with .eslintrc for GraphQL ESLint plugin
   - '**/*.{ts,tsx}'
 extensions:
   codegen:

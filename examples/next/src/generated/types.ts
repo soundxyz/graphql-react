@@ -18,56 +18,18 @@ export type Scalars = {
   DateTime: any;
   /** Ethereum name service value with `.eth` suffix */
   ENS: any;
-  /** A field whose value conforms to the standard internet email address format as specified in RFC822: https://www.w3.org/Protocols/rfc822/. */
-  EmailAddress: any;
-  /** The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf). */
-  JSON: any;
   /** A string that cannot be passed as an empty value */
   NonEmptyString: any;
-  /** Floats that will have a value of 0 or more. */
-  NonNegativeFloat: any;
   /** Integers that will have a value of 0 or more. */
   NonNegativeInt: any;
   /** Integers that will have a value greater than 0. */
   PositiveInt: any;
   /** The javascript `Date` as integer. Type represents date and time as number of milliseconds from start of UNIX epoch. */
   Timestamp: any;
-  /** A valid Ethereum transaction hash string */
-  TransactionHash: any;
-  /** A field whose value conforms to the standard URL format as specified in RFC3986: https://www.ietf.org/rfc/rfc3986.txt. */
-  URL: any;
   /** UUID v4 */
   UUID: any;
   /** Represents NULL values */
   Void: any;
-};
-
-/** AWS Presigned upload */
-export type AwsPresignedPost = {
-  __typename?: 'AWSPresignedPost';
-  /** JSON Fields associated with upload */
-  fields: Scalars['JSON'];
-  /** Upload key of authenticated user */
-  uploadKey: Scalars['String'];
-  /** Target URL for upload process */
-  url: Scalars['String'];
-};
-
-/** Multi-part upload aborted information. */
-export type AbortMultipartUploadOutput = {
-  __typename?: 'AbortMultipartUploadOutput';
-  /** Aborted upload ID */
-  uploadId: Scalars['String'];
-  /** Aborted upload key */
-  uploadKey: Scalars['String'];
-};
-
-/** Mark the provided multi-part upload as aborted */
-export type AbortMultipartUploadRequest = {
-  /** Upload ID to use for each upload part of the final object */
-  uploadId: Scalars['String'];
-  /** Upload key for the final upload object */
-  uploadKey: Scalars['String'];
 };
 
 /** Activity Feed entity */
@@ -123,18 +85,6 @@ export type ActivityFeedGroupCollectedRelease = {
   /** Total number of unique users that release was purchased from */
   totalUsersPurchasedFrom: Scalars['Int'];
 };
-
-/** Activity feed group component type */
-export enum ActivityFeedGroupComponentType {
-  ReleasesAddedToShelf = 'RELEASES_ADDED_TO_SHELF',
-  ReleaseDropped = 'RELEASE_DROPPED',
-  ShelfCreated = 'SHELF_CREATED',
-  SongCollectedByMany = 'SONG_COLLECTED_BY_MANY',
-  UserCollectedManySongs = 'USER_COLLECTED_MANY_SONGS',
-  UserLikedPlaylist = 'USER_LIKED_PLAYLIST',
-  UserLikedSongs = 'USER_LIKED_SONGS',
-  UserPurchasedSecondaryManySongs = 'USER_PURCHASED_SECONDARY_MANY_SONGS'
-}
 
 /** Paginated activity feed group connection */
 export type ActivityFeedGroupConnection = Connection & {
@@ -193,43 +143,6 @@ export enum ActivityFeedType {
   Global = 'GLOBAL',
   User = 'USER'
 }
-
-/** Input for `addReleaseToShelf` mutation */
-export type AddReleaseToShelfInput = {
-  /** Specify index to insert the release within the shelf */
-  index?: InputMaybe<Scalars['NonNegativeInt']>;
-  /** Release identifier to be added */
-  releaseId: Scalars['UUID'];
-  /** Identifier of owned target shelf to receive the new release */
-  shelfId: Scalars['UUID'];
-};
-
-/** Input for addUsersToDraftAllowlist mutation */
-export type AddUsersToDraftAllowlistInput = {
-  /** Draft info input */
-  addresses: Array<AllowedAddressInput>;
-  /** Draft identifier */
-  draftId: Scalars['UUID'];
-  /** Draft allowlist sale type */
-  mintType: MintingAccessConfigMintingType;
-};
-
-/** Output entity of AddUsersToDraftAllowlist mutation */
-export type AddUsersToDraftAllowlistOutput = {
-  __typename?: 'AddUsersToDraftAllowlistOutput';
-  /** Allowlist entity */
-  allowList: AllowList;
-  /** Soft error messages of mutation */
-  softErrorMessages?: Maybe<Array<Scalars['String']>>;
-};
-
-/** Input for setAffiliatePurchaseSource mutation */
-export type AffiliateSourceInput = {
-  /** Param value of referral source */
-  referralSource: Scalars['String'];
-  /** Transaction hash associated with affiliate purchase */
-  txHash: Scalars['TransactionHash'];
-};
 
 /** Collector release added to playlist action entity */
 export type Airdrop = CollectorAction & Node & ReleaseAction & {
@@ -316,27 +229,6 @@ export type AllShelvesInput = {
   pagination?: AllShelvesCursorConnectionArgs;
 };
 
-/** Withdrawable contract earnings, returns null for values if contract contain dust amounts that are not worth withdrawing */
-export type AllWithdrawableEarnings = {
-  __typename?: 'AllWithdrawableEarnings';
-  /** Artist contract earnings */
-  artistContracts: Array<ArtistContractEarning>;
-  /** Edition contract earnings */
-  editionContracts: Array<EditionContractEarning>;
-  /** Split contract earnings */
-  splitContracts: Array<SplitsContractEarning>;
-};
-
-/** Allocation input for credit split creation */
-export type Allocation = {
-  /** Owner address of allocation */
-  ownerAddress: Scalars['Address'];
-  /** Percent of allocation */
-  percent: Scalars['Float'];
-  /** Roles associated with credit allocation */
-  roles: Array<Scalars['String']>;
-};
-
 /** Allowlist entity */
 export type AllowList = Node & {
   __typename?: 'AllowList';
@@ -355,52 +247,6 @@ export type AllowList = Node & {
 export type AllowListUsersArgs = {
   pagination?: UserCursorConnectionArgs;
 };
-
-/** Address added in allowlist */
-export type AllowedAddress = {
-  __typename?: 'AllowedAddress';
-  /** Public address included in allowlist */
-  address: Scalars['String'];
-  /** Source of the address added in allowlist */
-  source: AllowlistSourceType;
-};
-
-/** Address to be added in allowlist */
-export type AllowedAddressInput = {
-  /** Public address included in allowlist */
-  address: Scalars['Address'];
-  /** Source of the address added in allowlist */
-  source: AllowlistSourceType;
-};
-
-/** Source of allowlist address */
-export enum AllowlistSourceType {
-  ArtistSoundHolder = 'ARTIST_SOUND_HOLDER',
-  Manual = 'MANUAL',
-  Unknown = 'UNKNOWN'
-}
-
-/** Allow list types */
-export enum AllowlistType {
-  ArtistCollectors = 'ARTIST_COLLECTORS',
-  ManuallyAdded = 'MANUALLY_ADDED',
-  ReleaseCollectors = 'RELEASE_COLLECTORS'
-}
-
-/** Returned when the user attempts to update a release that was already minted */
-export type AlreadyMintedError = Error & {
-  __typename?: 'AlreadyMintedError';
-  /** Descriptive message of error */
-  message: Scalars['String'];
-};
-
-/** Possible options of role update input */
-export enum AlterRole {
-  /** Administrator of platform */
-  Admin = 'ADMIN',
-  /** Member of artist relations team */
-  ArtistRelations = 'ARTIST_RELATIONS'
-}
 
 /** Artist Entity */
 export type Artist = Node & {
@@ -431,11 +277,6 @@ export type Artist = Node & {
   numMintedReleases: Scalars['Int'];
   /** Number of artist releases */
   numReleases: Scalars['Int'];
-  /**
-   * [DEPRECATED] Use Release.openseaUrl instead
-   * @deprecated Use Release.openseaUrl instead
-   */
-  openseaCollectionUrl?: Maybe<Scalars['String']>;
   /** Paginated releases of artist. */
   releases: ReleaseConnection;
   /** Genres of artist releases, with the most common genres first */
@@ -552,17 +393,6 @@ export enum ArtistActivityFeedTypeFilterOption {
   Release = 'RELEASE'
 }
 
-/** Data for Artist minting auction process */
-export type ArtistAuctionOverrides = {
-  __typename?: 'ArtistAuctionOverrides';
-  /** Artist user wallet public address associated to auction options */
-  artistAddress: Scalars['String'];
-  /** Date of creation of options */
-  createdAt: Scalars['DateTime'];
-  /** Identifier of options entity */
-  id: Scalars['ID'];
-};
-
 /** ArtistCollector */
 export type ArtistCollector = Node & {
   __typename?: 'ArtistCollector';
@@ -677,19 +507,6 @@ export type ArtistCursorFilterArgs = {
   season?: InputMaybe<ArtistSeason>;
 };
 
-/** Default reference artist minting release options for administration */
-export type ArtistDefaultOptions = {
-  __typename?: 'ArtistDefaultOptions';
-  /** Auction options union based on type */
-  auction: Array<Auction>;
-};
-
-/** Input for artistDrafts query */
-export type ArtistDraftsInput = {
-  /** Cursor connection parameters */
-  pagination?: DraftCursorConnectionArgs;
-};
-
 /** Simplified version of Artist entity */
 export type ArtistInfo = Node & {
   __typename?: 'ArtistInfo';
@@ -701,12 +518,6 @@ export type ArtistInfo = Node & {
   name?: Maybe<Scalars['String']>;
   /** Artist public address */
   publicAddress?: Maybe<Scalars['String']>;
-};
-
-/** Artist meta configuration input */
-export type ArtistMetaInput = {
-  /** Gem Collection URL */
-  gemCollectionUrl?: InputMaybe<Scalars['URL']>;
 };
 
 /** Artist minted releases author filter option */
@@ -737,17 +548,6 @@ export type ArtistMintedReleasesFilter = {
   releaseAuthor?: ArtistMintedReleasesAuthorFilterOption;
   /** Filters on release type */
   releaseType?: Array<ReleaseType>;
-};
-
-/** Artist minting release options */
-export type ArtistReleaseOptions = {
-  __typename?: 'ArtistReleaseOptions';
-  /** Auction options union based on type */
-  auction: Array<Auction>;
-  /** Artist has no time restriction for minting */
-  hasNoTimeRestriction: Scalars['Boolean'];
-  /** Does the artist have access to splits functionality */
-  hasSplitsAccess: Scalars['Boolean'];
 };
 
 /** Artist releases author filter option */
@@ -789,110 +589,12 @@ export enum ArtistSeason {
   SeasonTwo = 'SEASON_TWO'
 }
 
-/** Union of auction sale types */
-export type Auction = FixedAuction | OpenEditionAuction | RangeBoundAuction;
-
-/** Draft auction configuration input values */
-export type AuctionConfigurationInput = {
-  /** Auction end time in days */
-  endTimeDays?: InputMaybe<Scalars['Int']>;
-  /** Max mints per wallet for auction */
-  maxMintsPerWallet: Scalars['PositiveInt'];
-  /** Price per mint */
-  price: Scalars['NonNegativeFloat'];
-  /** Max supply for auction */
-  quantity: Scalars['PositiveInt'];
-  /** Auction start time */
-  startTime: Scalars['Timestamp'];
-};
-
-/** Draft auction configurations input values */
-export type AuctionConfigurationsInput = {
-  /** Type of auction */
-  auctionType: AuctionType;
-  /** Free mint auction configurations */
-  freeMint?: InputMaybe<AuctionConfigurationInput>;
-  /** Max mint supply of auction */
-  maxMintable: Scalars['PositiveInt'];
-  /** Min mint supply of auction */
-  minQuantity: Scalars['PositiveInt'];
-  /** Presale mint auction configurations */
-  presaleMint?: InputMaybe<AuctionConfigurationInput>;
-  /** Public mint auction configurations */
-  publicMint: AuctionConfigurationInput;
-  /** Breakdown of mint quantities */
-  quantityBreakdown?: InputMaybe<Array<Scalars['PositiveInt']>>;
-};
-
-/** Customize auction options based on type of sale */
-export type AuctionInputRef = {
-  /** fixed sales */
-  fixed?: InputMaybe<FixedAuctionInput>;
-  /** open editions */
-  openEdition?: InputMaybe<OpenEditionAuctionInput>;
-  /** Range bound sales */
-  rangeBound?: InputMaybe<RangeBoundAuctionInput>;
-};
-
-/** Special meta options relation to auction */
-export type AuctionMetaInput = {
-  /** Allow split functionality */
-  hasSplitsAccess: Scalars['Boolean'];
-};
-
 /** Types of release sales */
 export enum AuctionType {
   FixedQuantity = 'FIXED_QUANTITY',
   OpenEdition = 'OPEN_EDITION',
   RangeBound = 'RANGE_BOUND'
 }
-
-/** Returned when the user attempts to access a resource they are not authorized for */
-export type AuthorizationError = Error & IError & {
-  __typename?: 'AuthorizationError';
-  /** Descriptive message of error */
-  message: Scalars['String'];
-};
-
-/** Returned when an error or unexpected response is received from AWS */
-export type AwsRequestError = Error & {
-  __typename?: 'AwsRequestError';
-  /** Human-readable description of the error */
-  message: Scalars['String'];
-  /** AWS Request ID for debugging */
-  requestId: Scalars['String'];
-};
-
-/** Base error to be divided into specific issues */
-export type BaseError = Error & {
-  __typename?: 'BaseError';
-  code?: Maybe<Scalars['String']>;
-  message: Scalars['String'];
-};
-
-/** Input for selectSongSlotUsingChainData mutation */
-export type ChainDataSongSlotSelection = {
-  /** Amount paid in Wei */
-  amountPaidInWei: Scalars['String'];
-  /** Block number of NFT */
-  blockNumber: Scalars['Int'];
-  /** Contract address of release */
-  contractAddress: Scalars['Address'];
-  /** Chosen song slot */
-  songSlot: Scalars['Int'];
-  /** Chain token identifier */
-  tokenId: Scalars['String'];
-};
-
-/** Input of "changeRoleForUser" mutation */
-export type ChangeRoleInput = {
-  /** Wallet public address of user */
-  publicAddress: Scalars['Address'];
-  /** Role to be set for specified user */
-  role: AlterRole;
-  /** Set if specified role is going to be enabled or disabled */
-  value: Scalars['Boolean'];
-};
 
 /** Simplified version of Release entity filtered on the owner public address */
 export type CollectedRelease = Node & {
@@ -989,33 +691,6 @@ export type Comment = {
   updatedAt: Scalars['DateTime'];
 };
 
-/** Multi-part upload completion information. */
-export type CompleteMultipartUploadOutput = {
-  __typename?: 'CompleteMultipartUploadOutput';
-  /** Completed upload ID */
-  uploadId: Scalars['String'];
-  /** Completed upload key */
-  uploadKey: Scalars['String'];
-};
-
-/** Mark the provided multi-part upload as complete */
-export type CompleteMultipartUploadRequest = {
-  /** Ordered list of uploaded multi-part parts to associate with the final object */
-  parts: Array<CompletedMultipartUploadPart>;
-  /** Upload ID to use for each upload part of the final object */
-  uploadId: Scalars['String'];
-  /** Upload key for the final upload object */
-  uploadKey: Scalars['String'];
-};
-
-/** Multi-part part information */
-export type CompletedMultipartUploadPart = {
-  /** Opaque identifier of the part data */
-  etag: Scalars['String'];
-  /** Individual part number identifier */
-  partNumber: Scalars['Int'];
-};
-
 /** Base connection for paginated results */
 export type Connection = {
   /** Edges of current page */
@@ -1043,21 +718,6 @@ export type Contract = {
   updatedAt: Scalars['DateTime'];
 };
 
-/** Contract methods of transactions */
-export enum ContractMethod {
-  AffiliateWithdraw = 'AFFILIATE__WITHDRAW',
-  ArtistBuyEdition = 'ARTIST__BUY_EDITION',
-  ArtistWithdrawFunds = 'ARTIST__WITHDRAW_FUNDS',
-  DraftSoundCreatorCreateSoundAndMints = 'DRAFT_SOUND_CREATOR__CREATE_SOUND_AND_MINTS',
-  DraftSplitMainCreateSplit = 'DRAFT_SPLIT_MAIN__CREATE_SPLIT',
-  MulticallWithdraw = 'MULTICALL__WITHDRAW',
-  SoundCreatorCreateSoundAndMints = 'SOUND_CREATOR__CREATE_SOUND_AND_MINTS',
-  SoundEditionWithdrawEth = 'SOUND_EDITION__WITHDRAW_ETH',
-  SplitMainCreateSplit = 'SPLIT_MAIN__CREATE_SPLIT',
-  SplitMainDistributeEth = 'SPLIT_MAIN__DISTRIBUTE_ETH',
-  SplitMainWithdraw = 'SPLIT_MAIN__WITHDRAW'
-}
-
 /** Input for release by contract */
 export type ContractReleaseInput = {
   /** Contract address */
@@ -1071,46 +731,6 @@ export enum ContractType {
   Artist = 'ARTIST',
   Edition = 'EDITION'
 }
-
-/** Input for createDraft mutation */
-export type CreateDraftInput = {
-  /** Draft release type */
-  releaseType: ReleaseType;
-  /** Draft Title */
-  title: Scalars['String'];
-};
-
-/** Input for createKeyClient mutation */
-export type CreateKeyClient = {
-  /** Human-readable name of Key Client to be created */
-  name: Scalars['NonEmptyString'];
-  /** Set the initial status of the specified Key Client */
-  status?: KeyClientStatus;
-};
-
-/** Input for createRelease mutation */
-export type CreateReleaseInput = {
-  /** Behind the music text */
-  behindTheMusic: Scalars['String'];
-  /** Cover image */
-  coverImage: UploadedMedia;
-  /** Release description */
-  description?: InputMaybe<Scalars['String']>;
-  /** Release genre */
-  genre: Scalars['String'];
-  /** Special golden egg image */
-  goldenEggImage?: InputMaybe<UploadedMedia>;
-  /** Custom rewards */
-  rewards?: InputMaybe<Array<RewardInput>>;
-  /** Static cover image to use in place of animated cover image */
-  staticCoverImage?: InputMaybe<UploadedMedia>;
-  /** Title of release */
-  title: Scalars['String'];
-  /** Uploaded tracks */
-  tracks: Array<TrackUpload>;
-  /** Release type */
-  type: ReleaseType;
-};
 
 /** Credit allocation entity */
 export type CreditAllocation = {
@@ -1186,47 +806,6 @@ export type CursorConnectionArgs = {
   sort?: SortOrder;
 };
 
-/** Input for deleteAllUsersFromDraftAllowlist mutation */
-export type DeleteAllUsersFromDraftAllowlistInput = {
-  /** Draft identifier */
-  draftId: Scalars['UUID'];
-  /** Draft allowlist mint type */
-  mintType: MintingAccessConfigMintingType;
-};
-
-/** Input fields to delete shelf */
-export type DeleteShelfInput = {
-  /** Shelf id to delete */
-  shelfId: Scalars['UUID'];
-};
-
-/** Input for deleteUsersFromDraftAllowlist mutation */
-export type DeleteUsersFromDraftAllowlistInput = {
-  /** Public addresses to be deleted */
-  addresses: Array<Scalars['Address']>;
-  /** Draft identifier */
-  draftId: Scalars['UUID'];
-  /** Draft allowlist mint type */
-  mintType: MintingAccessConfigMintingType;
-};
-
-/** Input for deployDraft mutation */
-export type DeployDraftInput = {
-  /** Flag to create or not create underlying release entity when deploying draft */
-  createReleaseEntity?: Scalars['Boolean'];
-  /** Draft identifier */
-  draftId: Scalars['UUID'];
-};
-
-/** Output entity of deployDraft mutation */
-export type DeployDraftOutput = {
-  __typename?: 'DeployDraftOutput';
-  /** Draft entity */
-  draft: Draft;
-  /** Draft release entity */
-  release?: Maybe<Release>;
-};
-
 /** Draft entity */
 export type Draft = Node & {
   __typename?: 'Draft';
@@ -1279,16 +858,6 @@ export type DraftAllowListInfo = {
   manuallyAddedAllowlist?: Maybe<DraftManuallyAddedAllowlistInfo>;
 };
 
-/** Draft allow list inputs */
-export type DraftAllowListInput = {
-  /** Draft collectors of artists */
-  collectorsOfArtists?: InputMaybe<DraftCollectorsOfArtistsInput>;
-  /** Draft collectors of releases */
-  collectorsOfReleases?: InputMaybe<DraftCollectorsOfReleasesInput>;
-  /** Draft manually added allowlist releases */
-  manuallyAddedAllowlist?: InputMaybe<DraftManuallyAddedAllowlistInput>;
-};
-
 /** Draft allow lists info */
 export type DraftAllowListsInfo = {
   __typename?: 'DraftAllowListsInfo';
@@ -1296,22 +865,6 @@ export type DraftAllowListsInfo = {
   freeMint?: Maybe<DraftAllowListInfo>;
   /** Presale mint allowlist configurations */
   presaleMint?: Maybe<DraftAllowListInfo>;
-};
-
-/** Draft allowlists configurations */
-export type DraftAllowListsInput = {
-  /** Free mint draft allowlist configuration */
-  freeMint?: InputMaybe<DraftAllowListInput>;
-  /** Presale mint draft allowlist configuration */
-  presaleMint?: InputMaybe<DraftAllowListInput>;
-};
-
-/** Input for draftAllowListFromDraft query */
-export type DraftAllowlistFromDraftInput = {
-  /** Draft identifier */
-  draftId: Scalars['UUID'];
-  /** Draft allowlist mint type */
-  mintType: MintingAccessConfigMintingType;
 };
 
 /** Input for draftAllowListFromRelease query */
@@ -1324,22 +877,6 @@ export type DraftAllowlistFromReleaseInput = {
 
 /** Union of draft allowlist infos */
 export type DraftAllowlistInfo = ArtistCollectorsAllowlist | ManuallyAddedCollectorsAllowlist | ReleaseCollectorsAllowlist;
-
-/** Input for draftAllowlistInput query */
-export type DraftAllowlistInput = {
-  /** Allowlist type */
-  allowlistType: AllowlistType;
-  /** Draft identifier */
-  draftId: Scalars['String'];
-  /** Draft allowlist mint type */
-  mintType: MintingAccessConfigMintingType;
-};
-
-/** Draft allow list sale types */
-export enum DraftAllowlistSaleType {
-  FreeSale = 'FREE_SALE',
-  Presale = 'PRESALE'
-}
 
 /** Different draft allow list types */
 export enum DraftAllowlistType {
@@ -1389,14 +926,6 @@ export type DraftCollectorsOfArtistsInfo = {
   selectedArtists: Array<ArtistInfo>;
 };
 
-/** Draft collectors of artists inputs */
-export type DraftCollectorsOfArtistsInput = {
-  /** Toggle to include or not include all the collectors of all artists that given artist collaborated with */
-  allCollaboratingArtists?: InputMaybe<Scalars['Boolean']>;
-  /** Select artist identifiers */
-  selectedArtistIds?: InputMaybe<Array<Scalars['UUID']>>;
-};
-
 /** Draft collectors of releases info */
 export type DraftCollectorsOfReleasesInfo = {
   __typename?: 'DraftCollectorsOfReleasesInfo';
@@ -1408,25 +937,6 @@ export type DraftCollectorsOfReleasesInfo = {
   selectedReleases: Array<ReleaseInfo>;
 };
 
-/** Draft collectors of releases inputs */
-export type DraftCollectorsOfReleasesInput = {
-  /** Toggle to include or not include all artist collaborations */
-  allArtistCollaborations?: InputMaybe<Scalars['Boolean']>;
-  /** Toggle to include or not include all artist releases */
-  allArtistReleases?: InputMaybe<Scalars['Boolean']>;
-  /** Select release identifiers */
-  selectedReleaseIds?: InputMaybe<Array<Scalars['UUID']>>;
-};
-
-/** Paginated releases connection */
-export type DraftConnection = Connection & {
-  __typename?: 'DraftConnection';
-  /** Edges of current page */
-  edges: Array<DraftConnectionEdge>;
-  /** Pagination helpers information */
-  pageInfo: PageInfo;
-};
-
 /** Edge of Draft Connection */
 export type DraftConnectionEdge = Edge & {
   __typename?: 'DraftConnectionEdge';
@@ -1434,26 +944,6 @@ export type DraftConnectionEdge = Edge & {
   cursor: Scalars['String'];
   /** Draft node */
   node: Draft;
-};
-
-/** Cursor connection parameters */
-export type DraftCursorConnectionArgs = {
-  /** Start forwards pagination since "after" cursor */
-  after?: InputMaybe<Scalars['String']>;
-  /** Start backwards pagination since "before" cursor */
-  before?: InputMaybe<Scalars['String']>;
-  /** Limit the amount of nodes to be fetched, to be used with "after", with a maximum of 51 nodes. */
-  first?: InputMaybe<Scalars['NonNegativeInt']>;
-  /** Limit the amount of nodes to be fetched, to be used with "before", with a maximum of 51 nodes. */
-  last?: InputMaybe<Scalars['NonNegativeInt']>;
-  /** Sort the users ascending or descending relative to the user creation date */
-  sort?: DraftCursorConnectionSort;
-};
-
-/** Customize the sort behavior of drafts pagination */
-export type DraftCursorConnectionSort = {
-  /** Sort by date of draft creation */
-  createdAt?: InputMaybe<SortOrder>;
 };
 
 /** Draft info */
@@ -1473,37 +963,11 @@ export type DraftInfo = {
   splitsInfo?: Maybe<SplitsUploadStepInfo>;
 };
 
-/** Different upload steps for a release */
-export type DraftInfoInput = {
-  /** Allowlists inputs */
-  allowListsInfo?: InputMaybe<DraftAllowListsInput>;
-  /** Auction configuration inputs */
-  auctionConfigurations?: InputMaybe<AuctionConfigurationsInput>;
-  /** Release info upload step inputs */
-  releaseInfo?: InputMaybe<ReleaseInfoUploadStepInput>;
-  /** Rewards upload step inputs */
-  rewardsInfo?: InputMaybe<RewardsUploadStepInput>;
-  /** Credit allocations of credit split */
-  splitsInfo?: InputMaybe<SplitsUploadStepInput>;
-};
-
 /** Draft manually added allowlist info */
 export type DraftManuallyAddedAllowlistInfo = {
   __typename?: 'DraftManuallyAddedAllowlistInfo';
   /** Description for draft manually added allowlist */
   description?: Maybe<Scalars['String']>;
-};
-
-/** Draft manually added allowlist inputs */
-export type DraftManuallyAddedAllowlistInput = {
-  /** Draft manually added allowlist description */
-  description?: InputMaybe<Scalars['String']>;
-};
-
-/** Input for draftMetadataUpload mutation */
-export type DraftMetadataUploadInput = {
-  /** Draft identifier */
-  draftId: Scalars['UUID'];
 };
 
 /** Draft public sale auction configuration step info */
@@ -1554,30 +1018,6 @@ export type DraftReleaseInfo = {
   type: Scalars['String'];
 };
 
-/** Given paramater already exists and can't be duplicated */
-export type DuplicatedError = Error & {
-  __typename?: 'DuplicatedError';
-  /** Descriptive message of error */
-  message: Scalars['String'];
-};
-
-/** Earnings aggregates */
-export type Earnings = {
-  __typename?: 'Earnings';
-  /** Total eth earned by the user */
-  cummulativeEarned: Scalars['String'];
-  /** Portion of split main balance unrelated to sound releases */
-  externalSplitMainBalance: Scalars['String'];
-  /** Total eth available for the user to withdraw from sound releases */
-  releasesAvailableToWithdraw: Scalars['String'];
-  /** Portion of split main balance related to sound releases */
-  releasesSplitMainBalance: Scalars['String'];
-  /** Total eth available for the user to withdraw, includes sound releases and external split main balance */
-  totalAvailableToWithdraw: Scalars['String'];
-  /** Total eth on the split main contract */
-  totalSplitMainBalance: Scalars['String'];
-};
-
 /** Container of Node and the Cursor from the Node */
 export type Edge = {
   /** Cursor to be used for pagination */
@@ -1612,12 +1052,6 @@ export type EggGame = {
   nft: Nft;
   /** Serial number of nft with egg game */
   winningSerialNum: Scalars['Int'];
-};
-
-/** Base Error */
-export type Error = {
-  /** Descriptive message of error */
-  message: Scalars['String'];
 };
 
 /** Event type */
@@ -1662,14 +1096,6 @@ export type EventV2 = Node & {
   valueExchangedPretty: ValueExchangedPrettyType;
 };
 
-/** Input for extendShelf mutation */
-export type ExtendShelfInput = {
-  /** Shelf identifier of source */
-  sourceShelfId: Scalars['UUID'];
-  /** Shelf identifier of target shelf to receive the releases */
-  targetShelfId: Scalars['UUID'];
-};
-
 /** Feature flag entity to describe flagged functionality */
 export type FeatureFlag = {
   __typename?: 'FeatureFlag';
@@ -1685,58 +1111,6 @@ export type FeatureFlag = {
   value: Scalars['String'];
 };
 
-/** Type of feature to be set */
-export enum FeatureType {
-  Artist = 'ARTIST',
-  Release = 'RELEASE',
-  Splits = 'SPLITS',
-  User = 'USER'
-}
-
-/** Filter Key Clients pagination */
-export type FilterKeyClients = {
-  status?: InputMaybe<Array<KeyClientStatus>>;
-};
-
-/** Auction options associated with fixed sales */
-export type FixedAuction = {
-  __typename?: 'FixedAuction';
-  /** List of different max mints per wallet quantity options for free sale */
-  freeSaleMaxMintsPerWalletOptions: Array<Scalars['Int']>;
-  /** List of different max mints per wallet quantity options for presale */
-  presaleMaxMintsPerWalletOptions: Array<Scalars['Int']>;
-  /** List of different eth prices options for presale */
-  presalePriceOptions?: Maybe<Array<Scalars['Float']>>;
-  /** List of different eth prices options for public sale */
-  priceOptions: Array<Scalars['Float']>;
-  /** List of different max mints per wallet quantity options for public sale */
-  publicSaleMaxMintsPerWalletOptions: Array<Scalars['Int']>;
-  /** List of different quantity options for public sale */
-  quantityOptions: Array<Scalars['Int']>;
-};
-
-/** Input options to customize fixed auctions */
-export type FixedAuctionInput = {
-  /** List of different max mints per wallet quantity options for free sale */
-  freeSaleMaxMintsPerWalletOptions: Array<Scalars['Int']>;
-  /** List of different max mints per wallet quantity options for presale */
-  presaleMaxMintsPerWalletOptions: Array<Scalars['Int']>;
-  /** List of different eth prices options for presales */
-  presalePriceOptions: Array<Scalars['Float']>;
-  /** List of different eth prices options for public sale */
-  priceOptions: Array<Scalars['Float']>;
-  /** List of different max mints per wallet quantity options for public sale */
-  publicSaleMaxMintsPerWalletOptions: Array<Scalars['Int']>;
-  /** List of different quantity options for public sale */
-  quantityOptions: Array<Scalars['Int']>;
-};
-
-/** Input fields to follow user */
-export type FollowUserInput = {
-  /** User id to follow */
-  user: Scalars['UUID'];
-};
-
 /** Genre entity */
 export type Genre = {
   __typename?: 'Genre';
@@ -1750,11 +1124,6 @@ export type Genre = {
   updatedAt: Scalars['DateTime'];
 };
 
-/** [USE `Error` INSTEAD] The base error type that every other error object extends from */
-export type IError = {
-  message: Scalars['String'];
-};
-
 /** Customize iframe html parameters */
 export type IframeHtmlParameters = {
   /** Customize height */
@@ -1763,18 +1132,6 @@ export type IframeHtmlParameters = {
   style: Scalars['String'];
   /** Customize width */
   width: Scalars['String'];
-};
-
-/** Input field to check if auth user is following */
-export type IsFollowingInput = {
-  /** User id to check if auth user is following */
-  user: Scalars['UUID'];
-};
-
-/** Input for `isLiked` query */
-export type IsLikedInput = {
-  /** Identifier to be checked */
-  id: Scalars['UUID'];
 };
 
 /** Client key management entity */
@@ -1794,15 +1151,6 @@ export type KeyClient = Node & {
   updatedAt: Scalars['DateTime'];
 };
 
-/** Paginated connection of Key Clients */
-export type KeyClientConnection = Connection & {
-  __typename?: 'KeyClientConnection';
-  /** Edges of current page */
-  edges: Array<KeyClientConnectionEdge>;
-  /** Pagination helpers information */
-  pageInfo: PageInfo;
-};
-
 /** Edge of Key Client Connection */
 export type KeyClientConnectionEdge = Edge & {
   __typename?: 'KeyClientConnectionEdge';
@@ -1810,20 +1158,6 @@ export type KeyClientConnectionEdge = Edge & {
   cursor: Scalars['String'];
   /** Key Client node */
   node: KeyClient;
-};
-
-/** Cursor connection parameters */
-export type KeyClientCursorConnectionArgs = {
-  /** Start forwards pagination since "after" cursor */
-  after?: InputMaybe<Scalars['String']>;
-  /** Start backwards pagination since "before" cursor */
-  before?: InputMaybe<Scalars['String']>;
-  /** Limit the amount of nodes to be fetched, to be used with "after", with a maximum of 51 nodes. */
-  first?: InputMaybe<Scalars['NonNegativeInt']>;
-  /** Limit the amount of nodes to be fetched, to be used with "before", with a maximum of 51 nodes. */
-  last?: InputMaybe<Scalars['NonNegativeInt']>;
-  /** Sort the key clients ascending or descending relative to the entity creation date */
-  sort?: SortOrder;
 };
 
 /** Status of Key Client */
@@ -1878,15 +1212,6 @@ export type LatestSalesCursorFilterArgs = {
   eventTypes?: InputMaybe<Array<EventType>>;
 };
 
-/** Given string doesn't have the minimum expected length */
-export type LengthError = Error & {
-  __typename?: 'LengthError';
-  /** Descriptive message of error */
-  message: Scalars['String'];
-  /** Minimum string length required */
-  minLength: Scalars['Int'];
-};
-
 /** License for the release */
 export enum LicenseType {
   AllRightsReserved = 'ALL_RIGHTS_RESERVED',
@@ -1921,18 +1246,6 @@ export type LikeActionConnectionEdge = Edge & {
   node: LikeAction;
 };
 
-/** Input for `likeRelease` mutation */
-export type LikeReleaseInput = {
-  /** Release identifier to be liked */
-  releaseId: Scalars['UUID'];
-};
-
-/** Input for `likeShelf` mutation */
-export type LikeShelfInput = {
-  /** Shelf identifier to be liked */
-  shelfId: Scalars['UUID'];
-};
-
 /** Input used for link query */
 export type LinkInput = {
   /** Link slug */
@@ -1944,15 +1257,6 @@ export type ManuallyAddedCollectorsAllowlist = {
   __typename?: 'ManuallyAddedCollectorsAllowlist';
   /** Total number of manually added users in draft allowlist */
   totalCollectors: Scalars['Int'];
-};
-
-/** Returned when the input is above the maximum tolerated value */
-export type MaxValueError = Error & IError & {
-  __typename?: 'MaxValueError';
-  actual: Scalars['Int'];
-  max: Scalars['Int'];
-  /** Descriptive message of error */
-  message: Scalars['String'];
 };
 
 /** Media entity */
@@ -2033,15 +1337,6 @@ export type MetadataAttribute = {
   value: Scalars['String'];
 };
 
-/** Returned when the input is below the minimum tolerated value */
-export type MinValueError = Error & IError & {
-  __typename?: 'MinValueError';
-  actual: Scalars['Int'];
-  /** Descriptive message of error */
-  message: Scalars['String'];
-  min: Scalars['Int'];
-};
-
 /** Mint current time status */
 export enum MintTimeStatus {
   Past = 'PAST',
@@ -2100,381 +1395,15 @@ export enum MintingAccessConfigMintingType {
   Presale = 'PRESALE'
 }
 
-/** Multi-part upload initiation information. */
-export type MultipartUploadOutput = {
-  __typename?: 'MultipartUploadOutput';
-  /** Signed multi-part URLs for each part number */
-  signedUrls: Array<SignedMultipartUrl>;
-  /** Upload ID to use for each upload part of the final object */
-  uploadId: Scalars['String'];
-  /** Upload key for the final upload object */
-  uploadKey: Scalars['String'];
-};
-
-/** Input for signedUploadParams mutation */
-export type MultipartUploadRequest = {
-  /** File name of media to be uploaded */
-  fileName: Scalars['String'];
-  /** Media type to be uploaded */
-  mediaType: MediaType;
-  /** Number of parts to use for multi-part upload */
-  totalPartsCount: Scalars['Int'];
-};
-
 /** Mutations */
 export type Mutation = {
   __typename?: 'Mutation';
-  /** [ARTIST] Abort a multi-part upload request */
-  abortMultipartUpload: MutationAbortMultipartUploadResult;
-  /** [AUTHENTICATED] Add specified release into the bottom of owned shelf */
-  addReleaseToShelf: MutationAddReleaseToShelfResult;
-  /** [ARTIST] Add users to given draft with allowlist type */
-  addUsersToDraftAllowlist: MutationAddUsersToDraftAllowlistResult;
-  /**
-   * [ADMIN] Upload metadata to Arweave
-   * @deprecated Please use Mutation.albumRevealMetadataFromDraft
-   */
-  albumRevealMetadata: Scalars['NonEmptyString'];
-  /** [ADMIN] Upload metadata to Arweave from release draft info */
-  albumRevealMetadataFromDraft: Scalars['NonEmptyString'];
-  /** [ADMIN | ARTIST_RELATIONS] Configure auction meta options of specific artist */
-  artistAuctionMeta: ArtistAuctionOverrides;
-  /** [ADMIN | ARTIST_RELATIONS] Configure specific artist minting options */
-  artistMintingOption: ArtistAuctionOverrides;
-  /** [ADMIN] Change the role of a specified user */
-  changeRoleForUser: UserRoles;
-  /** [ARTIST] Upsert release edition based on transaction */
-  clientConfirmedDraftUpsert?: Maybe<Release>;
-  /** [ARTIST] Upsert release edition based on transaction */
-  clientCreateNewEditionUpsert: Release;
-  /** [AUTHENTICATED] Upsert created draft split address from the client-side. An alternative to wait until the transaction is completed and automatically acknowledged on background processes */
-  clientDraftSplitUpsert?: Maybe<Draft>;
-  /** [AUTHENTICATED] Upsert bought NFT entity from the client-side. An alternative to wait until the transaction is completed and automatically acknowledged on background processes */
-  clientNftUpsert?: Maybe<Nft>;
-  /** [AUTHENTICATED] Upsert created split address from the client-side. An alternative to wait until the transaction is completed and automatically acknowledged on background processes */
-  clientSplitUpsert?: Maybe<CreditSplit>;
-  /** [ARTIST] Complete a multi-part upload request */
-  completeMultipartUpload: MutationCompleteMultipartUploadResult;
-  /** [AUTHENTICATED] Create artist entity for authenticated user, User has to be allowed to create artist profile beforehand */
-  createArtist: User;
-  /** [ARTIST] Create credit split for specified release */
-  createCreditSplit: CreditSplit;
-  /** [ARTIST] Create draft release */
-  createDraft: MutationCreateDraftResult;
-  /** [ADMIN] Create Key Client */
-  createKeyClient: KeyClient;
-  /** [ARTIST] Initiate a multi-part upload request */
-  createMultipartUpload: MutationCreateMultipartUploadResult;
-  /** [ARTIST] Create release for new sound edition contracts */
-  createSoundEditionRelease: MutationCreateSoundEditionReleaseResult;
-  /** [ARTIST] Delete all users from given draft and allowlist type */
-  deleteAllUsersFromDraftAllowlist: MutationDeleteAllUsersFromDraftAllowlistResult;
-  /** [ARTIST] Delete unminted draft */
-  deleteDraft: MutationDeleteDraftResult;
-  /** [AUTHENTICATED] Delete shelf for user */
-  deleteShelf?: Maybe<Scalars['Void']>;
-  /** [ARTIST] Delete users from given draft and allowlist type */
-  deleteUsersFromDraftAllowlist: MutationDeleteUsersFromDraftAllowlistResult;
-  /** [ADMIN | ARTIST] Deploy draft after contract deployment. */
-  deployDraft: MutationDeployDraftResult;
-  /** [ADMIN | ARTIST] Upload draft metadata to Arweave */
-  draftMetadataUpload: MutationDraftMetadataUploadResult;
-  /** [ADMIN] Update the sales schedules of the specified edition */
-  editionUpdateSchedules: Release;
-  /** [AUTHENTICATED] Extend all the existing releases of a shelf into another shelf */
-  extendShelf: MutationExtendShelfResult;
-  /** [AUTHENTICATED] Follow user of input userId */
-  followUser: UserRelation;
-  /** [ADMIN] Manually sync pending transactions */
-  forceSyncPendingTransactions?: Maybe<Scalars['Void']>;
   /** [PUBLIC] Generate auth challenge for given public address and give back new nonce */
   generateAuthChallenge: Scalars['Int'];
-  /** [AUTHENTICATED] Like a release. */
-  likeRelease: MutationLikeReleaseResult;
-  /** [AUTHENTICATED] Like a shelf. */
-  likeShelf: MutationLikeShelfResult;
-  /** [ADMIN | ARTIST] Prepare draft before minting, creating merkle trees based on the allowlists specified on the draft info. */
-  prepareMintDraft: MutationPrepareMintDraftResult;
-  /**
-   * [ARTIST | ADMIN] [DEPRECATED] Prepare release before minting, creating merkle trees based on the allowlists specified on the upload steps.
-   * @deprecated Use prepareMintRelease instead, it uses user domain errors
-   */
-  prepareReleaseForMint?: Maybe<Scalars['Void']>;
-  /** [AUTHENTICATED] Recover a deleted shelf */
-  recoverShelf: MutationRecoverShelfResult;
-  /** [AUTHENTICATED] Manually register transaction of nft buy */
-  registerBuyEditionTx: Transaction;
-  /** [ARTIST] Manually register transaction of SoundEdition contract creation & mint schedule registrations on minter contracts. */
-  registerCreateSoundAndMintsTx: Transaction;
-  /** [ARTIST] Manually register split transaction */
-  registerCreateSplitTx: Transaction;
-  /** [ARTIST] Manually register draft split transaction */
-  registerDraftCreateSplitTx: Transaction;
-  /** [ARTIST] Manually register transaction of draft deploy */
-  registerDraftDeployTx: Transaction;
-  /** [AUTHENTICATED] Register transaction replacement */
-  registerReplacementTx: Transaction;
-  /** [AUTHENTICATED] Remove specified release from the owned shelf */
-  removeReleaseFromShelf: MutationRemoveReleaseFromShelfResult;
-  /** [ADMIN | ARTIST_RELATIONS] Remove associated twitter handle of given user */
-  removeTwitterHandle: MutationRemoveTwitterHandleResult;
   /** [PUBLIC] Report a track play session stop */
   reportPlayStopped?: Maybe<Scalars['Void']>;
-  /** [AUTHENTICATED] Reset twitter handle of authenticated user */
-  resetTwitter: User;
-  /** [ADMIN] Configure season-based meta-auction options */
-  seasonAuctionMeta: SeasonAuctionDefaults;
-  /** [ADMIN] Change season-based auction options */
-  seasonMintingOption: SeasonAuctionDefaults;
-  /** [AUTHENTICATED] Select song slot using chain data instead of NFT identifier */
-  selectSongSlotUsingChainData: Nft;
-  /** [AUTHENTICATED] Select song slot for owned NFT */
-  selectSongSlotUsingNftId: MutationSelectSongSlotUsingNftIdResult;
-  /** [AUTHENTICATED] Set the source of an affiliate purchase. Returns the count of current affiliate purchases updated */
-  setAffiliatePurchaseSource: MutationSetAffiliatePurchaseSourceResult;
-  /** [ARTIST_RELATIONS | ADMIN] Set artist metadata */
-  setArtistMeta: Artist;
-  /** [ARTIST] Set special configurations into artist entity */
-  setArtistName: Artist;
-  /** [ADMIN] Manually set the last processed block number, used primarily by sound.xyz watcher */
-  setBlockNumber: Scalars['String'];
-  /** [AUTHENTICATED] Set comment for specified Nft */
-  setComment: Nft;
-  /** [AUTHENTICATED] Delegate address of user to be used. Set to NULL to remove the delegate address from the account. */
-  setDelegateAddress: User;
-  /** [AUTHENTICATED] Update authenticated user display name */
-  setDisplayName: User;
-  /** [ADMIN] Set specified feature flag as defined */
-  setFeatureFlag: FeatureFlag;
-  /** [AUTHENTICATED] Update releases to be returned in featured sounds */
-  setFeaturedSounds: User;
-  /** [ADMIN] Set the whitelisted artists to have no time restrictions for minting */
-  setNoTimeRestrictionArtistList: Array<Scalars['String']>;
-  /** [ADMIN | ARTIST_RELATIONS] Set details of release */
-  setReleaseDetails: Release;
-  /** [ADMIN | ARTIST_RELATIONS] Set special metadata of release */
-  setReleaseMeta: Release;
-  /** [ADMIN] Set season for specified artist */
-  setSeasonForArtist: Artist;
-  /** [AUTHENTICATED] Set input list of releaseIds to input shelfId */
-  setShelfReleases: MutationSetShelfReleasesResult;
-  /** [ADMIN] Block or unblock user from uploading content into the system */
-  setUploadBlockStatus?: Maybe<Scalars['Void']>;
-  /** [ADMIN | ARTIST_RELATIONS] Set artist role to specified public address */
-  setUserArtistRole: User;
-  /** [ADMIN] Set the media of the specified user */
-  setUserMedia: User;
-  /** [ARTIST] Check if draft splitInfo matches already deployed credit split for specified draft */
-  shouldDeployNewSplit: MutationShouldDeployNewSplitResult;
-  /** [AUTHENTICATED] Unfollow user of input userId */
-  unfollowUser: UserRelation;
-  /** [AUTHENTICATED] Unlike a release. */
-  unlikeRelease: MutationUnlikeReleaseResult;
-  /** [AUTHENTICATED] Unlike a shelf. */
-  unlikeShelf: MutationUnlikeShelfResult;
-  /** [ARTIST] Update authenticated artist Spotify URL */
-  updateArtistSpotifyUrl: Artist;
-  /** [AUTHENTICATED] Update authenticated user description */
-  updateDescription: User;
-  /** [ARTIST] Update draft info of given draftId */
-  updateDraftInfo: MutationUpdateDraftInfoResult;
-  /** [AUTHENTICATED] Update authenticated user email */
-  updateEmail: User;
-  /** [ADMIN] Update existing Key Client */
-  updateKeyClient: KeyClient;
-  /** [AUTHENTICATED] Update the last tracked referral withdrawable balance of the authenticated user */
-  updateReferralWithdrawableBalance: User;
-  /** [AUTHENTICATED] Update authenticated user Instagram handle */
-  updateUserInstagramHandle: User;
-  /** [AUTHENTICATED] Upload media content for authenticated user's profile */
-  uploadUserMedia: User;
-  /** [ARTIST] Upsert artist banner image */
-  upsertArtistBannerImage: Artist;
-  /** [AUTHENTICATED] Upsert shelf for user. If id is passed in as input, mutation will update shelf. Otherwise, mutation will create new shelf */
-  upsertShelf: Shelf;
   /** [PUBLIC] Verify given auth challenge */
   verifyAuthChallenge: Scalars['String'];
-  /** [AUTHENTICATED] Verify twitter handle */
-  verifyTwitter: MutationVerifyTwitterResult;
-};
-
-
-/** Mutations */
-export type MutationAbortMultipartUploadArgs = {
-  input: AbortMultipartUploadRequest;
-};
-
-
-/** Mutations */
-export type MutationAddReleaseToShelfArgs = {
-  input: AddReleaseToShelfInput;
-};
-
-
-/** Mutations */
-export type MutationAddUsersToDraftAllowlistArgs = {
-  input: AddUsersToDraftAllowlistInput;
-};
-
-
-/** Mutations */
-export type MutationAlbumRevealMetadataArgs = {
-  releaseId: Scalars['UUID'];
-};
-
-
-/** Mutations */
-export type MutationAlbumRevealMetadataFromDraftArgs = {
-  releaseId: Scalars['UUID'];
-};
-
-
-/** Mutations */
-export type MutationArtistAuctionMetaArgs = {
-  artistAddress: Scalars['Address'];
-  metaType?: InputMaybe<AuctionMetaInput>;
-};
-
-
-/** Mutations */
-export type MutationArtistMintingOptionArgs = {
-  artistAddress: Scalars['Address'];
-  auctionType: AuctionInputRef;
-};
-
-
-/** Mutations */
-export type MutationChangeRoleForUserArgs = {
-  input: ChangeRoleInput;
-};
-
-
-/** Mutations */
-export type MutationClientConfirmedDraftUpsertArgs = {
-  hash: Scalars['String'];
-};
-
-
-/** Mutations */
-export type MutationClientCreateNewEditionUpsertArgs = {
-  hash: Scalars['String'];
-};
-
-
-/** Mutations */
-export type MutationClientDraftSplitUpsertArgs = {
-  txHash: Scalars['String'];
-};
-
-
-/** Mutations */
-export type MutationClientNftUpsertArgs = {
-  txHash: Scalars['String'];
-};
-
-
-/** Mutations */
-export type MutationClientSplitUpsertArgs = {
-  txHash: Scalars['String'];
-};
-
-
-/** Mutations */
-export type MutationCompleteMultipartUploadArgs = {
-  input: CompleteMultipartUploadRequest;
-};
-
-
-/** Mutations */
-export type MutationCreateArtistArgs = {
-  soundHandle: Scalars['String'];
-};
-
-
-/** Mutations */
-export type MutationCreateCreditSplitArgs = {
-  creditAllocations: Array<Allocation>;
-  creditSplitId?: InputMaybe<Scalars['UUID']>;
-  releaseId: Scalars['UUID'];
-};
-
-
-/** Mutations */
-export type MutationCreateDraftArgs = {
-  input: CreateDraftInput;
-};
-
-
-/** Mutations */
-export type MutationCreateKeyClientArgs = {
-  input: CreateKeyClient;
-};
-
-
-/** Mutations */
-export type MutationCreateMultipartUploadArgs = {
-  input: MultipartUploadRequest;
-};
-
-
-/** Mutations */
-export type MutationCreateSoundEditionReleaseArgs = {
-  input: CreateReleaseInput;
-};
-
-
-/** Mutations */
-export type MutationDeleteAllUsersFromDraftAllowlistArgs = {
-  input: DeleteAllUsersFromDraftAllowlistInput;
-};
-
-
-/** Mutations */
-export type MutationDeleteDraftArgs = {
-  id: Scalars['UUID'];
-};
-
-
-/** Mutations */
-export type MutationDeleteShelfArgs = {
-  input: DeleteShelfInput;
-};
-
-
-/** Mutations */
-export type MutationDeleteUsersFromDraftAllowlistArgs = {
-  input: DeleteUsersFromDraftAllowlistInput;
-};
-
-
-/** Mutations */
-export type MutationDeployDraftArgs = {
-  input: DeployDraftInput;
-};
-
-
-/** Mutations */
-export type MutationDraftMetadataUploadArgs = {
-  input: DraftMetadataUploadInput;
-};
-
-
-/** Mutations */
-export type MutationEditionUpdateSchedulesArgs = {
-  editionAddress?: InputMaybe<Scalars['String']>;
-  releaseId?: InputMaybe<Scalars['String']>;
-};
-
-
-/** Mutations */
-export type MutationExtendShelfArgs = {
-  input: ExtendShelfInput;
-};
-
-
-/** Mutations */
-export type MutationFollowUserArgs = {
-  input: FollowUserInput;
 };
 
 
@@ -2485,307 +1414,8 @@ export type MutationGenerateAuthChallengeArgs = {
 
 
 /** Mutations */
-export type MutationLikeReleaseArgs = {
-  input: LikeReleaseInput;
-};
-
-
-/** Mutations */
-export type MutationLikeShelfArgs = {
-  input: LikeShelfInput;
-};
-
-
-/** Mutations */
-export type MutationPrepareMintDraftArgs = {
-  input: PrepareMintDraftInput;
-};
-
-
-/** Mutations */
-export type MutationPrepareReleaseForMintArgs = {
-  id: Scalars['UUID'];
-};
-
-
-/** Mutations */
-export type MutationRecoverShelfArgs = {
-  deletedShelfId: Scalars['UUID'];
-};
-
-
-/** Mutations */
-export type MutationRegisterBuyEditionTxArgs = {
-  hash: Scalars['String'];
-  releaseId: Scalars['UUID'];
-};
-
-
-/** Mutations */
-export type MutationRegisterCreateSoundAndMintsTxArgs = {
-  hash: Scalars['String'];
-  releaseId: Scalars['UUID'];
-};
-
-
-/** Mutations */
-export type MutationRegisterCreateSplitTxArgs = {
-  creditSplitId: Scalars['UUID'];
-  hash: Scalars['String'];
-};
-
-
-/** Mutations */
-export type MutationRegisterDraftCreateSplitTxArgs = {
-  draftId: Scalars['UUID'];
-  hash: Scalars['String'];
-};
-
-
-/** Mutations */
-export type MutationRegisterDraftDeployTxArgs = {
-  draftId: Scalars['UUID'];
-  hash: Scalars['String'];
-};
-
-
-/** Mutations */
-export type MutationRegisterReplacementTxArgs = {
-  originalHash: Scalars['String'];
-  replacementHash: Scalars['String'];
-};
-
-
-/** Mutations */
-export type MutationRemoveReleaseFromShelfArgs = {
-  input: RemoveReleaseFromShelfInput;
-};
-
-
-/** Mutations */
-export type MutationRemoveTwitterHandleArgs = {
-  twitterHandle: Scalars['String'];
-};
-
-
-/** Mutations */
 export type MutationReportPlayStoppedArgs = {
   input: ReportPlayStoppedInput;
-};
-
-
-/** Mutations */
-export type MutationSeasonAuctionMetaArgs = {
-  metaType?: InputMaybe<AuctionMetaInput>;
-  seasonName: Scalars['String'];
-};
-
-
-/** Mutations */
-export type MutationSeasonMintingOptionArgs = {
-  auctionType: AuctionInputRef;
-  seasonName: Scalars['String'];
-};
-
-
-/** Mutations */
-export type MutationSelectSongSlotUsingChainDataArgs = {
-  input: ChainDataSongSlotSelection;
-};
-
-
-/** Mutations */
-export type MutationSelectSongSlotUsingNftIdArgs = {
-  nftId: Scalars['UUID'];
-  songSlot: Scalars['Int'];
-};
-
-
-/** Mutations */
-export type MutationSetAffiliatePurchaseSourceArgs = {
-  input: AffiliateSourceInput;
-};
-
-
-/** Mutations */
-export type MutationSetArtistMetaArgs = {
-  input: SetArtistMetaInput;
-};
-
-
-/** Mutations */
-export type MutationSetArtistNameArgs = {
-  name: Scalars['String'];
-};
-
-
-/** Mutations */
-export type MutationSetBlockNumberArgs = {
-  blockNumber: Scalars['String'];
-};
-
-
-/** Mutations */
-export type MutationSetCommentArgs = {
-  message: Scalars['String'];
-  nftId: Scalars['UUID'];
-  signature: Scalars['String'];
-};
-
-
-/** Mutations */
-export type MutationSetDelegateAddressArgs = {
-  delegateAddress?: InputMaybe<Scalars['Address']>;
-};
-
-
-/** Mutations */
-export type MutationSetDisplayNameArgs = {
-  displayName: Scalars['String'];
-};
-
-
-/** Mutations */
-export type MutationSetFeatureFlagArgs = {
-  name: Scalars['String'];
-  type?: InputMaybe<FeatureType>;
-  value: Scalars['String'];
-};
-
-
-/** Mutations */
-export type MutationSetFeaturedSoundsArgs = {
-  releaseIds: Array<Scalars['UUID']>;
-};
-
-
-/** Mutations */
-export type MutationSetNoTimeRestrictionArtistListArgs = {
-  newArtists: Array<Scalars['String']>;
-  shouldAppend: Scalars['Boolean'];
-};
-
-
-/** Mutations */
-export type MutationSetReleaseDetailsArgs = {
-  input: SetReleaseDetailsInput;
-};
-
-
-/** Mutations */
-export type MutationSetReleaseMetaArgs = {
-  input: SetReleaseMetaInput;
-};
-
-
-/** Mutations */
-export type MutationSetSeasonForArtistArgs = {
-  artistId: Scalars['UUID'];
-  season: Scalars['String'];
-};
-
-
-/** Mutations */
-export type MutationSetShelfReleasesArgs = {
-  input: SetReleasesForShelfInput;
-};
-
-
-/** Mutations */
-export type MutationSetUploadBlockStatusArgs = {
-  input: UploadBlockStatusInput;
-};
-
-
-/** Mutations */
-export type MutationSetUserArtistRoleArgs = {
-  hasArtistRole: Scalars['Boolean'];
-  publicAddress: Scalars['Address'];
-};
-
-
-/** Mutations */
-export type MutationSetUserMediaArgs = {
-  content: UploadedMedia;
-  userPublicAddress: Scalars['Address'];
-};
-
-
-/** Mutations */
-export type MutationShouldDeployNewSplitArgs = {
-  draftId: Scalars['UUID'];
-};
-
-
-/** Mutations */
-export type MutationUnfollowUserArgs = {
-  input: UnfollowUserInput;
-};
-
-
-/** Mutations */
-export type MutationUnlikeReleaseArgs = {
-  input: UnlikeReleaseInput;
-};
-
-
-/** Mutations */
-export type MutationUnlikeShelfArgs = {
-  input: UnlikeShelfInput;
-};
-
-
-/** Mutations */
-export type MutationUpdateArtistSpotifyUrlArgs = {
-  spotifyUrl?: InputMaybe<Scalars['String']>;
-};
-
-
-/** Mutations */
-export type MutationUpdateDescriptionArgs = {
-  description: Scalars['String'];
-};
-
-
-/** Mutations */
-export type MutationUpdateDraftInfoArgs = {
-  input: UpdateDraftInfoInput;
-};
-
-
-/** Mutations */
-export type MutationUpdateEmailArgs = {
-  email?: InputMaybe<Scalars['EmailAddress']>;
-};
-
-
-/** Mutations */
-export type MutationUpdateKeyClientArgs = {
-  input: UpdateKeyClient;
-};
-
-
-/** Mutations */
-export type MutationUpdateUserInstagramHandleArgs = {
-  instagramHandle?: InputMaybe<Scalars['String']>;
-};
-
-
-/** Mutations */
-export type MutationUploadUserMediaArgs = {
-  content: UploadedMedia;
-};
-
-
-/** Mutations */
-export type MutationUpsertArtistBannerImageArgs = {
-  bannerImage: UploadedMedia;
-};
-
-
-/** Mutations */
-export type MutationUpsertShelfArgs = {
-  input: UpsertShelfInput;
 };
 
 
@@ -2793,256 +1423,6 @@ export type MutationUpsertShelfArgs = {
 export type MutationVerifyAuthChallengeArgs = {
   publicAddress: Scalars['String'];
   signedMessage: Scalars['String'];
-};
-
-
-/** Mutations */
-export type MutationVerifyTwitterArgs = {
-  tweetId: Scalars['String'];
-  twitterHandle: Scalars['String'];
-};
-
-/** Auto-generated result union type for the mutation or query with the same name */
-export type MutationAbortMultipartUploadResult = AwsRequestError | MutationAbortMultipartUploadSuccess;
-
-/** Auto-generated success type for the mutation or query with the same name */
-export type MutationAbortMultipartUploadSuccess = {
-  __typename?: 'MutationAbortMultipartUploadSuccess';
-  data: AbortMultipartUploadOutput;
-};
-
-/** Auto-generated result union type for the mutation or query with the same name */
-export type MutationAddReleaseToShelfResult = DuplicatedError | MutationAddReleaseToShelfSuccess | NotAllowedError | NotFoundError | UnexpectedValueError | UniqueConstraintError;
-
-/** Auto-generated success type for the mutation or query with the same name */
-export type MutationAddReleaseToShelfSuccess = {
-  __typename?: 'MutationAddReleaseToShelfSuccess';
-  data: Shelf;
-};
-
-/** Auto-generated result union type for the mutation or query with the same name */
-export type MutationAddUsersToDraftAllowlistResult = AlreadyMintedError | MutationAddUsersToDraftAllowlistSuccess;
-
-/** Auto-generated success type for the mutation or query with the same name */
-export type MutationAddUsersToDraftAllowlistSuccess = {
-  __typename?: 'MutationAddUsersToDraftAllowlistSuccess';
-  data: AddUsersToDraftAllowlistOutput;
-};
-
-/** Auto-generated result union type for the mutation or query with the same name */
-export type MutationCompleteMultipartUploadResult = AwsRequestError | MutationCompleteMultipartUploadSuccess;
-
-/** Auto-generated success type for the mutation or query with the same name */
-export type MutationCompleteMultipartUploadSuccess = {
-  __typename?: 'MutationCompleteMultipartUploadSuccess';
-  data: CompleteMultipartUploadOutput;
-};
-
-/** Auto-generated result union type for the mutation or query with the same name */
-export type MutationCreateDraftResult = DuplicatedError | MutationCreateDraftSuccess;
-
-/** Auto-generated success type for the mutation or query with the same name */
-export type MutationCreateDraftSuccess = {
-  __typename?: 'MutationCreateDraftSuccess';
-  data: Draft;
-};
-
-/** Auto-generated result union type for the mutation or query with the same name */
-export type MutationCreateMultipartUploadResult = AwsRequestError | MutationCreateMultipartUploadSuccess;
-
-/** Auto-generated success type for the mutation or query with the same name */
-export type MutationCreateMultipartUploadSuccess = {
-  __typename?: 'MutationCreateMultipartUploadSuccess';
-  data: MultipartUploadOutput;
-};
-
-/** Auto-generated result union type for the mutation or query with the same name */
-export type MutationCreateSoundEditionReleaseResult = MutationCreateSoundEditionReleaseSuccess | NotFoundError | UniqueConstraintError;
-
-/** Auto-generated success type for the mutation or query with the same name */
-export type MutationCreateSoundEditionReleaseSuccess = {
-  __typename?: 'MutationCreateSoundEditionReleaseSuccess';
-  data: Release;
-};
-
-/** Auto-generated result union type for the mutation or query with the same name */
-export type MutationDeleteAllUsersFromDraftAllowlistResult = AlreadyMintedError | MutationDeleteAllUsersFromDraftAllowlistSuccess | NotFoundError;
-
-/** Auto-generated success type for the mutation or query with the same name */
-export type MutationDeleteAllUsersFromDraftAllowlistSuccess = {
-  __typename?: 'MutationDeleteAllUsersFromDraftAllowlistSuccess';
-  data: AllowList;
-};
-
-/** Auto-generated result union type for the mutation or query with the same name */
-export type MutationDeleteDraftResult = AlreadyMintedError | MutationDeleteDraftSuccess;
-
-/** Auto-generated success type for the mutation or query with the same name */
-export type MutationDeleteDraftSuccess = {
-  __typename?: 'MutationDeleteDraftSuccess';
-  data: Draft;
-};
-
-/** Auto-generated result union type for the mutation or query with the same name */
-export type MutationDeleteUsersFromDraftAllowlistResult = AlreadyMintedError | MutationDeleteUsersFromDraftAllowlistSuccess | NotFoundError;
-
-/** Auto-generated success type for the mutation or query with the same name */
-export type MutationDeleteUsersFromDraftAllowlistSuccess = {
-  __typename?: 'MutationDeleteUsersFromDraftAllowlistSuccess';
-  data: AllowList;
-};
-
-/** Auto-generated result union type for the mutation or query with the same name */
-export type MutationDeployDraftResult = AlreadyMintedError | MutationDeployDraftSuccess | NotAllowedError | NotFoundError | UnexpectedValueError | UniqueConstraintError | ValidationError;
-
-/** Auto-generated success type for the mutation or query with the same name */
-export type MutationDeployDraftSuccess = {
-  __typename?: 'MutationDeployDraftSuccess';
-  data: DeployDraftOutput;
-};
-
-/** Auto-generated result union type for the mutation or query with the same name */
-export type MutationDraftMetadataUploadResult = MutationDraftMetadataUploadSuccess | NotAllowedError | NotFoundError | ValidationError;
-
-/** Auto-generated success type for the mutation or query with the same name */
-export type MutationDraftMetadataUploadSuccess = {
-  __typename?: 'MutationDraftMetadataUploadSuccess';
-  data: ReleaseArweaveOutputs;
-};
-
-/** Auto-generated result union type for the mutation or query with the same name */
-export type MutationExtendShelfResult = MutationExtendShelfSuccess | UnexpectedValueError | UniqueConstraintError;
-
-/** Auto-generated success type for the mutation or query with the same name */
-export type MutationExtendShelfSuccess = {
-  __typename?: 'MutationExtendShelfSuccess';
-  data: Shelf;
-};
-
-/** Auto-generated result union type for the mutation or query with the same name */
-export type MutationLikeReleaseResult = MutationLikeReleaseSuccess | NotAllowedError | NotFoundError;
-
-/** Auto-generated success type for the mutation or query with the same name */
-export type MutationLikeReleaseSuccess = {
-  __typename?: 'MutationLikeReleaseSuccess';
-  data: Release;
-};
-
-/** Auto-generated result union type for the mutation or query with the same name */
-export type MutationLikeShelfResult = MutationLikeShelfSuccess | NotAllowedError | NotFoundError;
-
-/** Auto-generated success type for the mutation or query with the same name */
-export type MutationLikeShelfSuccess = {
-  __typename?: 'MutationLikeShelfSuccess';
-  data: Shelf;
-};
-
-/** Auto-generated result union type for the mutation or query with the same name */
-export type MutationPrepareMintDraftResult = AlreadyMintedError | MutationPrepareMintDraftSuccess | NotAllowedError | NotFoundError | ValidationError;
-
-/** Auto-generated success type for the mutation or query with the same name */
-export type MutationPrepareMintDraftSuccess = {
-  __typename?: 'MutationPrepareMintDraftSuccess';
-  data: PrepareMintDraftOutput;
-};
-
-/** Auto-generated result union type for the mutation or query with the same name */
-export type MutationRecoverShelfResult = MutationRecoverShelfSuccess | NotAllowedError | NotFoundError;
-
-/** Auto-generated success type for the mutation or query with the same name */
-export type MutationRecoverShelfSuccess = {
-  __typename?: 'MutationRecoverShelfSuccess';
-  data: Shelf;
-};
-
-/** Auto-generated result union type for the mutation or query with the same name */
-export type MutationRemoveReleaseFromShelfResult = MutationRemoveReleaseFromShelfSuccess | NotAllowedError | NotFoundError | UnexpectedValueError | UniqueConstraintError;
-
-/** Auto-generated success type for the mutation or query with the same name */
-export type MutationRemoveReleaseFromShelfSuccess = {
-  __typename?: 'MutationRemoveReleaseFromShelfSuccess';
-  data: Shelf;
-};
-
-/** Auto-generated result union type for the mutation or query with the same name */
-export type MutationRemoveTwitterHandleResult = MutationRemoveTwitterHandleSuccess | NotFoundError;
-
-/** Auto-generated success type for the mutation or query with the same name */
-export type MutationRemoveTwitterHandleSuccess = {
-  __typename?: 'MutationRemoveTwitterHandleSuccess';
-  data: User;
-};
-
-/** Auto-generated result union type for the mutation or query with the same name */
-export type MutationSelectSongSlotUsingNftIdResult = AuthorizationError | MaxValueError | MinValueError | MutationSelectSongSlotUsingNftIdSuccess | UnexpectedValueError | UniqueConstraintError;
-
-/** Auto-generated success type for the mutation or query with the same name */
-export type MutationSelectSongSlotUsingNftIdSuccess = {
-  __typename?: 'MutationSelectSongSlotUsingNftIdSuccess';
-  data: Nft;
-};
-
-/** Auto-generated result union type for the mutation or query with the same name */
-export type MutationSetAffiliatePurchaseSourceResult = MutationSetAffiliatePurchaseSourceSuccess | ValidationError;
-
-/** Auto-generated success type for the mutation or query with the same name */
-export type MutationSetAffiliatePurchaseSourceSuccess = {
-  __typename?: 'MutationSetAffiliatePurchaseSourceSuccess';
-  data: Scalars['Int'];
-};
-
-/** Auto-generated result union type for the mutation or query with the same name */
-export type MutationSetShelfReleasesResult = MutationSetShelfReleasesSuccess | NotAllowedError | UnexpectedValueError | UniqueConstraintError;
-
-/** Auto-generated success type for the mutation or query with the same name */
-export type MutationSetShelfReleasesSuccess = {
-  __typename?: 'MutationSetShelfReleasesSuccess';
-  data: Shelf;
-};
-
-/** Auto-generated result union type for the mutation or query with the same name */
-export type MutationShouldDeployNewSplitResult = MutationShouldDeployNewSplitSuccess | NotFoundError;
-
-/** Auto-generated success type for the mutation or query with the same name */
-export type MutationShouldDeployNewSplitSuccess = {
-  __typename?: 'MutationShouldDeployNewSplitSuccess';
-  data: Scalars['Boolean'];
-};
-
-/** Auto-generated result union type for the mutation or query with the same name */
-export type MutationUnlikeReleaseResult = MutationUnlikeReleaseSuccess | NotAllowedError | NotFoundError;
-
-/** Auto-generated success type for the mutation or query with the same name */
-export type MutationUnlikeReleaseSuccess = {
-  __typename?: 'MutationUnlikeReleaseSuccess';
-  data: Release;
-};
-
-/** Auto-generated result union type for the mutation or query with the same name */
-export type MutationUnlikeShelfResult = MutationUnlikeShelfSuccess | NotAllowedError | NotFoundError;
-
-/** Auto-generated success type for the mutation or query with the same name */
-export type MutationUnlikeShelfSuccess = {
-  __typename?: 'MutationUnlikeShelfSuccess';
-  data: Shelf;
-};
-
-/** Auto-generated result union type for the mutation or query with the same name */
-export type MutationUpdateDraftInfoResult = AlreadyMintedError | DuplicatedError | MutationUpdateDraftInfoSuccess | ValidationError | ZodValidationError;
-
-/** Auto-generated success type for the mutation or query with the same name */
-export type MutationUpdateDraftInfoSuccess = {
-  __typename?: 'MutationUpdateDraftInfoSuccess';
-  data: Draft;
-};
-
-/** Auto-generated result union type for the mutation or query with the same name */
-export type MutationVerifyTwitterResult = MutationVerifyTwitterSuccess | NotFoundError | TwitterApiError | UniqueConstraintError;
-
-/** Auto-generated success type for the mutation or query with the same name */
-export type MutationVerifyTwitterSuccess = {
-  __typename?: 'MutationVerifyTwitterSuccess';
-  data: User;
 };
 
 /** NFT Entity */
@@ -3187,57 +1567,6 @@ export type NftWithComment = {
 export type Node = {
   /** Node identifier */
   id: Scalars['ID'];
-};
-
-/** Operation is not allowed. */
-export type NotAllowedError = Error & {
-  __typename?: 'NotAllowedError';
-  /** Descriptive message of error */
-  message: Scalars['String'];
-};
-
-/** Returned when a resource is not found */
-export type NotFoundError = Error & IError & {
-  __typename?: 'NotFoundError';
-  /** Descriptive message of error */
-  message: Scalars['String'];
-};
-
-/** Auction options associated with open edition sales */
-export type OpenEditionAuction = {
-  __typename?: 'OpenEditionAuction';
-  /** List of different max mints per wallet quantity options for free sale */
-  freeSaleMaxMintsPerWalletOptions: Array<Scalars['Int']>;
-  /** List of different options of minimum quantity for public sale */
-  minOptions: Array<Scalars['Int']>;
-  /** List of different duration in days for public sale */
-  mintingPeriodDays: Array<Scalars['Int']>;
-  /** List of different max mints per wallet quantity options for presale */
-  presaleMaxMintsPerWalletOptions: Array<Scalars['Int']>;
-  /** List of different eth prices options for presale */
-  presalePriceOptions?: Maybe<Array<Scalars['Float']>>;
-  /** List of different eth prices options for public sale */
-  priceOptions: Array<Scalars['Float']>;
-  /** List of different max mints per wallet quantity options for public sale */
-  publicSaleMaxMintsPerWalletOptions: Array<Scalars['Int']>;
-};
-
-/** Input options to customize open edition auctions */
-export type OpenEditionAuctionInput = {
-  /** List of different max mints per wallet quantity options for free sale */
-  freeSaleMaxMintsPerWalletOptions?: InputMaybe<Array<Scalars['Int']>>;
-  /** List of different options of minimum quantity for public sale */
-  minOptions: Array<Scalars['Int']>;
-  /** List of different duration in days for public sale */
-  mintingPeriodDays: Array<Scalars['Int']>;
-  /** List of different max mints per wallet quantity options for presale */
-  presaleMaxMintsPerWalletOptions?: InputMaybe<Array<Scalars['Int']>>;
-  /** List of different eth prices options for presales */
-  presalePriceOptions: Array<Scalars['Float']>;
-  /** List of different eth prices options for public sale */
-  priceOptions: Array<Scalars['Float']>;
-  /** List of different max mints per wallet quantity options for public sale */
-  publicSaleMaxMintsPerWalletOptions?: InputMaybe<Array<Scalars['Int']>>;
 };
 
 /** OpenSea Metadata Attribute */
@@ -3403,23 +1732,6 @@ export enum PlaylistType {
   Home = 'HOME'
 }
 
-/** Input for prepareMintDraft mutation */
-export type PrepareMintDraftInput = {
-  /** Draft identifier */
-  draftId: Scalars['UUID'];
-};
-
-/** Output entity of prepareMintDraft mutation */
-export type PrepareMintDraftOutput = {
-  __typename?: 'PrepareMintDraftOutput';
-  /** Draft entity */
-  draft: Draft;
-  /** Free mint merkle tree root */
-  freeMintMerkleTreeRoot?: Maybe<Scalars['String']>;
-  /** Presale merkle tree root */
-  presaleMintMerkleTreeRoot?: Maybe<Scalars['String']>;
-};
-
 /** Primary sale collector action entity */
 export type PrimarySale = ArtistAction & CollectorAction & Node & ReleaseAction & {
   __typename?: 'PrimarySale';
@@ -3451,48 +1763,26 @@ export type Query = {
   allMintedReleasesPaginated: ReleaseConnection;
   /** Paginate through all shelves of the system */
   allShelves: ShelfConnection;
-  /** [AUTHENTICATED] Withdrawable earnings for all releases, ignores dust amounts that are not worth withdrawing */
-  allWithdrawableEarnings: AllWithdrawableEarnings;
   /** [PUBLIC] Artist by UUID */
   artist?: Maybe<Artist>;
   /** [PUBLIC] Artist activity feed */
   artistActivityFeed: ArtistActionConnection;
   /** [PUBLIC] Artist by handle */
   artistByHandle?: Maybe<Artist>;
-  /** [ARTIST] Get all the existing sound holders addresses of authenticated artist. */
-  artistCurrentCollectorsList: Array<Scalars['String']>;
-  /** [ADMIN | ARTIST_RELATIONS] Default reference artist minting release options of specified artist */
-  artistDefaultMintingOptions: ArtistDefaultOptions;
-  /** [ARTIST] Get artist release drafts */
-  artistDrafts: DraftConnection;
-  /** [ARTIST | ADMIN | ARTIST_RELATIONS] Get artist minting options of authenticated artist. Given artist id has to match authenticated artist */
-  artistMintingOptions: ArtistReleaseOptions;
   /** [PUBLIC] Get all artists of platform. */
   artists: ArtistConnection;
   /** [PUBLIC] Get audio from track */
   audioFromTrack: TrackAudio;
   /** [PUBLIC] Get authenticated user information, if any */
   authUser?: Maybe<User>;
-  /** [ARTIST] Get specified release regardless of mint status. If specified release is not created by authenticated artist, it fails. */
-  authenticatedRelease: Release;
   /** [PUBLIC] Collector activity feed */
   collectorActivityFeed: CollectorActionConnection;
   /** [PUBLIC] Get credit split by id */
   creditSplit?: Maybe<CreditSplit>;
-  /** [AUTHENTICATED] Total eth in wei earned by the authenticated user on affiliate fees */
-  cummulativeAffiliateEarned: Scalars['String'];
   /** [PUBLIC] Get currencies conversions */
   currencies: Currencies;
-  /** [ARTIST] Get draft of given draft id */
-  draft: Draft;
-  /** [ARTIST] Get allowlist of given draftId, sale type, and allowlist type */
-  draftAllowList?: Maybe<AllowList>;
-  /** [ARTIST] Get DraftAllowList from draft and mintType */
-  draftAllowlistFromDraft?: Maybe<DraftAllowList>;
   /** [PUBLIC] Get DraftAllowList from release and mintType */
   draftAllowlistFromRelease?: Maybe<DraftAllowList>;
-  /** [AUTHENTICATED] Get the earnings for the authenticated user */
-  earnings: Earnings;
   /** [PUBLIC] Get EggGame of specified release */
   eggGame?: Maybe<EggGame>;
   /** [PUBLIC] Get feature flag value by name */
@@ -3504,12 +1794,6 @@ export type Query = {
    * @deprecated Please use activityFeed query with activityFeedType.GLOBAL filter
    */
   globalActivityFeed?: Maybe<ActivityFeed>;
-  /** [AUTHENTICATED] Returns whether auth user is following input userId */
-  isFollowing: Scalars['Boolean'];
-  /** [AUTHENTICATED] Returns whether an entity is liked by the user or not. */
-  isLiked: Scalars['Boolean'];
-  /** [ADMIN] Get all the existing Key Clients */
-  keyClients: KeyClientConnection;
   /** [PUBLIC] Get the latest events */
   latestEventsPaginated: LatestSalesConnection;
   /** [PUBLIC] Get playlist based on given type and associationId */
@@ -3524,10 +1808,6 @@ export type Query = {
   merkleTreeProof?: Maybe<MerkleTreeProof>;
   /** [PUBLIC] Get minted release by Artist sound handle and release title slug */
   mintedRelease?: Maybe<Release>;
-  /** [ARTIST] Get artists by ids for multiselect */
-  multiSelectArtists: Array<ArtistInfo>;
-  /** [ARTIST] Get releases by releaseIds for multiselect */
-  multiSelectReleases: Array<ReleaseInfo>;
   /** [PUBLIC] Request nft with contract fields */
   nft: Nft;
   /** [PUBLIC] Current UNIX date to test caching */
@@ -3553,8 +1833,6 @@ export type Query = {
   releaseActivityFeed: ReleaseActionConnection;
   /** [PUBLIC] Release allow listed addresses csv url */
   releaseAllowListedAddressesCSVUrl?: Maybe<Scalars['String']>;
-  /** [ARTIST] CDN url CSV of users that own a release nft or null if no release backers */
-  releaseBackersCSVUrl?: Maybe<Scalars['String']>;
   /** [PUBLIC] Get all users that collected the same release in one activity feed group. */
   releaseCollectedByManyUsers: UserConnection;
   /**
@@ -3562,12 +1840,8 @@ export type Query = {
    * @deprecated Please use Query.releaseFromContract
    */
   releaseContract: Release;
-  /** [AUTHENTICATED] Paginated earnings by release */
-  releaseEarnings: ReleaseEarningsConnection;
   /** [PUBLIC] Get release by contract address */
   releaseFromContract?: Maybe<Release>;
-  /** [ARTIST] Get release of given draft id if it exists */
-  releaseFromDraft?: Maybe<Release>;
   /** [PUBLIC] Get the release that's associated with the specific token parameters */
   releaseFromToken?: Maybe<Release>;
   /** [PUBLIC] List of genres that have at least 1 past minted release, sorted by popularity */
@@ -3576,18 +1850,8 @@ export type Query = {
   releases: ReleaseConnection;
   /** Search releases or artists based on text inputs */
   search: SearchResult;
-  /** [ADMIN | ARTIST_RELATIONS] Get default reference season-based auction options */
-  seasonDefaultMintingOptions: SeasonDefaultOptions;
   /** [PUBLIC] Get specified shelf by id */
   shelf: Shelf;
-  /** [ARTIST] Should the authenticated artist skip applying the listening party offset */
-  shouldArtistSkipListeningPartyOffset: Scalars['Boolean'];
-  /** [AUTHENTICATED] Request media upload */
-  signedUploadParams: AwsPresignedPost;
-  /** [ADMIN | ARTIST_RELATIONS] Get basic stats */
-  stats: Stats;
-  /** [AUTHENTICATED] Total affiliate purchases of authenticated user */
-  totalAffiliatePurchases: ReleaseAffiliateTotalPurchasesConnection;
   /** [PUBLIC] Get total raised of the whole platform */
   totalRaised: TotalRaised;
   /** [PUBLIC] Total count of minted releases */
@@ -3604,23 +1868,12 @@ export type Query = {
   trendingReleases: Array<TrendingReleaseInfo>;
   /** [PUBLIC] Get specified user by id */
   user?: Maybe<User>;
-  /**
-   * [AUTHENTICATED] Personalized activity feed of user
-   * @deprecated Please use activityFeed query with activityFeedType.USER filter
-   */
-  userActivityFeed?: Maybe<ActivityFeed>;
   /** [PUBLIC] Get specified user by public address or ens, if both args provided mismatch, returns null */
   userByAddress?: Maybe<User>;
   /** [PUBLIC] Get specified user by sound handle */
   userByArtistHandle?: Maybe<User>;
   /** [PUBLIC] User like and unlike activity feed */
   userLikeActivityFeed: CollectorActionConnection;
-  /** [AUTHENTICATED] Check status of relationship of authenticated user with specified users */
-  userRelationStatuses: Array<UserRelationStatus>;
-  /** [AUTHENTICATED] Get withdraw affiliate earnings information of authenticated user */
-  withdrawableAffiliateEarnings: WithdrawAffiliateEarnings;
-  /** [AUTHENTICATED] Withdrawable earnings for a given release, returns null for values if contract contain dust amounts that are not worth withdrawing */
-  withdrawableEarningsForRelease: WithdrawableEarnings;
 };
 
 
@@ -3670,24 +1923,6 @@ export type QueryArtistByHandleArgs = {
 
 
 /** Queries */
-export type QueryArtistDefaultMintingOptionsArgs = {
-  artistAddress: Scalars['Address'];
-};
-
-
-/** Queries */
-export type QueryArtistDraftsArgs = {
-  input: ArtistDraftsInput;
-};
-
-
-/** Queries */
-export type QueryArtistMintingOptionsArgs = {
-  artistId: Scalars['UUID'];
-};
-
-
-/** Queries */
 export type QueryArtistsArgs = {
   filter?: InputMaybe<ArtistCursorFilterArgs>;
   pagination?: CursorConnectionArgs;
@@ -3697,12 +1932,6 @@ export type QueryArtistsArgs = {
 /** Queries */
 export type QueryAudioFromTrackArgs = {
   trackId: Scalars['UUID'];
-};
-
-
-/** Queries */
-export type QueryAuthenticatedReleaseArgs = {
-  releaseId: Scalars['UUID'];
 };
 
 
@@ -3721,24 +1950,6 @@ export type QueryCreditSplitArgs = {
 
 
 /** Queries */
-export type QueryDraftArgs = {
-  draftId: Scalars['UUID'];
-};
-
-
-/** Queries */
-export type QueryDraftAllowListArgs = {
-  input: DraftAllowlistInput;
-};
-
-
-/** Queries */
-export type QueryDraftAllowlistFromDraftArgs = {
-  input: DraftAllowlistFromDraftInput;
-};
-
-
-/** Queries */
 export type QueryDraftAllowlistFromReleaseArgs = {
   input: DraftAllowlistFromReleaseInput;
 };
@@ -3753,25 +1964,6 @@ export type QueryEggGameArgs = {
 /** Queries */
 export type QueryFeatureFlagArgs = {
   name: Scalars['String'];
-};
-
-
-/** Queries */
-export type QueryIsFollowingArgs = {
-  input: IsFollowingInput;
-};
-
-
-/** Queries */
-export type QueryIsLikedArgs = {
-  input: IsLikedInput;
-};
-
-
-/** Queries */
-export type QueryKeyClientsArgs = {
-  filter?: InputMaybe<FilterKeyClients>;
-  pagination?: KeyClientCursorConnectionArgs;
 };
 
 
@@ -3818,18 +2010,6 @@ export type QueryMerkleTreeProofArgs = {
 export type QueryMintedReleaseArgs = {
   releaseSlug: Scalars['String'];
   soundHandle: Scalars['String'];
-};
-
-
-/** Queries */
-export type QueryMultiSelectArtistsArgs = {
-  ids: Array<Scalars['UUID']>;
-};
-
-
-/** Queries */
-export type QueryMultiSelectReleasesArgs = {
-  ids: Array<Scalars['UUID']>;
 };
 
 
@@ -3900,12 +2080,6 @@ export type QueryReleaseAllowListedAddressesCsvUrlArgs = {
 
 
 /** Queries */
-export type QueryReleaseBackersCsvUrlArgs = {
-  releaseId: Scalars['String'];
-};
-
-
-/** Queries */
 export type QueryReleaseCollectedByManyUsersArgs = {
   activityFeedGroupId: Scalars['UUID'];
   pagination?: CursorConnectionArgs;
@@ -3920,22 +2094,9 @@ export type QueryReleaseContractArgs = {
 
 
 /** Queries */
-export type QueryReleaseEarningsArgs = {
-  filter?: ArtistMintedReleasesFilter;
-  pagination?: CursorConnectionArgs;
-};
-
-
-/** Queries */
 export type QueryReleaseFromContractArgs = {
   contractAddress: Scalars['Address'];
   editionId?: InputMaybe<Scalars['String']>;
-};
-
-
-/** Queries */
-export type QueryReleaseFromDraftArgs = {
-  draftId: Scalars['UUID'];
 };
 
 
@@ -3959,26 +2120,8 @@ export type QuerySearchArgs = {
 
 
 /** Queries */
-export type QuerySeasonDefaultMintingOptionsArgs = {
-  seasonName: Scalars['String'];
-};
-
-
-/** Queries */
 export type QueryShelfArgs = {
   id: Scalars['UUID'];
-};
-
-
-/** Queries */
-export type QuerySignedUploadParamsArgs = {
-  uploadRequest: UploadRequest;
-};
-
-
-/** Queries */
-export type QueryTotalAffiliatePurchasesArgs = {
-  input?: TotalAffiliatePurchasesInput;
 };
 
 
@@ -4029,12 +2172,6 @@ export type QueryUserArgs = {
 
 
 /** Queries */
-export type QueryUserActivityFeedArgs = {
-  userId: Scalars['UUID'];
-};
-
-
-/** Queries */
 export type QueryUserByAddressArgs = {
   ens?: InputMaybe<Scalars['ENS']>;
   publicAddress?: InputMaybe<Scalars['Address']>;
@@ -4051,59 +2188,6 @@ export type QueryUserByArtistHandleArgs = {
 export type QueryUserLikeActivityFeedArgs = {
   pagination?: CursorConnectionArgs;
   userId: Scalars['UUID'];
-};
-
-
-/** Queries */
-export type QueryUserRelationStatusesArgs = {
-  users: Array<Scalars['UUID']>;
-};
-
-
-/** Queries */
-export type QueryWithdrawableEarningsForReleaseArgs = {
-  releaseId: Scalars['UUID'];
-};
-
-/** Auction options associated with range bound sales */
-export type RangeBoundAuction = {
-  __typename?: 'RangeBoundAuction';
-  /** List of different max mints per wallet quantity options for free sale */
-  freeSaleMaxMintsPerWalletOptions: Array<Scalars['Int']>;
-  /** List of different options of maximum quantity for public sale */
-  maxOptions: Array<Scalars['Int']>;
-  /** List of different options of minimum quantity for public sale */
-  minOptions: Array<Scalars['Int']>;
-  /** Minting period duration in minutes */
-  mintingPeriodMins: Scalars['Int'];
-  /** List of different max mints per wallet quantity options for presale */
-  presaleMaxMintsPerWalletOptions: Array<Scalars['Int']>;
-  /** List of different eth prices options for presale */
-  presalePriceOptions?: Maybe<Array<Scalars['Float']>>;
-  /** List of different eth prices options for public sale */
-  priceOptions: Array<Scalars['Float']>;
-  /** List of different max mints per wallet quantity options for public sale */
-  publicSaleMaxMintsPerWalletOptions: Array<Scalars['Int']>;
-};
-
-/** Input options to customize range bound auctions */
-export type RangeBoundAuctionInput = {
-  /** List of different max mints per wallet quantity options for free sale */
-  freeSaleMaxMintsPerWalletOptions: Array<Scalars['Int']>;
-  /** List of different options of maximum quantity for public sale */
-  maxOptions: Array<Scalars['Int']>;
-  /** List of different options of minimum quantity for public sale */
-  minOptions: Array<Scalars['Int']>;
-  /** Minting period duration in minutes for public sale */
-  mintingPeriodMins: Scalars['Int'];
-  /** List of different max mints per wallet quantity options for presale */
-  presaleMaxMintsPerWalletOptions: Array<Scalars['Int']>;
-  /** List of different eth prices options for presales */
-  presalePriceOptions: Array<Scalars['Float']>;
-  /** List of different eth prices options for public sale */
-  priceOptions: Array<Scalars['Float']>;
-  /** List of different max mints per wallet quantity options for public sale */
-  publicSaleMaxMintsPerWalletOptions: Array<Scalars['Int']>;
 };
 
 /** Release entity */
@@ -4351,35 +2435,6 @@ export type ReleaseAffiliateTotalPurchases = Node & {
   release: Release;
 };
 
-/** Paginated release affiliates total purchases connection */
-export type ReleaseAffiliateTotalPurchasesConnection = Connection & {
-  __typename?: 'ReleaseAffiliateTotalPurchasesConnection';
-  /** Edges of current page */
-  edges: Array<ReleaseAffiliateTotalPurchasesEdge>;
-  /** Pagination helpers information */
-  pageInfo: PageInfo;
-};
-
-/** Pagination parameters for total release affiliate purchases */
-export type ReleaseAffiliateTotalPurchasesCursorConnectionArgs = {
-  /** Start forwards pagination since "after" cursor */
-  after?: InputMaybe<Scalars['String']>;
-  /** Start backwards pagination since "before" cursor */
-  before?: InputMaybe<Scalars['String']>;
-  /** Limit the amount of nodes to be fetched, to be used with "after", with a maximum of 25 nodes. */
-  first?: InputMaybe<Scalars['NonNegativeInt']>;
-  /** Limit the amount of nodes to be fetched, to be used with "before", with a maximum of 25 nodes. */
-  last?: InputMaybe<Scalars['NonNegativeInt']>;
-  /** Customize sort behavior */
-  sort?: ReleaseAffiliateTotalPurchasesCursorConnectionSort;
-};
-
-/** Customize the sort behavior of release affiliates total purchases */
-export type ReleaseAffiliateTotalPurchasesCursorConnectionSort = {
-  /** Sort by block number */
-  blockNumber?: InputMaybe<SortOrder>;
-};
-
 /** ReleaseAffiliateTotalPurchases edge */
 export type ReleaseAffiliateTotalPurchasesEdge = Edge & {
   __typename?: 'ReleaseAffiliateTotalPurchasesEdge';
@@ -4395,15 +2450,6 @@ export enum ReleaseAlbumRevealFilterOption {
   OnlyNotRevealedAlbums = 'ONLY_NOT_REVEALED_ALBUMS',
   OnlyRevealedAlbums = 'ONLY_REVEALED_ALBUMS'
 }
-
-/** Minting access configuration information. */
-export type ReleaseArweaveOutputs = {
-  __typename?: 'ReleaseArweaveOutputs';
-  /** Base arweave hash of release */
-  arweaveHash: Scalars['String'];
-  /** Storefront arweave hash of release */
-  storefrontArweaveHash: Scalars['String'];
-};
 
 /** Release collector */
 export type ReleaseCollector = Node & {
@@ -4507,24 +2553,6 @@ export type ReleaseConnectionEdge = Edge & {
 /** Union of release contract types */
 export type ReleaseContractEarning = ArtistContractEarning | EditionContractEarning;
 
-/** Input values for release admin update */
-export type ReleaseDetailsInput = {
-  /** Artist story of release */
-  behindTheMusic?: InputMaybe<Scalars['String']>;
-  /** Description of release */
-  description?: InputMaybe<Scalars['String']>;
-  /** Description of golden egg */
-  eggDescription?: InputMaybe<Scalars['String']>;
-  /** Season of release */
-  season?: InputMaybe<Scalars['String']>;
-  /** Title of release */
-  title?: InputMaybe<Scalars['String']>;
-  /** Title slug of release */
-  titleSlug?: InputMaybe<Scalars['String']>;
-  /** E.g. Single, Album */
-  type?: InputMaybe<Scalars['String']>;
-};
-
 /** Release dropped action entity */
 export type ReleaseDropped = ArtistAction & Node & ReleaseAction & {
   __typename?: 'ReleaseDropped';
@@ -4568,15 +2596,6 @@ export type ReleaseEarnings = Node & {
   totalWithdrawableForUser: Scalars['String'];
 };
 
-/** Paginated connection of Release Earnings */
-export type ReleaseEarningsConnection = Connection & {
-  __typename?: 'ReleaseEarningsConnection';
-  /** Edges of current page */
-  edges: Array<ReleaseEarningsConnectionEdge>;
-  /** Pagination helpers information */
-  pageInfo: PageInfo;
-};
-
 /** Edge of Release Earnings Connection */
 export type ReleaseEarningsConnectionEdge = Edge & {
   __typename?: 'ReleaseEarningsConnectionEdge';
@@ -4615,36 +2634,6 @@ export type ReleaseInfo = Node & {
   title: Scalars['String'];
 };
 
-/** Release info upload step input values */
-export type ReleaseInfoUploadStepInput = {
-  /** Release beats per minute */
-  beatsPerMinute?: InputMaybe<Scalars['NonNegativeInt']>;
-  /** Behind the music text */
-  behindTheMusic: Scalars['String'];
-  /** Cover image */
-  coverImage: UploadedMedia;
-  /** Release genre */
-  genre: Scalars['String'];
-  /** Release key */
-  key?: InputMaybe<SongKeyType>;
-  /** License for the release */
-  license?: InputMaybe<LicenseType>;
-  /** Location where the release was created */
-  location?: InputMaybe<Scalars['CountryCode']>;
-  /** Release lyrics */
-  lyrics?: InputMaybe<Scalars['String']>;
-  /** Static cover image to use in place of animated cover image */
-  staticCoverImage?: InputMaybe<UploadedMedia>;
-  /** Title */
-  title: Scalars['String'];
-  /** Token symbol */
-  tokenSymbol: Scalars['String'];
-  /** Uploaded tracks */
-  tracks: Array<TrackUpload>;
-  /** Release type */
-  type: ReleaseType;
-};
-
 /** Release liked action entity */
 export type ReleaseLiked = ArtistAction & CollectorAction & LikeAction & Node & ReleaseAction & {
   __typename?: 'ReleaseLiked';
@@ -4656,16 +2645,6 @@ export type ReleaseLiked = ArtistAction & CollectorAction & LikeAction & Node & 
   release: Release;
   /** User corresponding to release liked action entity */
   user: User;
-};
-
-/** Meta input values for release */
-export type ReleaseMetaInput = {
-  /** Associated external url */
-  externalUrl?: InputMaybe<Scalars['URL']>;
-  /** Associated laylo.com url */
-  layloUrl?: InputMaybe<Scalars['URL']>;
-  /** Associated opensea url */
-  openseaUrl?: InputMaybe<Scalars['URL']>;
 };
 
 /** Filter the releases to be searched */
@@ -4885,14 +2864,6 @@ export type ReleasesRemovedFromPlaylistRemovedReleasesArgs = {
   pagination?: PlaylistActionReleasesCursorConnectionArgs;
 };
 
-/** Input for `addReleaseToShelf` mutation */
-export type RemoveReleaseFromShelfInput = {
-  /** Release identifier to be removed */
-  releaseId: Scalars['UUID'];
-  /** Identifier of owned target shelf */
-  shelfId: Scalars['UUID'];
-};
-
 /** Input for reportPlayStopped mutation */
 export type ReportPlayStoppedInput = {
   /** End of play session */
@@ -4924,14 +2895,6 @@ export type Reward = {
   title: Scalars['String'];
 };
 
-/** Custom rewards input */
-export type RewardInput = {
-  /** Reward description */
-  description: Scalars['String'];
-  /** Reward name */
-  title: Scalars['String'];
-};
-
 /** Release info upload step info */
 export type RewardUploadStepInfo = {
   __typename?: 'RewardUploadStepInfo';
@@ -4948,14 +2911,6 @@ export type RewardsUploadStepInfo = {
   goldenEggImages: Array<MediaUploadStepInfo>;
   /** Custom rewards */
   rewards: Array<RewardUploadStepInfo>;
-};
-
-/** Release rewards upload step input values */
-export type RewardsUploadStepInput = {
-  /** Special golden egg images */
-  goldenEggImages: Array<UploadedMedia>;
-  /** Custom rewards */
-  rewards?: InputMaybe<Array<RewardInput>>;
 };
 
 /** Single sale schedule information of Release Presale Configuration */
@@ -5065,24 +3020,6 @@ export type SearchResultShelvesArgs = {
   pagination?: SearchConnectionArgs;
 };
 
-/** Season auction defaults for sales */
-export type SeasonAuctionDefaults = {
-  __typename?: 'SeasonAuctionDefaults';
-  /** Creation date of entity */
-  createdAt: Scalars['DateTime'];
-  /** Season auction defaults entity identifier */
-  id: Scalars['ID'];
-  /** Default season */
-  season: Scalars['String'];
-};
-
-/** Default reference season-based auction options for administration */
-export type SeasonDefaultOptions = {
-  __typename?: 'SeasonDefaultOptions';
-  /** Auction options union based on type */
-  auction: Array<Auction>;
-};
-
 /** Collector release added to playlist action entity */
 export type SecondarySale = ArtistAction & CollectorAction & Node & ReleaseAction & {
   __typename?: 'SecondarySale';
@@ -5100,38 +3037,6 @@ export type SecondarySale = ArtistAction & CollectorAction & Node & ReleaseActio
   serialNumber: Scalars['Int'];
   /** User corresponding to collector action entity */
   user: User;
-};
-
-/** Input for setArtistMeta mutation */
-export type SetArtistMetaInput = {
-  /** Artist identifier */
-  artistId: Scalars['String'];
-  /** Artist meta configuration data */
-  metaType?: InputMaybe<ArtistMetaInput>;
-};
-
-/** Input for setReleaseDetails mutation */
-export type SetReleaseDetailsInput = {
-  /** Release details input values */
-  releaseDetails: ReleaseDetailsInput;
-  /** Release identifier */
-  releaseId: Scalars['String'];
-};
-
-/** Input for setReleaseMeta mutation */
-export type SetReleaseMetaInput = {
-  /** Meta input values */
-  metaType?: InputMaybe<ReleaseMetaInput>;
-  /** Release identifier */
-  releaseId: Scalars['String'];
-};
-
-/** Input fields to set releases to shelf */
-export type SetReleasesForShelfInput = {
-  /** List of releaseIds to set to shelf */
-  releaseIds: Array<Scalars['UUID']>;
-  /** Shelf id to set releases to */
-  shelfId: Scalars['UUID'];
 };
 
 /** Shelf entity */
@@ -5344,15 +3249,6 @@ export type ShelfWebEmbedInput = {
   html?: IframeHtmlParameters;
 };
 
-/** AWS Presigned multi-part upload url for a given part number */
-export type SignedMultipartUrl = {
-  __typename?: 'SignedMultipartUrl';
-  /** Upload part number */
-  partNumber: Scalars['Int'];
-  /** Target URL for upload process */
-  url: Scalars['String'];
-};
-
 /** Song collected by many aggregate */
 export type SongCollectedByManyAggregate = {
   __typename?: 'SongCollectedByManyAggregate';
@@ -5420,23 +3316,6 @@ export type SplitsUploadStepInfo = {
   splitContractAddress?: Maybe<Scalars['String']>;
   /** Splits auction configurations */
   splits: Array<CreditAllocationUploadStepInfo>;
-};
-
-/** Splits upload step input values */
-export type SplitsUploadStepInput = {
-  /** Credit allocations of credit split */
-  splits: Array<Allocation>;
-};
-
-/** Basic stats information */
-export type Stats = {
-  __typename?: 'Stats';
-  /** Total artists in the platform */
-  totalArtists: Scalars['Float'];
-  /** Total unique collectors in the platform */
-  totalUniqueCollectors: Scalars['Float'];
-  /** Total users in the platform */
-  totalUsers: Scalars['Float'];
 };
 
 /** Realtime Subscriptions */
@@ -5522,12 +3401,6 @@ export enum TimePeriodAggEnum {
   SevenDay = 'SEVEN_DAY'
 }
 
-/** Input for totalAffiliatePurchases query */
-export type TotalAffiliatePurchasesInput = {
-  /** Pagination parameters */
-  pagination?: ReleaseAffiliateTotalPurchasesCursorConnectionArgs;
-};
-
 /** Total raised on Ethereum and USD */
 export type TotalRaised = {
   __typename?: 'TotalRaised';
@@ -5577,20 +3450,6 @@ export type TrackAudio = {
   revealTime: Scalars['Int'];
 };
 
-/** Uploaded track information */
-export type TrackUpload = {
-  /** Cover image */
-  coverImage?: InputMaybe<UploadedMedia>;
-  /** Duration of track in seconds */
-  duration: Scalars['Int'];
-  /** Details of uploaded track file */
-  fileDetail: UploadedMedia;
-  /** Normalized peaks of track */
-  normalizedPeaks: Array<Scalars['Int']>;
-  /** Title of track */
-  title: Scalars['String'];
-};
-
 /** Release info upload step info */
 export type TrackUploadStepInfo = {
   __typename?: 'TrackUploadStepInfo';
@@ -5604,23 +3463,6 @@ export type TrackUploadStepInfo = {
   normalizedPeaks: Array<Scalars['Int']>;
   /** Title */
   title: Scalars['String'];
-};
-
-/** Transaction entity */
-export type Transaction = {
-  __typename?: 'Transaction';
-  /** Chain identifier used for transaction */
-  chainId: Scalars['Int'];
-  /** Contract method of transaction */
-  contractMethod: ContractMethod;
-  /** Transaction hash on chain */
-  hash: Scalars['String'];
-  /** Transaction identifier */
-  id: Scalars['ID'];
-  /** Release identifier */
-  releaseId?: Maybe<Scalars['String']>;
-  /** Transaction status, "pending", "failed" or "confirmed") */
-  status: Scalars['String'];
 };
 
 /** Trending Artist Info */
@@ -5721,109 +3563,10 @@ export enum TrendingReleasesSortEnum {
   TotalSales = 'TOTAL_SALES'
 }
 
-/** Returned when the Twitter API returns an error */
-export type TwitterApiError = Error & IError & {
-  __typename?: 'TwitterAPIError';
-  code: Scalars['Int'];
-  message: Scalars['String'];
-};
-
 /** User relation type */
 export enum TypeOfRelation {
   Following = 'FOLLOWING'
 }
-
-/** Returned when a value on an entity is not within the expected range for the operation to succeed */
-export type UnexpectedValueError = Error & IError & {
-  __typename?: 'UnexpectedValueError';
-  /** Descriptive message of error */
-  message: Scalars['String'];
-};
-
-/** Input fields to unfollow user */
-export type UnfollowUserInput = {
-  /** User id to unfollow */
-  user: Scalars['UUID'];
-};
-
-/** Returned when a unique constraint is violated */
-export type UniqueConstraintError = Error & IError & {
-  __typename?: 'UniqueConstraintError';
-  fields: Array<Scalars['String']>;
-  /** Descriptive message of error */
-  message: Scalars['String'];
-  meta: Scalars['JSON'];
-};
-
-/** Input for `unlikeRelease` mutation */
-export type UnlikeReleaseInput = {
-  /** Release identifier to be un-liked */
-  releaseId: Scalars['UUID'];
-};
-
-/** Input for `unlikeShelf` mutation */
-export type UnlikeShelfInput = {
-  /** Shelf identifier to be un-liked */
-  shelfId: Scalars['UUID'];
-};
-
-/** Input for updateDraftInfo mutation */
-export type UpdateDraftInfoInput = {
-  /** Draft identifier */
-  draftId: Scalars['String'];
-  /** Draft info input */
-  info: DraftInfoInput;
-  /** Step number */
-  stepNumber: Scalars['PositiveInt'];
-};
-
-/** Input for updateKeyClient */
-export type UpdateKeyClient = {
-  /** Identifier of existing Key Client */
-  id: Scalars['UUID'];
-  /** Change the name of the specified Key Client */
-  name?: InputMaybe<Scalars['NonEmptyString']>;
-  /** Change the status of the specified Key Client */
-  status?: InputMaybe<KeyClientStatus>;
-};
-
-/** Input for setUploadBlockStatus mutation */
-export type UploadBlockStatusInput = {
-  /** Is the user going to be blocked or unblocked */
-  isBlocked: Scalars['Boolean'];
-  /** Public address of user */
-  publicAddress: Scalars['Address'];
-  /** Optional reason of the block */
-  reason?: InputMaybe<Scalars['String']>;
-};
-
-/** Input for signedUploadParams mutation */
-export type UploadRequest = {
-  /** File name of media to be uploaded */
-  fileName: Scalars['String'];
-  /** Media type to be uploaded */
-  mediaType: MediaType;
-};
-
-/** Media to be uploaded */
-export type UploadedMedia = {
-  /** Media type to be uploaded */
-  mediaType: MediaType;
-  /** Upload key received from Query.signedUploadParams */
-  uploadKey: Scalars['String'];
-};
-
-/** Input fields to upsert shelf */
-export type UpsertShelfInput = {
-  /** Upsert shelf description */
-  description?: InputMaybe<Scalars['String']>;
-  /** Shelf id to update */
-  id?: InputMaybe<Scalars['UUID']>;
-  /** Upsert shelf name */
-  name?: InputMaybe<Scalars['String']>;
-  /** Upsert shelf type */
-  type?: InputMaybe<ShelfType>;
-};
 
 /** User entity */
 export type User = Node & {
@@ -5875,7 +3618,7 @@ export type User = Node & {
   followingCount: Scalars['Int'];
   /** Does the user have the artist role to be able to have an artist profile */
   hasArtistRole: Scalars['Boolean'];
-  /** Returns whether user has at least one shelf with at least one release  */
+  /** Returns whether user has at least one shelf with at least one release */
   hasShelfWithItems: Scalars['Boolean'];
   /** User UUID */
   id: Scalars['ID'];
@@ -6070,15 +3813,6 @@ export type UserRelationConnectionEdge = Edge & {
   node: UserRelation;
 };
 
-/** User Relation Status */
-export type UserRelationStatus = {
-  __typename?: 'UserRelationStatus';
-  /** Is the authenticated user following the target user */
-  isFollowing: Scalars['Boolean'];
-  /** ID of target user */
-  userId: Scalars['String'];
-};
-
 /** Roles available for users */
 export type UserRoles = {
   __typename?: 'UserRoles';
@@ -6096,12 +3830,6 @@ export type UserShelvesFilter = {
   type?: ShelfTypeFilter;
 };
 
-/** Arbitrary validation error */
-export type ValidationError = Error & {
-  __typename?: 'ValidationError';
-  message: Scalars['String'];
-};
-
 /** Exchanged amount pretty equivalent */
 export type ValueExchangedPrettyType = {
   __typename?: 'ValueExchangedPrettyType';
@@ -6109,37 +3837,72 @@ export type ValueExchangedPrettyType = {
   eth: Scalars['String'];
 };
 
-/** Withdraw affiliate earnings information */
-export type WithdrawAffiliateEarnings = {
-  __typename?: 'WithdrawAffiliateEarnings';
-  /** Total withdrawable amount of eth in wei */
-  amount: Scalars['String'];
-  /** Unique user identifier of affiliate earnings */
-  id: Scalars['ID'];
-  /** All the minter addresses of to-be withdrawn editions for affiliate fees of authenticated user. Returns null if no withdrawable minter addresses are available */
-  minterAddresses?: Maybe<Array<Scalars['String']>>;
-};
-
-/** Withdrawable contract earnings, returns null for values if contract contain dust amounts that are not worth withdrawing */
-export type WithdrawableEarnings = {
-  __typename?: 'WithdrawableEarnings';
-  /** Release contract earnings */
-  releaseContract?: Maybe<ReleaseContractEarning>;
-  /** Split contract earnings */
-  splitContract?: Maybe<SplitsContractEarning>;
-};
-
-/** Validation error on meta schema */
-export type ZodValidationError = Error & {
-  __typename?: 'ZodValidationError';
-  /** Specific errors found on validation */
-  errors: Array<BaseError>;
-  message: Scalars['String'];
-};
-
-export type TestFragmentFragment = { __typename?: 'Query', now: number };
+export type TestFragmentFragment = { __typename?: 'Query', now: number } & { ' $fragmentName'?: 'TestFragmentFragment' };
 
 export type TestQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type TestQuery = { __typename: 'Query', now: number };
+export type TestQuery = (
+  { __typename: 'Query' }
+  & { ' $fragmentRefs'?: { 'TestFragmentFragment': TestFragmentFragment } }
+);
+
+export type TestMutateMutationVariables = Exact<{ [key: string]: never; }>;
+
+
+export type TestMutateMutation = { __typename?: 'Mutation', generateAuthChallenge: number };
+
+import { ResultOf, TypedDocumentNode as DocumentNode,  } from '@graphql-typed-document-node/core';
+
+
+export type FragmentType<TDocumentType extends DocumentNode<any, any>> = TDocumentType extends DocumentNode<
+  infer TType,
+  any
+>
+  ? TType extends { ' $fragmentName'?: infer TKey }
+    ? TKey extends string
+      ? { ' $fragmentRefs'?: { [key in TKey]: TType } }
+      : never
+    : never
+  : never;
+
+// return non-nullable if `fragmentType` is non-nullable
+export function getFragment<TType>(
+  _documentNode: DocumentNode<TType, any>,
+  fragmentType: FragmentType<DocumentNode<TType, any>>
+): TType;
+// return nullable if `fragmentType` is nullable
+export function getFragment<TType>(
+  _documentNode: DocumentNode<TType, any>,
+  fragmentType: FragmentType<DocumentNode<TType, any>> | null | undefined
+): TType | null | undefined;
+// return array of non-nullable if `fragmentType` is array of non-nullable
+export function getFragment<TType>(
+  _documentNode: DocumentNode<TType, any>,
+  fragmentType: ReadonlyArray<FragmentType<DocumentNode<TType, any>>>
+): ReadonlyArray<TType>;
+// return array of nullable if `fragmentType` is array of nullable
+export function getFragment<TType>(
+  _documentNode: DocumentNode<TType, any>,
+  fragmentType: ReadonlyArray<FragmentType<DocumentNode<TType, any>>> | null | undefined
+): ReadonlyArray<TType> | null | undefined;
+export function getFragment<TType>(
+  _documentNode: DocumentNode<TType, any>,
+  fragmentType: FragmentType<DocumentNode<TType, any>> | ReadonlyArray<FragmentType<DocumentNode<TType, any>>> | null | undefined
+): TType | ReadonlyArray<TType> | null | undefined {
+  return fragmentType as any;
+}
+
+
+export function makeFragmentData<
+  F extends DocumentNode,
+  FT extends ResultOf<F>
+>(data: FT, _fragment: F): FragmentType<F> {
+  return data as FragmentType<F>;
+}
+
+export const TestFragmentFragmentDoc = "" as unknown as DocumentNode<TestFragmentFragment, unknown>;
+
+export const TestDocument = 'query Test{__typename now}' as unknown as DocumentNode<TestQuery,TestQueryVariables>;
+
+export const TestMutateDocument = 'mutation TestMutate{generateAuthChallenge(publicAddress:"")}' as unknown as DocumentNode<TestMutateMutation,TestMutateMutationVariables>;

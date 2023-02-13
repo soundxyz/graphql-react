@@ -14,6 +14,7 @@
     "@graphql-codegen/typescript": "^3.0.0",
     "@graphql-codegen/typescript-operations": "^3.0.0",
     "@graphql-codegen/visitor-plugin-common": "^3.0.0",
+    "@graphql-tools/relay-operation-optimizer": "^6.5.17",
     "@graphql-tools/utils": "^9.2.1"
   },
   "devDependencies": {

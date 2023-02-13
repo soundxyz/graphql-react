@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@graphql-codegen/typescript": "^3.0.0",
+    "@graphql-typed-document-node/core": "^3.1.1",
     "@soundxyz/graphql-react-query": "workspace:^1.0.0",
     "graphql-tag": "^2.12.6"
   },
