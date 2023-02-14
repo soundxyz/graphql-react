@@ -12,13 +12,30 @@ export type FragmentType<TDocumentType extends StringDocumentNode<any, any>> = T
     : never
   : never;`;
 
-const makeFragmentDataHelper = `
-export function makeFragmentData<
-  F extends StringDocumentNode,
-  FT extends ResultOf<F>
->(data: FT, _fragment: F): FragmentType<F> {
+const makeFragmentDataHelper = `export function makeFragmentData<F extends StringDocumentNode, FT extends ResultOf<F>>(
+  data: DeepFragmentTypes<FT>,
+  _fragment: F,
+): FragmentType<F> {
   return data as FragmentType<F>;
-}`;
+}
+
+/**
+ * just want to fill types 1 level deep. Useful for mocking or testing.
+ */
+export function makeShallowFragmentData<F extends StringDocumentNode, FT extends ResultOf<F>>(
+  data: FT,
+  _fragment: F,
+): FragmentType<F> {
+  return data as FragmentType<F>;
+}
+
+export type DeepFragmentTypes<T> = T extends {
+  ' $fragmentRefs'?: { [key: string]: infer TType };
+}
+  ? TType extends object
+    ? T & DeepFragmentTypes<TType>
+    : T
+  : T;`;
 
 const defaultUnmaskFunctionName = 'getFragment';
 

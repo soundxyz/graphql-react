@@ -1,5 +1,6 @@
-import type { Types } from '@graphql-codegen/plugin-helpers';
-import { join } from 'path';
+import type { CodegenPlugin, Types } from '@graphql-codegen/plugin-helpers';
+import assert from 'assert';
+import { resolve } from 'path';
 
 import * as typescriptPlugin from '@graphql-codegen/typescript';
 import * as typescriptOperationPlugin from '@graphql-codegen/typescript-operations';
@@ -11,8 +12,10 @@ import * as gqlTagPlugin from './tags';
 
 export const preset: Types.OutputPreset<{}> = {
   async buildGeneratesSection(options) {
+    assert(options.schemaAst, 'Schema AST could not be found');
+
     const visitor = new ClientSideBaseVisitor(
-      options.schemaAst!,
+      options.schemaAst,
       [],
       options.config,
       options.config,
@@ -26,33 +29,59 @@ export const preset: Types.OutputPreset<{}> = {
     });
     const sources = sourcesWithOperations.map(({ source }) => source);
 
-    const pluginMap = {
+    const tsPluginMap = {
       ...options.pluginMap,
       [`typescript`]: typescriptPlugin,
       [`typescript-operations`]: typescriptOperationPlugin,
-      [`gen-dts`]: gqlTagPlugin,
-      [`fragment-masking`]: fragmentMaskingPlugin,
     };
 
-    const plugins: Array<Types.ConfiguredPlugin> = [
+    const tsPlugins: Array<Types.ConfiguredPlugin> = [
       { [`typescript`]: {} },
       { [`typescript-operations`]: {} },
-      {
-        [`fragment-masking`]: {},
-      },
-      { [`gen-dts`]: { sourcesWithOperations } },
       ...options.plugins,
     ];
 
+    const documentsPluginMap: Record<string, CodegenPlugin<any>> = {
+      [`gen-dts`]: gqlTagPlugin,
+    };
+
+    const fragmentsPluginMap: Record<string, CodegenPlugin<any>> = {
+      [`fragment-masking`]: fragmentMaskingPlugin,
+    };
+
     return [
       {
-        filename: join(options.baseOutputDir, 'types.ts'),
+        filename: resolve(options.baseOutputDir, 'types.ts'),
         config: {
           inlineFragmentTypes: 'mask',
         },
         documents: sources,
-        pluginMap,
-        plugins,
+        pluginMap: tsPluginMap,
+        plugins: tsPlugins,
+        schema: options.schema,
+      },
+      {
+        filename: resolve(options.baseOutputDir, 'documents.ts'),
+        config: {
+          inlineFragmentTypes: 'mask',
+        },
+        documents: sources,
+        pluginMap: documentsPluginMap,
+        plugins: [{ [`gen-dts`]: { sourcesWithOperations } }],
+        schema: options.schema,
+      },
+      {
+        filename: resolve(options.baseOutputDir, 'fragment-masking.ts'),
+        config: {
+          inlineFragmentTypes: 'mask',
+        },
+        documents: sources,
+        pluginMap: fragmentsPluginMap,
+        plugins: [
+          {
+            [`fragment-masking`]: {},
+          },
+        ],
         schema: options.schema,
       },
     ];
