@@ -1,6 +1,6 @@
-import * as Types from './types';
+import type * as Types from './types';
 
-import type { StringDocumentNode } from './fragment-masking';
+import type { StringDocumentNode } from '@soundxyz/gql-string';
 
 
 export const TestFragmentFragmentDoc = "" as unknown as StringDocumentNode<Types.TestFragmentFragment, unknown>;

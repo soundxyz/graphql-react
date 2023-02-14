@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "clean": "pnpm dlx rimraf@^2 \"**/node_modules\" && pnpm i && pnpm generate",
+    "clean": "pnpm --workspace-concurrency=Infinity --no-sort --no-bail -r prepare && pnpm dlx rimraf@^2 \"**/node_modules\" && pnpm i && pnpm generate",
     "generate": "pnpm -r --workspace-concurrency=Infinity generate",
     "prettier:check": "prettier \"**/*.{ts,tsx,js,cjs,mjs,json}\" --check",
     "prettier:write": "prettier \"**/*.{ts,tsx,js,cjs,mjs,json}\" --write",
@@ -11,7 +11,16 @@
   },
   "devDependencies": {
     "@types/node": "^18.13.0",
+    "bob-esbuild": "^4.0.3",
+    "execa": "^7.0.0",
     "prettier": "^2.8.4",
     "typescript": "^4.9.5"
+  },
+  "pnpm": {
+    "peerDependencyRules": {
+      "ignoreMissing": [
+        "@babel/core"
+      ]
+    }
   }
 }

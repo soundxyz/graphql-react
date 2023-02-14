@@ -5,10 +5,14 @@ importers:
   .:
     specifiers:
       '@types/node': ^18.13.0
+      bob-esbuild: ^4.0.3
+      execa: ^7.0.0
       prettier: ^2.8.4
       typescript: ^4.9.5
     devDependencies:
       '@types/node': 18.13.0
+      bob-esbuild: 4.0.3_typescript@4.9.5
+      execa: 7.0.0
       prettier: 2.8.4
       typescript: 4.9.5
 
@@ -19,7 +23,8 @@ importers:
       '@graphql-codegen/typescript': ^3.0.0
       '@graphql-typed-document-node/core': ^3.1.1
       '@soundxyz/codegen-fragments': workspace:*
-      '@soundxyz/graphql-react-query': workspace:^1.0.0
+      '@soundxyz/gql-string': workspace:*
+      '@soundxyz/graphql-react-query': workspace:*
       '@types/node': ^18.13.0
       '@types/react': ^18.0.27
       '@types/react-dom': ^18.0.10
@@ -32,12 +37,13 @@ importers:
     dependencies:
       '@graphql-codegen/typescript': 3.0.0_graphql@16.6.0
       '@graphql-typed-document-node/core': 3.1.1_graphql@16.6.0
+      '@soundxyz/gql-string': link:../../packages/gql-string
       '@soundxyz/graphql-react-query': link:../../packages/graphql-react-query
       graphql-tag: 2.12.6_graphql@16.6.0
     devDependencies:
       '@graphql-codegen/cli': 3.0.0_oagga47ridy4omgf45pd3y74j4
       '@graphql-codegen/core': 3.0.0_graphql@16.6.0
-      '@soundxyz/codegen-fragments': file:packages/codegen-fragments/dist_qypyj2dh4jaeefp3c3mcesp6jy
+      '@soundxyz/codegen-fragments': file:packages/codegen-fragments/dist_x7xk6uc2z67dudswtnpujjkk6y
       '@types/node': 18.13.0
       '@types/react': 18.0.27
       '@types/react-dom': 18.0.10
@@ -60,6 +66,7 @@ importers:
       '@graphql-codegen/visitor-plugin-common': ^3.0.0
       '@graphql-tools/relay-operation-optimizer': ^6.5.17
       '@graphql-tools/utils': ^9.2.1
+      '@soundxyz/gql-string': workspace:*
       '@types/node': ^18.13.0
       bob-ts: ^4.1.1
       bob-tsm: ^1.1.2
@@ -76,6 +83,7 @@ importers:
     devDependencies:
       '@graphql-codegen/core': 3.0.0_graphql@16.6.0
       '@graphql-codegen/plugin-helpers': 4.0.0_graphql@16.6.0
+      '@soundxyz/gql-string': link:../gql-string
       '@types/node': 18.13.0
       bob-ts: 4.1.1_6swlmxc75z7l4vpfgj5xsjerpq
       bob-tsm: 1.1.2_bbhdg2tg4je6yluawzqfcx3rwi
@@ -84,8 +92,24 @@ importers:
       typescript: 4.9.5
     publishDirectory: dist
 
+  packages/gql-string:
+    specifiers:
+      '@types/node': ^18.13.0
+      bob-ts: ^4.1.1
+      bob-tsm: ^1.1.2
+      esbuild: ^0.17.7
+      typescript: ^4.9.5
+    devDependencies:
+      '@types/node': 18.13.0
+      bob-ts: 4.1.1_6swlmxc75z7l4vpfgj5xsjerpq
+      bob-tsm: 1.1.2_bbhdg2tg4je6yluawzqfcx3rwi
+      esbuild: 0.17.7
+      typescript: 4.9.5
+    publishDirectory: dist
+
   packages/graphql-react-query:
     specifiers:
+      '@soundxyz/gql-string': workspace:*
       '@tanstack/react-query': ^4.24.4
       '@types/node': ^18.13.0
       '@types/react': ^18.0.27
@@ -95,6 +119,7 @@ importers:
       react: ^18.2.0
       typescript: ^4.9.5
     devDependencies:
+      '@soundxyz/gql-string': link:../gql-string
       '@tanstack/react-query': 4.24.4_react@18.2.0
       '@types/node': 18.13.0
       '@types/react': 18.0.27
@@ -103,6 +128,7 @@ importers:
       esbuild: 0.17.7
       react: 18.2.0
       typescript: 4.9.5
+    publishDirectory: dist
 
 packages:
 
@@ -201,6 +227,9 @@ packages:
     engines: {node: '>=6.9.0'}
     peerDependencies:
       '@babel/core': ^7.0.0
+    peerDependenciesMeta:
+      '@babel/core':
+        optional: true
     dependencies:
       '@babel/compat-data': 7.20.14
       '@babel/core': 7.20.12
@@ -214,6 +243,9 @@ packages:
     engines: {node: '>=6.9.0'}
     peerDependencies:
       '@babel/core': ^7.0.0
+    peerDependenciesMeta:
+      '@babel/core':
+        optional: true
     dependencies:
       '@babel/core': 7.20.12
       '@babel/helper-annotate-as-pure': 7.18.6
@@ -354,6 +386,9 @@ packages:
     engines: {node: '>=6.9.0'}
     peerDependencies:
       '@babel/core': ^7.0.0-0
+    peerDependenciesMeta:
+      '@babel/core':
+        optional: true
     dependencies:
       '@babel/core': 7.20.12
       '@babel/helper-create-class-features-plugin': 7.20.12_@babel+core@7.20.12
@@ -366,6 +401,9 @@ packages:
     engines: {node: '>=6.9.0'}
     peerDependencies:
       '@babel/core': ^7.0.0-0
+    peerDependenciesMeta:
+      '@babel/core':
+        optional: true
     dependencies:
       '@babel/compat-data': 7.20.14
       '@babel/core': 7.20.12
@@ -378,6 +416,9 @@ packages:
     resolution: {integrity: sha512-fm4idjKla0YahUNgFNLCB0qySdsoPiZP3iQE3rky0mBUtMZ23yDJ9SJdg6dXTSDnulOVqiF3Hgr9nbXvXTQZYA==}
     peerDependencies:
       '@babel/core': ^7.0.0-0
+    peerDependenciesMeta:
+      '@babel/core':
+        optional: true
     dependencies:
       '@babel/core': 7.20.12
       '@babel/helper-plugin-utils': 7.20.2
@@ -387,6 +428,9 @@ packages:
     engines: {node: '>=6.9.0'}
     peerDependencies:
       '@babel/core': ^7.0.0-0
+    peerDependenciesMeta:
+      '@babel/core':
+        optional: true
     dependencies:
       '@babel/core': 7.20.12
       '@babel/helper-plugin-utils': 7.20.2
@@ -396,6 +440,9 @@ packages:
     engines: {node: '>=6.9.0'}
     peerDependencies:
       '@babel/core': ^7.0.0-0
+    peerDependenciesMeta:
+      '@babel/core':
+        optional: true
     dependencies:
       '@babel/helper-plugin-utils': 7.20.2
     dev: true
@@ -405,6 +452,9 @@ packages:
     engines: {node: '>=6.9.0'}
     peerDependencies:
       '@babel/core': ^7.0.0-0
+    peerDependenciesMeta:
+      '@babel/core':
+        optional: true
     dependencies:
       '@babel/core': 7.20.12
       '@babel/helper-plugin-utils': 7.20.2
@@ -413,6 +463,9 @@ packages:
     resolution: {integrity: sha512-XoqMijGZb9y3y2XskN+P1wUGiVwWZ5JmoDRwx5+3GmEplNyVM2s2Dg8ILFQm8rWM48orGy5YpI5Bl8U1y7ydlA==}
     peerDependencies:
       '@babel/core': ^7.0.0-0
+    peerDependenciesMeta:
+      '@babel/core':
+        optional: true
     dependencies:
       '@babel/core': 7.20.12
       '@babel/helper-plugin-utils': 7.20.2
@@ -422,6 +475,9 @@ packages:
     engines: {node: '>=6.9.0'}
     peerDependencies:
       '@babel/core': ^7.0.0-0
+    peerDependenciesMeta:
+      '@babel/core':
+        optional: true
     dependencies:
       '@babel/core': 7.20.12
       '@babel/helper-plugin-utils': 7.20.2
@@ -431,6 +487,9 @@ packages:
     engines: {node: '>=6.9.0'}
     peerDependencies:
       '@babel/core': ^7.0.0-0
+    peerDependenciesMeta:
+      '@babel/core':
+        optional: true
     dependencies:
       '@babel/core': 7.20.12
       '@babel/helper-plugin-utils': 7.20.2
@@ -440,6 +499,9 @@ packages:
     engines: {node: '>=6.9.0'}
     peerDependencies:
       '@babel/core': ^7.0.0-0
+    peerDependenciesMeta:
+      '@babel/core':
+        optional: true
     dependencies:
       '@babel/core': 7.20.12
       '@babel/helper-plugin-utils': 7.20.2
@@ -449,6 +511,9 @@ packages:
     engines: {node: '>=6.9.0'}
     peerDependencies:
       '@babel/core': ^7.0.0-0
+    peerDependenciesMeta:
+      '@babel/core':
+        optional: true
     dependencies:
       '@babel/core': 7.20.12
       '@babel/helper-annotate-as-pure': 7.18.6
@@ -468,6 +533,9 @@ packages:
     engines: {node: '>=6.9.0'}
     peerDependencies:
       '@babel/core': ^7.0.0-0
+    peerDependenciesMeta:
+      '@babel/core':
+        optional: true
     dependencies:
       '@babel/core': 7.20.12
       '@babel/helper-plugin-utils': 7.20.2
@@ -478,6 +546,9 @@ packages:
     engines: {node: '>=6.9.0'}
     peerDependencies:
       '@babel/core': ^7.0.0-0
+    peerDependenciesMeta:
+      '@babel/core':
+        optional: true
     dependencies:
       '@babel/core': 7.20.12
       '@babel/helper-plugin-utils': 7.20.2
@@ -487,6 +558,9 @@ packages:
     engines: {node: '>=6.9.0'}
     peerDependencies:
       '@babel/core': ^7.0.0-0
+    peerDependenciesMeta:
+      '@babel/core':
+        optional: true
     dependencies:
       '@babel/core': 7.20.12
       '@babel/helper-plugin-utils': 7.20.2
@@ -497,6 +571,9 @@ packages:
     engines: {node: '>=6.9.0'}
     peerDependencies:
       '@babel/core': ^7.0.0-0
+    peerDependenciesMeta:
+      '@babel/core':
+        optional: true
     dependencies:
       '@babel/core': 7.20.12
       '@babel/helper-plugin-utils': 7.20.2
@@ -506,6 +583,9 @@ packages:
     engines: {node: '>=6.9.0'}
     peerDependencies:
       '@babel/core': ^7.0.0-0
+    peerDependenciesMeta:
+      '@babel/core':
+        optional: true
     dependencies:
       '@babel/core': 7.20.12
       '@babel/helper-compilation-targets': 7.20.7_@babel+core@7.20.12
@@ -517,6 +597,9 @@ packages:
     engines: {node: '>=6.9.0'}
     peerDependencies:
       '@babel/core': ^7.0.0-0
+    peerDependenciesMeta:
+      '@babel/core':
+        optional: true
     dependencies:
       '@babel/core': 7.20.12
       '@babel/helper-plugin-utils': 7.20.2
@@ -526,6 +609,9 @@ packages:
     engines: {node: '>=6.9.0'}
     peerDependencies:
       '@babel/core': ^7.0.0-0
+    peerDependenciesMeta:
+      '@babel/core':
+        optional: true
     dependencies:
       '@babel/core': 7.20.12
       '@babel/helper-plugin-utils': 7.20.2
@@ -535,6 +621,9 @@ packages:
     engines: {node: '>=6.9.0'}
     peerDependencies:
       '@babel/core': ^7.0.0-0
+    peerDependenciesMeta:
+      '@babel/core':
+        optional: true
     dependencies:
       '@babel/core': 7.20.12
       '@babel/helper-module-transforms': 7.20.11
@@ -548,6 +637,9 @@ packages:
     engines: {node: '>=6.9.0'}
     peerDependencies:
       '@babel/core': ^7.0.0-0
+    peerDependenciesMeta:
+      '@babel/core':
+        optional: true
     dependencies:
       '@babel/core': 7.20.12
       '@babel/helper-plugin-utils': 7.20.2
@@ -560,6 +652,9 @@ packages:
     engines: {node: '>=6.9.0'}
     peerDependencies:
       '@babel/core': ^7.0.0-0
+    peerDependenciesMeta:
+      '@babel/core':
+        optional: true
     dependencies:
       '@babel/core': 7.20.12
       '@babel/helper-plugin-utils': 7.20.2
@@ -569,6 +664,9 @@ packages:
     engines: {node: '>=6.9.0'}
     peerDependencies:
       '@babel/core': ^7.0.0-0
+    peerDependenciesMeta:
+      '@babel/core':
+        optional: true
     dependencies:
       '@babel/core': 7.20.12
       '@babel/helper-plugin-utils': 7.20.2
@@ -578,6 +676,9 @@ packages:
     engines: {node: '>=6.9.0'}
     peerDependencies:
       '@babel/core': ^7.0.0-0
+    peerDependenciesMeta:
+      '@babel/core':
+        optional: true
     dependencies:
       '@babel/core': 7.20.12
       '@babel/helper-plugin-utils': 7.20.2
@@ -587,6 +688,9 @@ packages:
     engines: {node: '>=6.9.0'}
     peerDependencies:
       '@babel/core': ^7.0.0-0
+    peerDependenciesMeta:
+      '@babel/core':
+        optional: true
     dependencies:
       '@babel/core': 7.20.12
       '@babel/helper-annotate-as-pure': 7.18.6
@@ -600,6 +704,9 @@ packages:
     engines: {node: '>=6.9.0'}
     peerDependencies:
       '@babel/core': ^7.0.0-0
+    peerDependenciesMeta:
+      '@babel/core':
+        optional: true
     dependencies:
       '@babel/core': 7.20.12
       '@babel/helper-plugin-utils': 7.20.2
@@ -609,6 +716,9 @@ packages:
     engines: {node: '>=6.9.0'}
     peerDependencies:
       '@babel/core': ^7.0.0-0
+    peerDependenciesMeta:
+      '@babel/core':
+        optional: true
     dependencies:
       '@babel/core': 7.20.12
       '@babel/helper-plugin-utils': 7.20.2
@@ -619,6 +729,9 @@ packages:
     engines: {node: '>=6.9.0'}
     peerDependencies:
       '@babel/core': ^7.0.0-0
+    peerDependenciesMeta:
+      '@babel/core':
+        optional: true
     dependencies:
       '@babel/core': 7.20.12
       '@babel/helper-plugin-utils': 7.20.2
@@ -1584,6 +1697,11 @@ packages:
       webcrypto-core: 1.7.6
     dev: true
 
+  /@pnpm/types/8.10.0:
+    resolution: {integrity: sha512-A4pcNNvFJdkMXArEjTCOIYNL2VxD4uBynWZ6cBIELXb5qJ0tUzwKsaSz4J953I0rQFqnsFpUYqaWIquI10W1sw==}
+    engines: {node: '>=14.6'}
+    dev: true
+
   /@repeaterjs/repeater/3.0.4:
     resolution: {integrity: sha512-AW8PKd6iX3vAZ0vA43nOUOnbq/X5ihgU+mSXXqunMkeQADGiqw/PY0JNeYtD5sr0PAy51YPgAPbDoeapv9r8WA==}
     dev: true
@@ -1850,6 +1968,9 @@ packages:
     resolution: {integrity: sha512-9ywCsCvo1ojrw0b+XYk7aFvTH6D9064t0RIL1rtMf3nsa02Xw41MS7sZw216Im35xj/UY0PDBQsa1brUDDF1Ow==}
     peerDependencies:
       '@babel/core': ^7.0.0
+    peerDependenciesMeta:
+      '@babel/core':
+        optional: true
     dependencies:
       '@babel/core': 7.20.12
       '@babel/plugin-proposal-class-properties': 7.18.6_@babel+core@7.20.12
@@ -1916,6 +2037,38 @@ packages:
       '@rollup/pluginutils': 4.2.1
       esbuild: 0.17.7
       rollup: 2.79.1
+    dev: true
+
+  /bob-esbuild-plugin/4.0.0_rollup@2.79.1:
+    resolution: {integrity: sha512-Ymk0kEPc0JhL3eZQVnWpjT4/HMX8Hw7aD5CzqSvNAXeUgaR1+8m5O1RtkP/D42ZwNv+FPgD1wKM4pdoQ4ScmAQ==}
+    peerDependencies:
+      esbuild: '>=0.14.39'
+      rollup: '*'
+    peerDependenciesMeta:
+      esbuild:
+        optional: true
+      rollup:
+        optional: true
+    dependencies:
+      '@rollup/pluginutils': 4.2.1
+      rollup: 2.79.1
+    dev: true
+
+  /bob-esbuild/4.0.3_typescript@4.9.5:
+    resolution: {integrity: sha512-9AGuh6V5Whsditj5n2oJjWAvHwgadgD2HD0qZ4rEBwY9tpj8YbfYeiaXQQV9qJxwT9oUYOsQE53wPNYBFDIfJA==}
+    peerDependencies:
+      esbuild: '>=0.14.39'
+      typescript: '*'
+    peerDependenciesMeta:
+      esbuild:
+        optional: true
+      typescript:
+        optional: true
+    dependencies:
+      '@pnpm/types': 8.10.0
+      bob-esbuild-plugin: 4.0.0_rollup@2.79.1
+      rollup: 2.79.1
+      typescript: 4.9.5
     dev: true
 
   /bob-ts/4.1.1_6swlmxc75z7l4vpfgj5xsjerpq:
@@ -2238,6 +2391,15 @@ packages:
     transitivePeerDependencies:
       - encoding
 
+  /cross-spawn/7.0.3:
+    resolution: {integrity: sha512-iRDPJKUPVEND7dHPO8rkbOnPpyDygcDFtWjpeWNCgy8WP2rXcxXL8TskReQl6OrB2G7+UJrags1q15Fudc7G6w==}
+    engines: {node: '>= 8'}
+    dependencies:
+      path-key: 3.1.1
+      shebang-command: 2.0.0
+      which: 2.0.2
+    dev: true
+
   /csstype/3.1.1:
     resolution: {integrity: sha512-DJR/VvkAvSZW9bTouZue2sSxDwdTN92uHjqeKVm+0dAqdfNykRzQ95tay8aXMBAAPpUiq4Qcug2L7neoRh2Egw==}
     dev: true
@@ -2373,6 +2535,21 @@ packages:
     resolution: {integrity: sha512-Rfkk/Mp/DL7JVje3u18FxFujQlTNR2q6QfMSMB7AvCBx91NGj/ba3kCfza0f6dVDbw7YlRf/nDrn7pQrCCyQ/w==}
     dev: true
 
+  /execa/7.0.0:
+    resolution: {integrity: sha512-tQbH0pH/8LHTnwTrsKWideqi6rFB/QNUawEwrn+WHyz7PX1Tuz2u7wfTvbaNBdP5JD5LVWxNo8/A8CHNZ3bV6g==}
+    engines: {node: ^14.18.0 || ^16.14.0 || >=18.0.0}
+    dependencies:
+      cross-spawn: 7.0.3
+      get-stream: 6.0.1
+      human-signals: 4.3.0
+      is-stream: 3.0.0
+      merge-stream: 2.0.0
+      npm-run-path: 5.1.0
+      onetime: 6.0.0
+      signal-exit: 3.0.7
+      strip-final-newline: 3.0.0
+    dev: true
+
   /external-editor/3.1.0:
     resolution: {integrity: sha512-hMQ4CX1p1izmuLYyZqLMO/qGNw10wSv9QDCPfzXfyFrOaCSSoRfqE1Kf1s5an66J5JZC62NewG+mK49jOCtQew==}
     engines: {node: '>=4'}
@@ -2494,6 +2671,11 @@ packages:
   /get-caller-file/2.0.5:
     resolution: {integrity: sha512-DyFP3BM/3YHTQOCUL/w0OZHR0lpKeGrxotcHWcqNEdnltqFwXVfhEBQ94eIo34AfQpo0rGki4cyIiftY06h2Fg==}
     engines: {node: 6.* || 8.* || >= 10.*}
+
+  /get-stream/6.0.1:
+    resolution: {integrity: sha512-ts6Wi+2j3jQjqi70w5AlN8DFnkSwC+MqmxEzdEALB2qXZYV3X/b1CTfgPLGJNMeAWxdPfU8FO1ms3NUfaHCPYg==}
+    engines: {node: '>=10'}
+    dev: true
 
   /glob-parent/5.1.2:
     resolution: {integrity: sha512-AOIgSQCepiJYwP3ARnGx+5VnTu2HBYdzbGP45eLw1vr3zB3vZLeyed1sC9hnbcOc9/SrMyM5RPQrkGz4aS9Zow==}
@@ -2631,6 +2813,11 @@ packages:
       - supports-color
     dev: true
 
+  /human-signals/4.3.0:
+    resolution: {integrity: sha512-zyzVyMjpGBX2+6cDVZeFPCdtOtdsxOeseRhB9tkQ6xXmGUNrcnBzdEKPy3VPNYz+4gy1oukVOXcrJCunSyc6QQ==}
+    engines: {node: '>=14.18.0'}
+    dev: true
+
   /iconv-lite/0.4.24:
     resolution: {integrity: sha512-v3MXnZAcvnywkTUEZomIActle7RXXeedOR31wwl7VlyoXO4Qi9arvSenNQWne1TcRwhCL1HwLI21bEqdpj8/rA==}
     engines: {node: '>=0.10.0'}
@@ -2758,6 +2945,11 @@ packages:
     dependencies:
       is-unc-path: 1.0.0
 
+  /is-stream/3.0.0:
+    resolution: {integrity: sha512-LnQR4bZ9IADDRSkvpqMGvt/tEJWclzklNgSw48V5EAaAeDd6qGvN8ei6k5p0tvxSR171VmGyHuTiAOfxAbr8kA==}
+    engines: {node: ^12.20.0 || ^14.13.1 || >=16.0.0}
+    dev: true
+
   /is-unc-path/1.0.0:
     resolution: {integrity: sha512-mrGpVd0fs7WWLfVsStvgF6iEJnbjDFZh9/emhRDcGWTduTfNHd9CHeUwH3gYIjdbwo4On6hunkztwOaAw0yllQ==}
     engines: {node: '>=0.10.0'}
@@ -2777,6 +2969,10 @@ packages:
   /is-windows/1.0.2:
     resolution: {integrity: sha512-eXK1UInq2bPmjyX6e3VHIzMLobc4J94i4AWn+Hpq3OU5KkrRC96OAcR3PRJ/pGu6m8TRnBHP9dkXQVsT/COVIA==}
     engines: {node: '>=0.10.0'}
+
+  /isexe/2.0.0:
+    resolution: {integrity: sha512-RHxMLp9lnKHGHRng9QFhRCMbYAcVpn69smSGcq3f36xjgVVWThj4qqLbTLlq7Ssj8B+fIQ1EuCEGI2lKsyQeIw==}
+    dev: true
 
   /isomorphic-fetch/3.0.0:
     resolution: {integrity: sha512-qvUtwJ3j6qwsF3jLxkZ72qCgjMysPzDfeV240JHiGZsANBYd+EEuu35v7dfrJ9Up0Ak07D7GGSkGhCHTqg/5wA==}
@@ -2948,6 +3144,10 @@ packages:
     resolution: {integrity: sha512-8y/eV9QQZCiyn1SprXSrCmqJN0yNRATe+PO8ztwqrvrbdRLA3eYJF0yaR0YayLWkMbsQSKWS9N2gPcGEc4UsZg==}
     engines: {node: '>=0.10.0'}
 
+  /merge-stream/2.0.0:
+    resolution: {integrity: sha512-abv/qOcuPfk3URPfDzmZU1LKmuw8kT+0nIHvKrKgFrwifol/doWcdA4ZqsWQ8ENrFKkd67Mfpo/LovbIUsbt3w==}
+    dev: true
+
   /merge2/1.4.1:
     resolution: {integrity: sha512-8q7VEgMJW4J8tcfVPy8g09NcQwZdbwFEqhe/WZkoIzjn/3TGDwtOCYtXGxA3O8tPzpczCCDgv+P2P5y00ZJOOg==}
     engines: {node: '>= 8'}
@@ -2988,6 +3188,11 @@ packages:
   /mimic-fn/2.1.0:
     resolution: {integrity: sha512-OqbOk5oEQeAZ8WXWydlu9HJjz9WVdEIvamMCcXmuqUYjTknH/sqsWvhQ3vgwKFRR1HpjvNBKQ37nbJgYzGqGcg==}
     engines: {node: '>=6'}
+    dev: true
+
+  /mimic-fn/4.0.0:
+    resolution: {integrity: sha512-vqiC06CuhBTUdZH+RYl8sFrL096vA45Ok5ISO6sE/Mr1jRbGH4Csnhi8f3wKVl7x8mO4Au7Ir9D3Oyv1VYMFJw==}
+    engines: {node: '>=12'}
     dev: true
 
   /minimatch/3.1.2:
@@ -3110,6 +3315,13 @@ packages:
     engines: {node: '>=0.10.0'}
     dev: true
 
+  /npm-run-path/5.1.0:
+    resolution: {integrity: sha512-sJOdmRGrY2sjNTRMbSvluQqg+8X7ZK61yvzBEIDhz4f8z1TZFYABsqjjCBd/0PUNE9M6QDgHJXQkGUEm7Q+l9Q==}
+    engines: {node: ^12.20.0 || ^14.13.1 || >=16.0.0}
+    dependencies:
+      path-key: 4.0.0
+    dev: true
+
   /nullthrows/1.1.1:
     resolution: {integrity: sha512-2vPPEi+Z7WqML2jZYddDIfy5Dqb0r2fze2zTxNNknZaFpVHU3mFB3R+DWeJWGVx0ecvttSGlJTI+WG+8Z4cDWw==}
 
@@ -3127,6 +3339,13 @@ packages:
     engines: {node: '>=6'}
     dependencies:
       mimic-fn: 2.1.0
+    dev: true
+
+  /onetime/6.0.0:
+    resolution: {integrity: sha512-1FlR+gjXK7X+AsAHso35MnyN5KqGwJRi/31ft6x0M194ht7S+rWAvd7PHss9xSKMzE0asv1pyIHaJYq+BbacAQ==}
+    engines: {node: '>=12'}
+    dependencies:
+      mimic-fn: 4.0.0
     dev: true
 
   /ora/5.4.1:
@@ -3229,6 +3448,16 @@ packages:
   /path-is-absolute/1.0.1:
     resolution: {integrity: sha512-AVbw3UJ2e9bq64vSaS9Am0fje1Pa8pbGqTTsmXfaIiMpnr5DlDhfJOuLj9Sf95ZPVDAUerDfEk88MPmPe7UCQg==}
     engines: {node: '>=0.10.0'}
+
+  /path-key/3.1.1:
+    resolution: {integrity: sha512-ojmeN0qd+y0jszEtoY48r0Peq5dwMEkIlCOu6Q5f41lfkswXuKtYrhgoTpLnyIcHm24Uhqx+5Tqm2InSwLhE6Q==}
+    engines: {node: '>=8'}
+    dev: true
+
+  /path-key/4.0.0:
+    resolution: {integrity: sha512-haREypq7xkM7ErfgIyA0z+Bj4AGKlMSdlQE2jvJo6huWD1EdkKYV+G/T4nq0YEF2vgTT8kqMFKo1uHn950r4SQ==}
+    engines: {node: '>=12'}
+    dev: true
 
   /path-root-regex/0.1.2:
     resolution: {integrity: sha512-4GlJ6rZDhQZFE0DPVKh0e9jmZ5egZfxTkp7bcRDuPlJXbAwhxcl2dINPUAsjLdejqaLsCeg8axcLjIbvBjN4pQ==}
@@ -3451,6 +3680,18 @@ packages:
   /setimmediate/1.0.5:
     resolution: {integrity: sha512-MATJdZp8sLqDl/68LfQmbP8zKPLQNV6BIZoIgrscFDQ+RsvK/BxeDQOgyxKKoh0y/8h3BqVFnCqQ/gd+reiIXA==}
 
+  /shebang-command/2.0.0:
+    resolution: {integrity: sha512-kHxr2zZpYtdmrN1qDjrrX/Z1rR1kG8Dx+gkpK1G4eXmvXswmcE1hTWBWYUzlraYw1/yZp6YuDY77YtvbN0dmDA==}
+    engines: {node: '>=8'}
+    dependencies:
+      shebang-regex: 3.0.0
+    dev: true
+
+  /shebang-regex/3.0.0:
+    resolution: {integrity: sha512-7++dFhtcx3353uBaq8DDR4NuxBetBzC7ZQOhmTQInHEd6bSrXdiEyzCvG07Z44UYdLShWUyXt5M/yhz8ekcb1A==}
+    engines: {node: '>=8'}
+    dev: true
+
   /shell-quote/1.8.0:
     resolution: {integrity: sha512-QHsz8GgQIGKlRi24yFc6a6lN69Idnx634w49ay6+jA5yFh7a1UY+4Rp6HPx/L/1zcEDPEij8cIsiqR6bQsE5VQ==}
     dev: true
@@ -3529,6 +3770,11 @@ packages:
     engines: {node: '>=8'}
     dependencies:
       ansi-regex: 5.0.1
+
+  /strip-final-newline/3.0.0:
+    resolution: {integrity: sha512-dOESqjYr96iWYylGObzd39EuNTa5VJxyvVAEm5Jnh7KGo75V43Hk1odPQkNDyXNmUR6k+gEiDVXnjB8HJ3crXw==}
+    engines: {node: '>=12'}
+    dev: true
 
   /styled-jsx/5.1.1_react@18.2.0:
     resolution: {integrity: sha512-pW7uC1l4mBZ8ugbiZrcIsiIvVx1UmTfw7UkC3Um2tmfUq9Bhk8IiyEIPl6F8agHgjzku6j0xQEZbfA5uSgSaCw==}
@@ -3744,6 +3990,14 @@ packages:
   /which-module/2.0.0:
     resolution: {integrity: sha512-B+enWhmw6cjfVC7kS8Pj9pCrKSc5txArRyaYGe088shv/FGWH+0Rjx/xPgtsWfsUtS27FkP697E4DDhgrgoc0Q==}
 
+  /which/2.0.2:
+    resolution: {integrity: sha512-BLI3Tl1TW3Pvl70l3yq3Y64i+awpwXqsGBYWkkqMtnbXgrMD+yj7rhW0kuEDxzJaYXGjEW5ogapKNMEKNMjibA==}
+    engines: {node: '>= 8'}
+    hasBin: true
+    dependencies:
+      isexe: 2.0.0
+    dev: true
+
   /wrap-ansi/6.2.0:
     resolution: {integrity: sha512-r6lPcBGxZXlIcymEu7InxDMhdW0KDxpLgoFLcguasxCaJ/SOIZwINatK9KY/tf+ZrlywOKU0UDj3ATXUBfxJXA==}
     engines: {node: '>=8'}
@@ -3852,13 +4106,14 @@ packages:
     engines: {node: '>=10'}
     dev: true
 
-  file:packages/codegen-fragments/dist_qypyj2dh4jaeefp3c3mcesp6jy:
+  file:packages/codegen-fragments/dist_x7xk6uc2z67dudswtnpujjkk6y:
     resolution: {directory: packages/codegen-fragments/dist, type: directory}
     id: file:packages/codegen-fragments/dist
     name: '@soundxyz/codegen-fragments'
     version: 1.0.0
     peerDependencies:
       '@graphql-codegen/core': ^3.0.0
+      '@soundxyz/gql-string': workspace:*
       graphql: ^16.6.0
     dependencies:
       '@graphql-codegen/core': 3.0.0_graphql@16.6.0
@@ -3866,7 +4121,9 @@ packages:
       '@graphql-codegen/typescript': 3.0.0_graphql@16.6.0
       '@graphql-codegen/typescript-operations': 3.0.0_graphql@16.6.0
       '@graphql-codegen/visitor-plugin-common': 3.0.0_graphql@16.6.0
+      '@graphql-tools/relay-operation-optimizer': 6.5.17_graphql@16.6.0
       '@graphql-tools/utils': 9.2.1_graphql@16.6.0
+      '@soundxyz/gql-string': link:packages/gql-string
       graphql: 16.6.0
     transitivePeerDependencies:
       - encoding

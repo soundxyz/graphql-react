@@ -5,6 +5,16 @@
   "keywords": [],
   "license": "MIT",
   "author": "PabloSzx <pablosaez1995@gmail.com>",
+  "exports": {
+    ".": {
+      "require": "./dist/index.js",
+      "import": "./dist/index.mjs"
+    },
+    "./*": {
+      "require": "./dist/*.js",
+      "import": "./dist/*.mjs"
+    }
+  },
   "scripts": {
     "prepare": "bob-tsm build.ts",
     "watch": "bob-tsm --watch=src build.ts"
@@ -20,6 +30,7 @@
   "devDependencies": {
     "@graphql-codegen/core": "^3.0.0",
     "@graphql-codegen/plugin-helpers": "^4.0.0",
+    "@soundxyz/gql-string": "workspace:*",
     "@types/node": "^18.13.0",
     "bob-ts": "^4.1.1",
     "bob-tsm": "^1.1.2",
@@ -29,6 +40,7 @@
   },
   "peerDependencies": {
     "@graphql-codegen/core": "^3.0.0",
+    "@soundxyz/gql-string": "workspace:*",
     "graphql": "^16.6.0"
   },
   "publishConfig": {

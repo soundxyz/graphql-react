@@ -67,8 +67,8 @@ function getFragmentDefinitions(documentNodes: DocumentNode[]): FragmentDefiniti
   return fragmentDefinitions;
 }
 
-const importTypes = `import * as Types from './types';\n`;
-const importMasking = `import type { StringDocumentNode } from './fragment-masking';\n`;
+const importTypes = `import type * as Types from './types';\n`;
+const importMasking = `import type { StringDocumentNode } from '@soundxyz/gql-string';\n`;
 
 export const plugin: PluginFunction<{
   sourcesWithOperations: Array<SourceWithOperations>;
