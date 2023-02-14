@@ -1,7 +1,9 @@
-import styles from './styles.module.css';
 import { gql } from '@soundxyz/graphql-react-query';
+
 import { Now } from '../components/now';
-import { makeFragmentData, TestFragmentFragmentDoc } from '../generated/types';
+import { TestFragmentFragmentDoc } from '../generated/documents';
+import { makeFragmentData } from '../generated/fragment-masking';
+import styles from './styles.module.css';
 
 export const metadata = {
   title: 'Hello World',
@@ -13,8 +15,8 @@ gql`
     ...TestFragment
   }
 
-  mutation TestMutate {
-    generateAuthChallenge(publicAddress: "")
+  mutation TestMutate($publicAddress: String!) {
+    generateAuthChallenge(publicAddress: $publicAddress)
   }
 `;
 

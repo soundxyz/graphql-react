@@ -3847,7 +3847,9 @@ export type TestQuery = (
   & { ' $fragmentRefs'?: { 'TestFragmentFragment': TestFragmentFragment } }
 );
 
-export type TestMutateMutationVariables = Exact<{ [key: string]: never; }>;
+export type TestMutateMutationVariables = Exact<{
+  publicAddress: Scalars['String'];
+}>;
 
 
 export type TestMutateMutation = { __typename?: 'Mutation', generateAuthChallenge: number };

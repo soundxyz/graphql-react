@@ -99,7 +99,7 @@ export const plugin: PluginFunction<{
     importTypes,
     importMasking,
     ...fragments.map(value => {
-      return `\nexport const ${value.name.value}FragmentDoc = "" as unknown as StringDocumentNode<Types.${value.name.value}Fragment, unknown>;`;
+      return `\nexport const ${value.name.value}FragmentDoc = "" as unknown as StringDocumentNode<Types.${value.name.value}Fragment, never>;`;
     }),
     ...optimizedDocuments.reduce((acc: string[], value) => {
       const ast = getOperationAST(value);
