@@ -103,3 +103,5 @@ dist
 # TernJS port file
 .tern-port
 examples/next/.vscode/settings.json
+examples/next/debug.txt
+examples/next/debug.json

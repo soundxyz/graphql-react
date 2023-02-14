@@ -5,9 +5,33 @@
   "keywords": [],
   "license": "MIT",
   "author": "PabloSzx <pablosaez1995@gmail.com>",
-  "scripts": {},
+  "sideEffects": false,
+  "exports": {
+    ".": {
+      "require": "./dist/index.js",
+      "import": "./dist/index.mjs"
+    },
+    "./*": {
+      "require": "./dist/*.js",
+      "import": "./dist/*.mjs"
+    }
+  },
+  "scripts": {
+    "prepare": "bob-tsm build.ts",
+    "watch": "bob-tsm --watch=src build.ts"
+  },
+  "dependencies": {
+    "@graphql-codegen/gql-tag-operations": "^2.0.0",
+    "@graphql-codegen/typescript": "^3.0.0",
+    "@graphql-codegen/typescript-operations": "^3.0.0",
+    "@graphql-codegen/visitor-plugin-common": "^3.0.0",
+    "@graphql-tools/relay-operation-optimizer": "^6.5.17",
+    "@graphql-tools/utils": "^9.2.1"
+  },
   "devDependencies": {
     "@graphql-codegen/core": "^3.0.0",
+    "@graphql-codegen/plugin-helpers": "^4.0.0",
+    "@soundxyz/gql-string": "workspace:*",
     "@types/node": "^18.13.0",
     "bob-ts": "^4.1.1",
     "bob-tsm": "^1.1.2",
@@ -17,6 +41,11 @@
   },
   "peerDependencies": {
     "@graphql-codegen/core": "^3.0.0",
+    "@soundxyz/gql-string": "workspace:*",
     "graphql": "^16.6.0"
+  },
+  "publishConfig": {
+    "directory": "dist",
+    "linkDirectory": true
   }
 }

@@ -1,0 +1,10 @@
+schema:
+  - './schema.graphql'
+documents:
+  - '**/*.{ts,tsx}'
+extensions:
+  codegen:
+    overwrites: true
+    generates:
+      ./src/generated/:
+        preset: '@soundxyz/codegen-fragments'
