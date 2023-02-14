@@ -95,11 +95,17 @@ export const plugin: PluginFunction<{
     assumeValid: true,
   });
 
+  const operations: Record<string, string> = {};
+
+  const operationsNames: string[] = [];
+
   return [
     importTypes,
     importMasking,
     ...fragments.map(value => {
-      return `\nexport const ${value.name.value}FragmentDoc = "" as unknown as StringDocumentNode<Types.${value.name.value}Fragment, never>;`;
+      const name = value.name.value;
+
+      return `\nexport const ${name}FragmentDoc = { name: '${name}', doc: '' } as unknown as StringDocumentNode<Types.${name}Fragment, never, '${name}'>;`;
     }),
     ...optimizedDocuments.reduce((acc: string[], value) => {
       const ast = getOperationAST(value);
@@ -110,14 +116,40 @@ export const plugin: PluginFunction<{
 
       if (!type) return acc;
 
-      const astName = ast.name.value;
+      const name = ast.name.value;
+
+      operationsNames.push(name);
+
+      const doc = stripIgnoredCharacters(print(value));
+
+      operations[name] = doc;
 
       acc.push(
-        `\nexport const ${astName}Document = '${stripIgnoredCharacters(
-          print(value),
-        )}' as unknown as StringDocumentNode<Types.${astName}${type},Types.${astName}${type}Variables>;`,
+        `\nexport const ${name}Document = { name: '${name}', doc: '${doc}' } as unknown as StringDocumentNode<Types.${name}${type},Types.${name}${type}Variables, '${name}'>;`,
       );
       return acc;
     }, []),
+    ...[
+      '\n',
+      ...Object.entries(operations).reduce(
+        (acc: string[], [operationName, doc]) => {
+          acc.push(`${operationName}: '${doc}',`);
+          return acc;
+        },
+        ['export const operations = {'],
+      ),
+      '} as const;',
+    ],
+    ...[
+      '\n',
+      ...operationsNames.reduce(
+        (acc: string[], value) => {
+          acc.push(`${value}: '${value}', `);
+          return acc;
+        },
+        ['export const OperationNames = {'],
+      ),
+      '} as const\nexport type OperationNames = typeof OperationNames[keyof typeof OperationNames];\n',
+    ],
   ].join(`\n`);
 };
