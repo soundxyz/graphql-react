@@ -1,15 +1,16 @@
 {
   "name": "@soundxyz/gql-string",
-  "private": true,
-  "main": "src/index.ts",
-  "type": "module",
   "version": "1.0.0",
-  "scripts": {
-    "prepare": "bob-tsm build.ts"
-  },
+  "private": true,
   "keywords": [],
   "license": "MIT",
   "author": "PabloSzx <pablosaez1995@gmail.com>",
+  "sideEffects": false,
+  "type": "module",
+  "main": "src/index.ts",
+  "scripts": {
+    "prepare": "bob-tsm build.ts"
+  },
   "devDependencies": {
     "@types/node": "^18.13.0",
     "bob-ts": "^4.1.1",

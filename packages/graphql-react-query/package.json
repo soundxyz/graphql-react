@@ -5,7 +5,12 @@
   "keywords": [],
   "license": "MIT",
   "author": "PabloSzx <pablosaez1995@gmail.com>",
+  "sideEffects": false,
   "type": "module",
+  "exports": {
+    ".": "./dist/index.js",
+    "./*": "./dist/*.js"
+  },
   "main": "src/index.ts",
   "scripts": {
     "prepare": "bob-tsm build.ts",
@@ -19,14 +24,15 @@
     "bob-ts": "^4.1.1",
     "bob-tsm": "^1.1.2",
     "esbuild": "^0.17.7",
+    "graphql": "^16.6.0",
     "react": "^18.2.0",
     "typescript": "^4.9.5"
   },
   "peerDependencies": {
     "@soundxyz/gql-string": "workspace:*",
     "@tanstack/react-query": "^4.24.4",
-    "@types/react": "^18.0.27",
-    "react": "^18.2.0"
+    "@types/react": ">=17",
+    "react": ">=17"
   },
   "publishConfig": {
     "directory": "dist"

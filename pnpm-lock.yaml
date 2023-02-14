@@ -116,6 +116,7 @@ importers:
       bob-ts: ^4.1.1
       bob-tsm: ^1.1.2
       esbuild: ^0.17.7
+      graphql: ^16.6.0
       react: ^18.2.0
       typescript: ^4.9.5
     devDependencies:
@@ -126,6 +127,7 @@ importers:
       bob-ts: 4.1.1_6swlmxc75z7l4vpfgj5xsjerpq
       bob-tsm: 1.1.2_bbhdg2tg4je6yluawzqfcx3rwi
       esbuild: 0.17.7
+      graphql: 16.6.0
       react: 18.2.0
       typescript: 4.9.5
     publishDirectory: dist
