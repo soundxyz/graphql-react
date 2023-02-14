@@ -1,7 +1,7 @@
 import type { PluginFunction } from '@graphql-codegen/plugin-helpers';
 
 const fragmentTypeHelper = `
-export type FragmentType<TDocumentType extends DocumentNode<any, any>> = TDocumentType extends DocumentNode<
+export type FragmentType<TDocumentType extends StringDocumentNode<any, any>> = TDocumentType extends StringDocumentNode<
   infer TType,
   any
 >
@@ -14,7 +14,7 @@ export type FragmentType<TDocumentType extends DocumentNode<any, any>> = TDocume
 
 const makeFragmentDataHelper = `
 export function makeFragmentData<
-  F extends DocumentNode,
+  F extends StringDocumentNode,
   FT extends ResultOf<F>
 >(data: FT, _fragment: F): FragmentType<F> {
   return data as FragmentType<F>;
@@ -38,8 +38,8 @@ const createUnmaskFunctionTypeDefinition = (
   unmaskFunctionName = defaultUnmaskFunctionName,
   opts: { nullable: boolean; list: 'with-list' | 'only-list' | false },
 ) => `export function ${unmaskFunctionName}<TType>(
-  _documentNode: DocumentNode<TType, any>,
-  fragmentType: ${modifyType('FragmentType<DocumentNode<TType, any>>', opts)}
+  _documentNode: StringDocumentNode<TType, any>,
+  fragmentType: ${modifyType('FragmentType<StringDocumentNode<TType, any>>', opts)}
 ): ${modifyType('TType', opts)}`;
 
 const createUnmaskFunctionTypeDefinitions = (unmaskFunctionName = defaultUnmaskFunctionName) => [
@@ -74,6 +74,33 @@ ${createUnmaskFunctionTypeDefinitions(unmaskFunctionName)
 }
 `;
 
+const documentNode = `declare const result: unique symbol;
+declare const variables: unique symbol;
+
+export type StringDocumentNode<
+  Result = {
+    [key: string]: any;
+  },
+  Variables = {
+    [key: string]: any;
+  },
+> = string & { [result]: Result; [variables]: Variables };
+
+export declare type ResultOf<T> = T extends StringDocumentNode<
+  infer ResultType,
+  infer _VariablesType
+>
+  ? ResultType
+  : never;
+
+export declare type VariablesOf<T> = T extends StringDocumentNode<
+  infer _ResultType,
+  infer VariablesType
+>
+  ? VariablesType
+  : never;
+`;
+
 /**
  * Plugin for generating fragment masking helper functions.
  */
@@ -81,35 +108,14 @@ export const plugin: PluginFunction<{
   useTypeImports?: boolean;
   augmentedModuleName?: string;
   unmaskFunctionName?: string;
-}> = (_, __, { useTypeImports, augmentedModuleName, unmaskFunctionName }, _info) => {
-  const documentNodeImport = `${
-    useTypeImports ? 'import type' : 'import'
-  } { ResultOf, TypedDocumentNode as DocumentNode,  } from '@graphql-typed-document-node/core';\n`;
-
-  if (augmentedModuleName == null) {
-    return [
-      documentNodeImport,
-      `\n`,
-      fragmentTypeHelper,
-      `\n`,
-      createUnmaskFunction(unmaskFunctionName),
-      `\n`,
-      makeFragmentDataHelper,
-    ].join(``);
-  }
-
+}> = (_, __, { unmaskFunctionName }, _info) => {
   return [
-    documentNodeImport,
-    `declare module "${augmentedModuleName}" {`,
-    [
-      ...fragmentTypeHelper.split(`\n`),
-      `\n`,
-      ...createUnmaskFunctionTypeDefinitions(unmaskFunctionName).join('\n').split('\n'),
-      `\n`,
-      makeFragmentDataHelper,
-    ]
-      .map(line => (line === `\n` || line === '' ? line : `  ${line}`))
-      .join(`\n`),
-    `}`,
-  ].join(`\n`);
+    documentNode,
+    `\n`,
+    fragmentTypeHelper,
+    `\n`,
+    createUnmaskFunction(unmaskFunctionName),
+    `\n`,
+    makeFragmentDataHelper,
+  ].join(``);
 };

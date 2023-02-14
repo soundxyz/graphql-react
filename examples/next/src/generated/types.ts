@@ -3852,10 +3852,34 @@ export type TestMutateMutationVariables = Exact<{ [key: string]: never; }>;
 
 export type TestMutateMutation = { __typename?: 'Mutation', generateAuthChallenge: number };
 
-import { ResultOf, TypedDocumentNode as DocumentNode,  } from '@graphql-typed-document-node/core';
+declare const result: unique symbol;
+declare const variables: unique symbol;
+
+export type StringDocumentNode<
+  Result = {
+    [key: string]: any;
+  },
+  Variables = {
+    [key: string]: any;
+  },
+> = string & { [result]: Result; [variables]: Variables };
+
+export declare type ResultOf<T> = T extends StringDocumentNode<
+  infer ResultType,
+  infer _VariablesType
+>
+  ? ResultType
+  : never;
+
+export declare type VariablesOf<T> = T extends StringDocumentNode<
+  infer _ResultType,
+  infer VariablesType
+>
+  ? VariablesType
+  : never;
 
 
-export type FragmentType<TDocumentType extends DocumentNode<any, any>> = TDocumentType extends DocumentNode<
+export type FragmentType<TDocumentType extends StringDocumentNode<any, any>> = TDocumentType extends StringDocumentNode<
   infer TType,
   any
 >
@@ -3868,41 +3892,41 @@ export type FragmentType<TDocumentType extends DocumentNode<any, any>> = TDocume
 
 // return non-nullable if `fragmentType` is non-nullable
 export function getFragment<TType>(
-  _documentNode: DocumentNode<TType, any>,
-  fragmentType: FragmentType<DocumentNode<TType, any>>
+  _documentNode: StringDocumentNode<TType, any>,
+  fragmentType: FragmentType<StringDocumentNode<TType, any>>
 ): TType;
 // return nullable if `fragmentType` is nullable
 export function getFragment<TType>(
-  _documentNode: DocumentNode<TType, any>,
-  fragmentType: FragmentType<DocumentNode<TType, any>> | null | undefined
+  _documentNode: StringDocumentNode<TType, any>,
+  fragmentType: FragmentType<StringDocumentNode<TType, any>> | null | undefined
 ): TType | null | undefined;
 // return array of non-nullable if `fragmentType` is array of non-nullable
 export function getFragment<TType>(
-  _documentNode: DocumentNode<TType, any>,
-  fragmentType: ReadonlyArray<FragmentType<DocumentNode<TType, any>>>
+  _documentNode: StringDocumentNode<TType, any>,
+  fragmentType: ReadonlyArray<FragmentType<StringDocumentNode<TType, any>>>
 ): ReadonlyArray<TType>;
 // return array of nullable if `fragmentType` is array of nullable
 export function getFragment<TType>(
-  _documentNode: DocumentNode<TType, any>,
-  fragmentType: ReadonlyArray<FragmentType<DocumentNode<TType, any>>> | null | undefined
+  _documentNode: StringDocumentNode<TType, any>,
+  fragmentType: ReadonlyArray<FragmentType<StringDocumentNode<TType, any>>> | null | undefined
 ): ReadonlyArray<TType> | null | undefined;
 export function getFragment<TType>(
-  _documentNode: DocumentNode<TType, any>,
-  fragmentType: FragmentType<DocumentNode<TType, any>> | ReadonlyArray<FragmentType<DocumentNode<TType, any>>> | null | undefined
+  _documentNode: StringDocumentNode<TType, any>,
+  fragmentType: FragmentType<StringDocumentNode<TType, any>> | ReadonlyArray<FragmentType<StringDocumentNode<TType, any>>> | null | undefined
 ): TType | ReadonlyArray<TType> | null | undefined {
   return fragmentType as any;
 }
 
 
 export function makeFragmentData<
-  F extends DocumentNode,
+  F extends StringDocumentNode,
   FT extends ResultOf<F>
 >(data: FT, _fragment: F): FragmentType<F> {
   return data as FragmentType<F>;
 }
 
-export const TestFragmentFragmentDoc = "" as unknown as DocumentNode<TestFragmentFragment, unknown>;
+export const TestFragmentFragmentDoc = "" as unknown as StringDocumentNode<TestFragmentFragment, unknown>;
 
-export const TestDocument = 'query Test{__typename now}' as unknown as DocumentNode<TestQuery,TestQueryVariables>;
+export const TestDocument = 'query Test{__typename now}' as unknown as StringDocumentNode<TestQuery,TestQueryVariables>;
 
-export const TestMutateDocument = 'mutation TestMutate{generateAuthChallenge(publicAddress:"")}' as unknown as DocumentNode<TestMutateMutation,TestMutateMutationVariables>;
+export const TestMutateDocument = 'mutation TestMutate{generateAuthChallenge(publicAddress:"")}' as unknown as StringDocumentNode<TestMutateMutation,TestMutateMutationVariables>;

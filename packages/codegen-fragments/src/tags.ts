@@ -94,7 +94,7 @@ export const plugin: PluginFunction<{
 
   return [
     ...fragments.map(value => {
-      return `\nexport const ${value.name.value}FragmentDoc = "" as unknown as DocumentNode<${value.name.value}Fragment, unknown>;`;
+      return `\nexport const ${value.name.value}FragmentDoc = "" as unknown as StringDocumentNode<${value.name.value}Fragment, unknown>;`;
     }),
     ...optimizedDocuments.reduce((acc: string[], value) => {
       const ast = getOperationAST(value);
@@ -110,7 +110,7 @@ export const plugin: PluginFunction<{
       acc.push(
         `\nexport const ${astName}Document = '${stripIgnoredCharacters(
           print(value),
-        )}' as unknown as DocumentNode<${astName}${type},${astName}${type}Variables>;`,
+        )}' as unknown as StringDocumentNode<${astName}${type},${astName}${type}Variables>;`,
       );
       return acc;
     }, []),
