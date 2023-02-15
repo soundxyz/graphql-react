@@ -236,15 +236,6 @@ export function GraphQLReactQueryClient<
 
         return result;
       },
-      onSuccess(data) {
-        return options.onSuccess?.(data);
-      },
-      select: data => {
-        data.pageParams;
-        return {
-          ...data,
-        };
-      },
       ...options,
     });
 
