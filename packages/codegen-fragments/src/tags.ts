@@ -38,7 +38,7 @@ function getOperationType(documentNode: DocumentNode): OperationType | null {
 
   const definition = documentNode.definitions[0];
 
-  if (definition.kind !== Kind.OPERATION_DEFINITION) {
+  if (definition?.kind !== Kind.OPERATION_DEFINITION) {
     return null;
   }
 

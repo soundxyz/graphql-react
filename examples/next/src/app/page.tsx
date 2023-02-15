@@ -3,6 +3,7 @@
 import { useQuery, gql } from '../client/query';
 
 import { Now } from '../components/now';
+import { TestDocument } from '../generated/documents';
 import styles from './styles.module.css';
 
 export const metadata = {
@@ -21,7 +22,7 @@ gql`
 `;
 
 export default function Page() {
-  const { data } = useQuery('Test', {});
+  const { data } = useQuery(TestDocument, {});
 
   return (
     <div className={styles.container}>

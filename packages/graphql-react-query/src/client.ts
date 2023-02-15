@@ -27,7 +27,7 @@ import type { ExecutionResult } from 'graphql';
 
 export function GraphQLReactQueryClient<
   Operations extends string = '',
-  OperationNames extends string = '',
+  _OperationNames extends string = '',
 >({
   clientConfig,
   endpoint,
