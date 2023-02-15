@@ -1,6 +1,6 @@
 import { gql } from '@soundxyz/gql-string';
 import Link from 'next/link';
-import { useEffect, useState } from 'react';
+import { Fragment, useEffect, useState } from 'react';
 import { useInfiniteQuery } from '../client/query';
 import { ReleasesTestDocument } from '../generated/documents';
 import { ReleaseType } from '../generated/types';
@@ -139,7 +139,7 @@ export default function Releases() {
       <ol>
         {dataPaginated?.pages?.flatMap((list, index) => {
           return (
-            <>
+            <Fragment key={index}>
               <h4>{index}</h4>
               {list.releases.edges.map(edge => {
                 return (
@@ -149,7 +149,7 @@ export default function Releases() {
                 );
               })}
               <br />
-            </>
+            </Fragment>
           );
         })}
       </ol>
