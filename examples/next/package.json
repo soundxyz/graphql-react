@@ -6,7 +6,9 @@
   "license": "MIT",
   "author": "PabloSzx <pablosaez1995@gmail.com>",
   "scripts": {
-    "dev": "next",
+    "dev": "concurrently pnpm:dev:*",
+    "dev:next": "next",
+    "dev:codegen": "graphql-codegen --watch",
     "generate": "graphql-codegen",
     "watch": "graphql-codegen --watch"
   },
@@ -14,8 +16,7 @@
     "@graphql-codegen/typescript": "^3.0.0",
     "@graphql-typed-document-node/core": "^3.1.1",
     "@soundxyz/gql-string": "workspace:*",
-    "@soundxyz/graphql-react-query": "workspace:*",
-    "graphql-tag": "^2.12.6"
+    "@soundxyz/graphql-react-query": "workspace:*"
   },
   "devDependencies": {
     "@graphql-codegen/cli": "^3.0.0",
@@ -24,6 +25,7 @@
     "@types/node": "^18.13.0",
     "@types/react": "^18.0.27",
     "@types/react-dom": "^18.0.10",
+    "concurrently": "^7.6.0",
     "graphql": "^16.6.0",
     "next": "^13.1.6",
     "react": "^18.2.0",

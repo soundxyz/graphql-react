@@ -3853,3 +3853,11 @@ export type TestMutateMutationVariables = Exact<{
 
 
 export type TestMutateMutation = { __typename?: 'Mutation', generateAuthChallenge: number };
+
+export type TestTwoQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type TestTwoQuery = (
+  { __typename: 'Query' }
+  & { ' $fragmentRefs'?: { 'TestFragmentFragment': TestFragmentFragment } }
+);

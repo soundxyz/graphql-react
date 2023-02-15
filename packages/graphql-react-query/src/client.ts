@@ -132,10 +132,9 @@ export function GraphQLReactQueryClient({
     {
       variables,
       ...options
-    }: UseQueryOptions<Result, Error, Result, QueryKey> &
-      (Variables extends Record<string, never>
-        ? { variables?: undefined }
-        : { variables: Variables }),
+    }: Variables extends Record<string, never>
+      ? UseQueryOptions<Result, Error, Result, QueryKey> & { variables?: undefined }
+      : UseQueryOptions<Result, Error, Result, QueryKey> & { variables: Variables },
   ) {
     return useQueryReactQuery<Result, Error, Result>({
       queryKey: [name, variables],
