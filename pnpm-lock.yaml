@@ -71,6 +71,7 @@ importers:
 
   packages/codegen-fragments:
     specifiers:
+      '@graphql-codegen/add': ^4.0.0
       '@graphql-codegen/core': ^3.0.0
       '@graphql-codegen/gql-tag-operations': ^2.0.0
       '@graphql-codegen/plugin-helpers': ^4.0.0
@@ -87,6 +88,7 @@ importers:
       graphql: ^16.6.0
       typescript: ^4.9.5
     dependencies:
+      '@graphql-codegen/add': 4.0.0_graphql@16.6.0
       '@graphql-codegen/gql-tag-operations': 2.0.0_graphql@16.6.0
       '@graphql-codegen/typescript': 3.0.0_graphql@16.6.0
       '@graphql-codegen/typescript-operations': 3.0.0_graphql@16.6.0
@@ -1248,6 +1250,16 @@ packages:
     requiresBuild: true
     dev: true
     optional: true
+
+  /@graphql-codegen/add/4.0.0_graphql@16.6.0:
+    resolution: {integrity: sha512-AxuDFdDi4Hx1fVVSkSo9O0i/kGEidjXw3gqSfx6H+dSeC/gcjpsVZyCyvXERVXpTNXYobVIJtTV3UaSzGNZMSw==}
+    peerDependencies:
+      graphql: ^0.8.0 || ^0.9.0 || ^0.10.0 || ^0.11.0 || ^0.12.0 || ^0.13.0 || ^14.0.0 || ^15.0.0 || ^16.0.0
+    dependencies:
+      '@graphql-codegen/plugin-helpers': 4.0.0_graphql@16.6.0
+      graphql: 16.6.0
+      tslib: 2.4.1
+    dev: false
 
   /@graphql-codegen/cli/3.0.0_oagga47ridy4omgf45pd3y74j4:
     resolution: {integrity: sha512-16nuFabHCfPQ/d+v52OvR1ueL8eiJvS/nRuvuEV8d9T1fkborHKRw4lhyKVebu9izFBs6G0CvVCLhgVzQwHSLw==}

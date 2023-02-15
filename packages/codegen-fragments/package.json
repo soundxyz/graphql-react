@@ -20,6 +20,7 @@
     "watch": "bob-tsm --watch=src build.ts"
   },
   "dependencies": {
+    "@graphql-codegen/add": "^4.0.0",
     "@graphql-codegen/gql-tag-operations": "^2.0.0",
     "@graphql-codegen/typescript": "^3.0.0",
     "@graphql-codegen/typescript-operations": "^3.0.0",

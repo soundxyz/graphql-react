@@ -1,3 +1,4 @@
+/* eslint-disable */
 import type * as Types from './types';
 
 import type { StringDocumentNode } from '@soundxyz/gql-string';

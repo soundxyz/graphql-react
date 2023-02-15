@@ -1,3 +1,4 @@
+/* eslint-disable */
 import type { StringDocumentNode, ResultOf } from '@soundxyz/gql-string';
 
 

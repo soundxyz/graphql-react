@@ -3,6 +3,7 @@ import assert from 'assert';
 import { parse, printSchema } from 'graphql';
 import { join } from 'path';
 
+import * as addPlugin from '@graphql-codegen/add';
 import * as typescriptPlugin from '@graphql-codegen/typescript';
 import * as typescriptOperationPlugin from '@graphql-codegen/typescript-operations';
 import { ClientSideBaseVisitor } from '@graphql-codegen/visitor-plugin-common';
@@ -35,9 +36,11 @@ export const preset: Types.OutputPreset<{}> = {
       ...options.pluginMap,
       [`typescript`]: typescriptPlugin,
       [`typescript-operations`]: typescriptOperationPlugin,
+      [`add`]: addPlugin,
     };
 
     const tsPlugins: Array<Types.ConfiguredPlugin> = [
+      { [`add`]: { content: `/* eslint-disable */` } },
       { [`typescript`]: {} },
       { [`typescript-operations`]: {} },
       ...options.plugins,
@@ -45,11 +48,25 @@ export const preset: Types.OutputPreset<{}> = {
 
     const documentsPluginMap: Record<string, CodegenPlugin<any>> = {
       [`gen-dts`]: gqlTagPlugin,
+      [`add`]: addPlugin,
     };
+
+    const documentsPlugins: Array<Types.ConfiguredPlugin> = [
+      { [`add`]: { content: `/* eslint-disable */` } },
+      { [`gen-dts`]: { sourcesWithOperations } },
+    ];
 
     const fragmentsPluginMap: Record<string, CodegenPlugin<any>> = {
       [`fragment-masking`]: fragmentMaskingPlugin,
+      [`add`]: addPlugin,
     };
+
+    const fragmentsPlugins: Array<Types.ConfiguredPlugin> = [
+      { [`add`]: { content: `/* eslint-disable */` } },
+      {
+        [`fragment-masking`]: {},
+      },
+    ];
 
     const processedSchemaAst = processSchema(options.schemaAst);
     const processedSchema = parse(printSchema(processedSchemaAst));
@@ -73,7 +90,7 @@ export const preset: Types.OutputPreset<{}> = {
         },
         documents: sources,
         pluginMap: documentsPluginMap,
-        plugins: [{ [`gen-dts`]: { sourcesWithOperations } }],
+        plugins: documentsPlugins,
         schema: processedSchema,
         schemaAst: processedSchemaAst,
       },
@@ -85,11 +102,7 @@ export const preset: Types.OutputPreset<{}> = {
         },
         documents: sources,
         pluginMap: fragmentsPluginMap,
-        plugins: [
-          {
-            [`fragment-masking`]: {},
-          },
-        ],
+        plugins: fragmentsPlugins,
         schema: options.schema,
       },
     ];
