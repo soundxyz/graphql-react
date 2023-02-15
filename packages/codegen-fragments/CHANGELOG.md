@@ -1,5 +1,12 @@
 # @soundxyz/codegen-fragments
 
+## 1.0.1
+
+### Patch Changes
+
+- [`f3e7e8b`](https://github.com/soundxyz/graphql-react-query/commit/f3e7e8bbbc7e48c50bca79807831efda5295ef6f)
+  Thanks [@PabloSzx](https://github.com/PabloSzx)! - Add eslint-disable to generated files
+
 ## 1.0.0
 
 ### Minor Changes
