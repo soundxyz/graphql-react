@@ -1,8 +1,10 @@
+'use client';
+
 import { gql } from '@soundxyz/graphql-react-query';
+import { useQuery } from '../client/query';
 
 import { Now } from '../components/now';
-import { TestFragmentFragmentDoc } from '../generated/documents';
-import { makeFragmentData } from '../generated/fragment-masking';
+import { TestDocument } from '../generated/documents';
 import styles from './styles.module.css';
 
 export const metadata = {
@@ -21,17 +23,16 @@ gql`
 `;
 
 export default function Page() {
+  const { data } = useQuery(TestDocument, {});
+
+  console.log({
+    data,
+  });
+
   return (
     <div className={styles.container}>
-      <p className={styles.p}>Hello World</p>
-      <Now
-        info={makeFragmentData(
-          {
-            now: Date.now(),
-          },
-          TestFragmentFragmentDoc,
-        )}
-      />
+      <p className={styles.p}>{data?.__typename || '...'}</p>
+      {data && <Now info={data} />}
     </div>
   );
 }

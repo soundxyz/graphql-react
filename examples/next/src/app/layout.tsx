@@ -1,4 +1,5 @@
-import { gql } from '@soundxyz/graphql-react-query';
+import { gql } from '@soundxyz/gql-string';
+import { GraphQLReactQueryProvider } from '../client/query';
 import './global.css';
 
 gql`
@@ -15,8 +16,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
-      <body>{children}</body>
-    </html>
+    <GraphQLReactQueryProvider>
+      <html lang="en">
+        <body>{children}</body>
+      </html>
+    </GraphQLReactQueryProvider>
   );
 }

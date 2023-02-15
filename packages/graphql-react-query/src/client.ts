@@ -30,10 +30,12 @@ export function GraphQLReactQueryClient({
   async function fetcher<Result = unknown>({
     operationName,
     variables,
+    fetchOptions: extraFetchOptions,
   }: {
     operationName: string;
     variables: unknown;
-  }) {
+    fetchOptions?: Partial<RequestInit>;
+  }): Promise<Result> {
     const query = operations[operationName];
 
     if (!query) throw Error(`Operation for ${operationName} could not be found`);
@@ -46,6 +48,7 @@ export function GraphQLReactQueryClient({
       },
       body: JSON.stringify({ query, variables }),
       ...fetchOptions,
+      ...extraFetchOptions,
     });
 
     const { errors, data = null }: ExecutionResult<Result> = await res
@@ -75,6 +78,8 @@ export function GraphQLReactQueryClient({
       throw new Error(message);
     }
 
+    if (!data) throw Error(`Missing data from API`);
+
     return data;
   }
 
@@ -93,8 +98,29 @@ export function GraphQLReactQueryClient({
     },
   });
 
-  function Provider({ children }: { children: ReactNode }) {
-    return createElement(QueryClientProvider, { client }, children);
+  function GraphQLReactQueryProvider({ children }: { children: ReactNode }) {
+    return createElement(QueryClientProvider, { client, children });
+  }
+
+  function fetchGQL<
+    Result extends Record<string, unknown>,
+    Variables extends Record<string, unknown>,
+    OperationName extends string,
+  >(
+    { name }: StringDocumentNode<Result, Variables, OperationName>,
+    {
+      variables,
+      ...fetchOptions
+    }: Partial<RequestInit> &
+      (Variables extends Record<string, never>
+        ? { variables?: undefined }
+        : { variables: Variables }),
+  ) {
+    return fetcher<Result>({
+      operationName: name,
+      variables,
+      fetchOptions,
+    });
   }
 
   function useQuery<
@@ -136,8 +162,9 @@ export function GraphQLReactQueryClient({
 
   return {
     client,
-    Provider,
+    GraphQLReactQueryProvider,
     useQuery,
     useMutation,
+    fetchGQL,
   };
 }
