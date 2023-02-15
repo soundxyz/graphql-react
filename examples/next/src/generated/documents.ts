@@ -3,22 +3,22 @@ import type * as Types from './types';
 import type { StringDocumentNode } from '@soundxyz/gql-string';
 
 
-export const TestFragmentFragmentDoc = { name: 'TestFragment', doc: '' } as unknown as StringDocumentNode<Types.TestFragmentFragment, never, 'TestFragment'>;
+export const TestFragmentFragmentDoc = { name: 'TestFragment', doc: '' } as unknown as StringDocumentNode<Types.TestFragmentFragment, never>;
 
-export const TestDocument = { name: 'Test', doc: 'query Test{__typename now}' } as unknown as StringDocumentNode<Types.TestQuery,Types.TestQueryVariables, 'Test'>;
+export const TestDocument = { name: 'Test', doc: 'query Test{__typename now}' } as unknown as StringDocumentNode<Types.TestQuery,Types.TestQueryVariables>;
 
-export const TestMutateDocument = { name: 'TestMutate', doc: 'mutation TestMutate($publicAddress:String!){generateAuthChallenge(publicAddress:$publicAddress)}' } as unknown as StringDocumentNode<Types.TestMutateMutation,Types.TestMutateMutationVariables, 'TestMutate'>;
+export const TestMutateDocument = { name: 'TestMutate', doc: 'mutation TestMutate($publicAddress:String!){generateAuthChallenge(publicAddress:$publicAddress)}' } as unknown as StringDocumentNode<Types.TestMutateMutation,Types.TestMutateMutationVariables>;
 
-export const TestTwoDocument = { name: 'TestTwo', doc: 'query TestTwo{__typename now}' } as unknown as StringDocumentNode<Types.TestTwoQuery,Types.TestTwoQueryVariables, 'TestTwo'>;
+export const TestTwoDocument = { name: 'TestTwo', doc: 'query TestTwo{__typename now}' } as unknown as StringDocumentNode<Types.TestTwoQuery,Types.TestTwoQueryVariables>;
 
-export const ReleasesTestDocument = { name: 'ReleasesTest', doc: 'query ReleasesTest($filter:ReleasesCursorFilterArgs!$pagination:ReleasesCursorConnectionArgs!){releases(filter:$filter pagination:$pagination){edges{node{id title artist{id name}}cursor}pageInfo{hasPreviousPage hasNextPage startCursor endCursor}}}' } as unknown as StringDocumentNode<Types.ReleasesTestQuery,Types.ReleasesTestQueryVariables, 'ReleasesTest'>;
+export const ReleasesTestDocument = { name: 'ReleasesTest', doc: 'query ReleasesTest($filter:ReleasesCursorFilterArgs!$pagination:ReleasesCursorConnectionArgs!){releases(filter:$filter pagination:$pagination){edges{node{id title artist{id name}}cursor}pageInfo{hasPreviousPage hasNextPage startCursor endCursor}}}' } as unknown as StringDocumentNode<Types.ReleasesTestQuery,Types.ReleasesTestQueryVariables>;
 
 
 export const operations = {
-Test: 'query Test{__typename now}',
-TestMutate: 'mutation TestMutate($publicAddress:String!){generateAuthChallenge(publicAddress:$publicAddress)}',
-TestTwo: 'query TestTwo{__typename now}',
-ReleasesTest: 'query ReleasesTest($filter:ReleasesCursorFilterArgs!$pagination:ReleasesCursorConnectionArgs!){releases(filter:$filter pagination:$pagination){edges{node{id title artist{id name}}cursor}pageInfo{hasPreviousPage hasNextPage startCursor endCursor}}}',
+Test: TestDocument,
+TestMutate: TestMutateDocument,
+TestTwo: TestTwoDocument,
+ReleasesTest: ReleasesTestDocument,
 } as const;
 
 

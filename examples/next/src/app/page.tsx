@@ -23,7 +23,7 @@ gql`
 `;
 
 export default function Page() {
-  const { data } = useQuery(TestDocument, {});
+  const { data } = useQuery('Test', {});
 
   return (
     <div className={styles.container}>

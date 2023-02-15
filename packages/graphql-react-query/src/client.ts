@@ -2,7 +2,7 @@ import orderBy from 'lodash-es/orderBy.js';
 import { createElement, ReactNode, useMemo } from 'react';
 import { proxy, useSnapshot } from 'valtio';
 
-import { StringDocumentNode } from '@soundxyz/gql-string';
+import { ResultOf, StringDocumentNode, VariablesOf } from '@soundxyz/gql-string';
 
 import {
   QueryClient,
@@ -20,31 +20,36 @@ import { useLatestRef, useStableObject } from './utils';
 
 import type { ExecutionResult } from 'graphql';
 
-export function GraphQLReactQueryClient({
+export function GraphQLReactQueryClient<
+  Operations extends Readonly<Record<string, StringDocumentNode>>,
+>({
   clientConfig,
   endpoint,
   headers,
-  operations,
   fetchOptions,
+
+  operations,
 }: {
   clientConfig?: QueryClientConfig;
   endpoint: string;
   headers: Readonly<Record<string, unknown>>;
-  operations: Readonly<Record<string, string>>;
+  operations: Operations;
   fetchOptions?: Partial<RequestInit>;
 }) {
+  type OperationName = keyof Operations;
+
   async function fetcher<Result = unknown>({
     operationName,
     variables,
     fetchOptions: extraFetchOptions,
   }: {
-    operationName: string;
+    operationName: OperationName;
     variables: unknown;
     fetchOptions?: Partial<RequestInit>;
   }): Promise<Result> {
     const query = operations[operationName];
 
-    if (!query) throw Error(`Operation for ${operationName} could not be found`);
+    if (!query) throw Error(`Operation for ${operationName as string} could not be found`);
 
     const res = await fetch(endpoint, {
       method: 'POST',
@@ -98,7 +103,7 @@ export function GraphQLReactQueryClient({
 
           if (typeof operationName !== 'string') throw Error(`Invalid GraphQL operation given`);
 
-          return fetcher({ operationName, variables });
+          return fetcher({ operationName: operationName as OperationName, variables });
         },
       },
     },
@@ -108,42 +113,50 @@ export function GraphQLReactQueryClient({
     return createElement(QueryClientProvider, { client, children });
   }
 
-  function fetchGQL<
-    Result extends Record<string, unknown>,
-    Variables extends Record<string, unknown>,
-    OperationName extends string,
-  >(
-    { name }: StringDocumentNode<Result, Variables, OperationName>,
+  function fetchGQL<DocumentOperationName extends OperationName>(
+    name: DocumentOperationName,
     {
       variables,
       ...fetchOptions
     }: Partial<RequestInit> &
-      (Variables extends Record<string, never>
+      (VariablesOf<Operations[DocumentOperationName]> extends Record<string, never>
         ? { variables?: undefined }
-        : { variables: Variables }),
+        : { variables: VariablesOf<Operations[DocumentOperationName]> }),
   ) {
-    return fetcher<Result>({
+    return fetcher<ResultOf<Operations[DocumentOperationName]>>({
       operationName: name,
       variables,
       fetchOptions,
     });
   }
 
-  function useQuery<
-    Result extends Record<string, unknown>,
-    Variables extends Record<string, unknown>,
-    OperationName extends string,
-  >(
-    { name }: StringDocumentNode<Result, Variables, OperationName>,
+  function useQuery<QueryOperationName extends OperationName>(
+    operationName: QueryOperationName,
     {
       variables,
       ...options
-    }: Variables extends Record<string, never>
-      ? UseQueryOptions<Result, Error, Result, QueryKey> & { variables?: undefined }
-      : UseQueryOptions<Result, Error, Result, QueryKey> & { variables: Variables },
+    }: VariablesOf<Operations[QueryOperationName]> extends Record<string, never>
+      ? UseQueryOptions<
+          ResultOf<Operations[QueryOperationName]>,
+          Error,
+          ResultOf<Operations[QueryOperationName]>,
+          QueryKey
+        > & {
+          variables?: undefined;
+        }
+      : UseQueryOptions<
+          ResultOf<Operations[QueryOperationName]>,
+          Error,
+          ResultOf<Operations[QueryOperationName]>,
+          QueryKey
+        > & { variables: VariablesOf<Operations[QueryOperationName]> },
   ) {
-    return useQueryReactQuery<Result, Error, Result>({
-      queryKey: [name, variables],
+    return useQueryReactQuery<
+      ResultOf<Operations[QueryOperationName]>,
+      Error,
+      ResultOf<Operations[QueryOperationName]>
+    >({
+      queryKey: [operationName, variables],
       ...options,
     });
   }
@@ -167,16 +180,17 @@ export function GraphQLReactQueryClient({
   const infiniteQueryStores: Record<string, InfiniteQueryStore<unknown>> = {};
 
   function useInfiniteQuery<
-    Result extends Record<string, unknown>,
-    Variables extends Record<string, unknown>,
-    OperationName extends string,
+    QueryOperationName extends OperationName,
     Entity extends Record<string, unknown>,
-    Options extends Omit<UseInfiniteQueryOptions<Result>, 'queryKey' | 'queryFn'> & {
-      getNextPageParam?: StrictGetPageParam<Result>;
-      getPreviousPageParam?: StrictGetPageParam<Result>;
+    Options extends Omit<
+      UseInfiniteQueryOptions<ResultOf<Operations[QueryOperationName]>>,
+      'queryKey' | 'queryFn'
+    > & {
+      getNextPageParam?: StrictGetPageParam<ResultOf<Operations[QueryOperationName]>>;
+      getPreviousPageParam?: StrictGetPageParam<ResultOf<Operations[QueryOperationName]>>;
     },
   >(
-    { name }: StringDocumentNode<Result, Variables, OperationName>,
+    name: QueryOperationName,
     {
       variables,
 
@@ -187,23 +201,29 @@ export function GraphQLReactQueryClient({
 
       ...options
     }: Options & {
-      variables: ({ pageParam }: { pageParam: CursorPageParam | null | undefined }) => Variables;
+      variables: ({
+        pageParam,
+      }: {
+        pageParam: CursorPageParam | null | undefined;
+      }) => VariablesOf<Operations[QueryOperationName]>;
 
-      list(result: Result): Entity[];
+      list(result: ResultOf<Operations[QueryOperationName]>): Entity[];
       uniq(entity: Entity): string;
       orderEntity: [(entity: Entity) => unknown, ...((entity: Entity) => unknown)[]];
       orderType: ['asc' | 'desc', ...('asc' | 'desc')[]];
     },
   ) {
-    const store = (infiniteQueryStores[name] ||= proxy<InfiniteQueryStore<Entity>>({
+    const store = (infiniteQueryStores[name as keyof typeof infiniteQueryStores] ||= proxy<
+      InfiniteQueryStore<Entity>
+    >({
       nodes: {},
     })) as InfiniteQueryStore<Entity>;
 
     const result = useInfiniteReactQuery({
       queryKey: [name, variables, 'Infinite'] as readonly unknown[],
       async queryFn({ pageParam }) {
-        const result = await fetcher<Result>({
-          operationName: name,
+        const result = await fetcher<ResultOf<Operations[QueryOperationName]>>({
+          operationName: name as OperationName,
           variables: variables({ pageParam }),
         });
 
@@ -246,11 +266,13 @@ export function GraphQLReactQueryClient({
   }
 
   function useMutation<
-    Result extends Record<string, unknown>,
-    Variables extends Record<string, unknown>,
-    OperationName extends string,
-    Options extends UseMutationOptions<Result, Error, Variables>,
-  >({ name }: StringDocumentNode<Result, Variables, OperationName>, options: Options) {
+    MutationOperationName extends OperationName,
+    Options extends UseMutationOptions<
+      ResultOf<Operations[MutationOperationName]>,
+      Error,
+      VariablesOf<Operations[MutationOperationName]>
+    >,
+  >(name: MutationOperationName, options: Options) {
     return useMutationReactQuery({
       mutationFn(variables) {
         return fetcher({

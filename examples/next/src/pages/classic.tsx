@@ -6,7 +6,6 @@ import { gql } from '@soundxyz/gql-string';
 import styles from '../app/styles.module.css';
 import { fetchGQL, useQuery } from '../client/query';
 import { Now } from '../components/now';
-import { TestTwoDocument } from '../generated/documents';
 
 gql`
   query TestTwo {
@@ -18,13 +17,13 @@ gql`
 export const getStaticProps = async () => {
   return {
     props: {
-      test: await fetchGQL(TestTwoDocument, {}),
+      test: await fetchGQL('TestTwo', {}),
     },
   } satisfies GetStaticPropsResult<unknown>;
 };
 
 export default function Classic({ test }: InferGetStaticPropsType<typeof getStaticProps>) {
-  const { data = test } = useQuery(TestTwoDocument, {
+  const { data = test } = useQuery('TestTwo', {
     initialData: test,
   });
 

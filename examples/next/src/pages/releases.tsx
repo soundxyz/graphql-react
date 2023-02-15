@@ -2,7 +2,6 @@ import { gql } from '@soundxyz/gql-string';
 import Link from 'next/link';
 import { Fragment, useEffect, useState } from 'react';
 import { useInfiniteQuery } from '../client/query';
-import { ReleasesTestDocument } from '../generated/documents';
 import { ReleaseType } from '../generated/types';
 
 gql`
@@ -40,7 +39,7 @@ export default function Releases() {
     firstPage,
     lastPage,
     orderedList: flatList,
-  } = useInfiniteQuery(ReleasesTestDocument, {
+  } = useInfiniteQuery('ReleasesTest', {
     getNextPageParam(lastPage) {
       return {
         after: lastPage.releases.pageInfo.endCursor,

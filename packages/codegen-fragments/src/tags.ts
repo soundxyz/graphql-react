@@ -105,7 +105,7 @@ export const plugin: PluginFunction<{
     ...fragments.map(value => {
       const name = value.name.value;
 
-      return `\nexport const ${name}FragmentDoc = { name: '${name}', doc: '' } as unknown as StringDocumentNode<Types.${name}Fragment, never, '${name}'>;`;
+      return `\nexport const ${name}FragmentDoc = { name: '${name}', doc: '' } as unknown as StringDocumentNode<Types.${name}Fragment, never>;`;
     }),
     ...optimizedDocuments.reduce((acc: string[], value) => {
       const ast = getOperationAST(value);
@@ -125,15 +125,15 @@ export const plugin: PluginFunction<{
       operations[name] = doc;
 
       acc.push(
-        `\nexport const ${name}Document = { name: '${name}', doc: '${doc}' } as unknown as StringDocumentNode<Types.${name}${type},Types.${name}${type}Variables, '${name}'>;`,
+        `\nexport const ${name}Document = { name: '${name}', doc: '${doc}' } as unknown as StringDocumentNode<Types.${name}${type},Types.${name}${type}Variables>;`,
       );
       return acc;
     }, []),
     ...[
       '\n',
       ...Object.entries(operations).reduce(
-        (acc: string[], [operationName, doc]) => {
-          acc.push(`${operationName}: '${doc}',`);
+        (acc: string[], [operationName, _doc]) => {
+          acc.push(`${operationName}: ${operationName}Document,`);
           return acc;
         },
         ['export const operations = {'],
