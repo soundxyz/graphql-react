@@ -1,5 +1,12 @@
+import { gql } from '../client/query';
 import { TestFragmentFragmentDoc } from '../generated/documents';
 import { FragmentType, getFragment } from '../generated/fragment-masking';
+
+gql`
+  fragment TestFragment on Query {
+    now
+  }
+`;
 
 export function Now({ info }: { info: FragmentType<typeof TestFragmentFragmentDoc> }) {
   const { now } = getFragment(TestFragmentFragmentDoc, info);

@@ -1,10 +1,8 @@
 import type { GetStaticPropsResult, InferGetStaticPropsType } from 'next';
 import Link from 'next/link';
 
-import { gql } from '@soundxyz/gql-string';
-
 import styles from '../app/styles.module.css';
-import { fetchGQL, useQuery } from '../client/query';
+import { fetchGQL, useQuery, gql } from '../client/query';
 import { Now } from '../components/now';
 
 gql`

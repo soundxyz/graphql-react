@@ -1,7 +1,7 @@
-import { gql } from '@soundxyz/gql-string';
 import Link from 'next/link';
 import { Fragment, useEffect, useState } from 'react';
-import { useInfiniteQuery } from '../client/query';
+
+import { useInfiniteQuery, gql } from '../client/query';
 import { ReleaseType } from '../generated/types';
 
 gql`
@@ -142,7 +142,7 @@ export default function Releases() {
               <h4>{index}</h4>
               {list.releases.edges.map(edge => {
                 return (
-                  <li key={'infinite' + index + edge.node.id}>
+                  <li key={edge.node.id}>
                     {edge.node.title} - {edge.node.artist.name}
                   </li>
                 );

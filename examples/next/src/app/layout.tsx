@@ -1,12 +1,5 @@
-import { gql } from '@soundxyz/gql-string';
 import { GraphQLReactQueryProvider } from '../client/query';
 import './global.css';
-
-gql`
-  fragment TestFragment on Query {
-    now
-  }
-`;
 
 export default function RootLayout({
   // Layouts must accept a children prop.

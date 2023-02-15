@@ -2,7 +2,7 @@ import orderBy from 'lodash-es/orderBy.js';
 import { createElement, ReactNode, useMemo } from 'react';
 import { proxy, useSnapshot } from 'valtio';
 
-import { ResultOf, StringDocumentNode, VariablesOf } from '@soundxyz/gql-string';
+import { gql, ResultOf, StringDocumentNode, VariablesOf } from '@soundxyz/gql-string';
 
 import {
   QueryClient,
@@ -28,13 +28,14 @@ export function GraphQLReactQueryClient<
   headers,
   fetchOptions,
 
-  operations,
+  Operations,
 }: {
   clientConfig?: QueryClientConfig;
   endpoint: string;
   headers: Readonly<Record<string, unknown>>;
-  operations: Operations;
   fetchOptions?: Partial<RequestInit>;
+
+  Operations: Operations;
 }) {
   type OperationName = keyof Operations;
 
@@ -47,7 +48,7 @@ export function GraphQLReactQueryClient<
     variables: unknown;
     fetchOptions?: Partial<RequestInit>;
   }): Promise<Result> {
-    const query = operations[operationName];
+    const query = Operations[operationName];
 
     if (!query) throw Error(`Operation for ${operationName as string} could not be found`);
 
@@ -291,5 +292,6 @@ export function GraphQLReactQueryClient<
     useMutation,
     fetchGQL,
     useInfiniteQuery,
+    gql,
   };
 }

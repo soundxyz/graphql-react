@@ -105,7 +105,7 @@ export const plugin: PluginFunction<{
     ...fragments.map(value => {
       const name = value.name.value;
 
-      return `\nexport const ${name}FragmentDoc = { name: '${name}', doc: '' } as unknown as StringDocumentNode<Types.${name}Fragment, never>;`;
+      return `\nexport const ${name}FragmentDoc = '' as unknown as StringDocumentNode<Types.${name}Fragment, never>;`;
     }),
     ...optimizedDocuments.reduce((acc: string[], value) => {
       const ast = getOperationAST(value);
@@ -125,7 +125,7 @@ export const plugin: PluginFunction<{
       operations[name] = doc;
 
       acc.push(
-        `\nexport const ${name}Document = { name: '${name}', doc: '${doc}' } as unknown as StringDocumentNode<Types.${name}${type},Types.${name}${type}Variables>;`,
+        `\nexport const ${name}Document = '${doc}' as unknown as StringDocumentNode<Types.${name}${type},Types.${name}${type}Variables>;`,
       );
       return acc;
     }, []),
@@ -136,20 +136,10 @@ export const plugin: PluginFunction<{
           acc.push(`${operationName}: ${operationName}Document,`);
           return acc;
         },
-        ['export const operations = {'],
+        ['export const Operations = {'],
       ),
       '} as const;',
     ],
-    ...[
-      '\n',
-      ...operationsNames.reduce(
-        (acc: string[], value) => {
-          acc.push(`${value}: '${value}', `);
-          return acc;
-        },
-        ['export const OperationNames = {'],
-      ),
-      '} as const\nexport type OperationNames = typeof OperationNames[keyof typeof OperationNames];\n',
-    ],
+    '\n',
   ].join(`\n`);
 };

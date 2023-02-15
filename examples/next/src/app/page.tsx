@@ -1,10 +1,8 @@
 'use client';
 
-import { gql } from '@soundxyz/graphql-react-query';
-import { useQuery } from '../client/query';
+import { useQuery, gql } from '../client/query';
 
 import { Now } from '../components/now';
-import { TestDocument } from '../generated/documents';
 import styles from './styles.module.css';
 
 export const metadata = {
