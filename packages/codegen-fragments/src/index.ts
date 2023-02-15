@@ -68,6 +68,7 @@ export const preset: Types.OutputPreset<{}> = {
       {
         filename: join(options.baseOutputDir, 'documents.ts'),
         config: {
+          ...options.config,
           inlineFragmentTypes: 'mask',
         },
         documents: sources,
@@ -79,6 +80,7 @@ export const preset: Types.OutputPreset<{}> = {
       {
         filename: join(options.baseOutputDir, 'fragment-masking.ts'),
         config: {
+          ...options.config,
           inlineFragmentTypes: 'mask',
         },
         documents: sources,

@@ -1,11 +1,9 @@
 import {
-  buildSchema,
   DocumentNode,
   FragmentDefinitionNode,
   getOperationAST,
   OperationDefinitionNode,
   print,
-  printSchema,
   stripIgnoredCharacters,
 } from 'graphql';
 import { Kind } from 'graphql';
@@ -13,6 +11,7 @@ import { Kind } from 'graphql';
 import { PluginFunction } from '@graphql-codegen/plugin-helpers';
 import { optimizeDocuments } from '@graphql-tools/relay-operation-optimizer';
 import { Source } from '@graphql-tools/utils';
+import { BaseVisitor, RawConfig } from '@graphql-codegen/visitor-plugin-common';
 
 export type OperationOrFragment = {
   initialName: string;
@@ -72,10 +71,16 @@ function getFragmentDefinitions(documentNodes: DocumentNode[]): FragmentDefiniti
 const importTypes = `import type * as Types from './types';\n`;
 const importMasking = `import type { StringDocumentNode } from '@soundxyz/gql-string';\n`;
 
-export const plugin: PluginFunction<{
-  sourcesWithOperations: Array<SourceWithOperations>;
-  useTypeImports?: boolean;
-}> = async (schema, documents, { sourcesWithOperations }) => {
+export const plugin: PluginFunction<
+  RawConfig & {
+    sourcesWithOperations: Array<SourceWithOperations>;
+    useTypeImports?: boolean;
+  }
+> = async (schema, documents, config) => {
+  const { sourcesWithOperations } = config;
+
+  const visitor = new BaseVisitor(config, {});
+
   const fragments = getFragmentDefinitions(
     documents.reduce((acc: DocumentNode[], value) => {
       if (!value.document) return acc;
@@ -105,7 +110,7 @@ export const plugin: PluginFunction<{
     importTypes,
     importMasking,
     ...fragments.map(value => {
-      const name = value.name.value;
+      const name = visitor.convertName(value.name.value);
 
       return `\nexport const ${name}FragmentDoc = '' as unknown as StringDocumentNode<Types.${name}Fragment, never>;`;
     }),
@@ -118,7 +123,7 @@ export const plugin: PluginFunction<{
 
       if (!type) return acc;
 
-      const name = ast.name.value;
+      const name = visitor.convertName(ast.name.value);
 
       operationsNames.push(name);
 
@@ -134,7 +139,9 @@ export const plugin: PluginFunction<{
     ...[
       '\n',
       ...Object.entries(operations).reduce(
-        (acc: string[], [operationName, _doc]) => {
+        (acc: string[], [operationNameRaw, _doc]) => {
+          const operationName = visitor.convertName(operationNameRaw);
+
           acc.push(`${operationName}: ${operationName}Document,`);
           return acc;
         },
