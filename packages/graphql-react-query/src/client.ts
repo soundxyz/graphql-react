@@ -1,6 +1,5 @@
 import orderBy from 'lodash-es/orderBy.js';
 import { createElement, ReactNode, useMemo } from 'react';
-import { proxy, useSnapshot } from 'valtio';
 
 import { gql, ResultOf, StringDocumentNode, VariablesOf } from '@soundxyz/gql-string';
 
@@ -214,11 +213,11 @@ export function GraphQLReactQueryClient<
       orderType: ['asc' | 'desc', ...('asc' | 'desc')[]];
     },
   ) {
-    const store = (infiniteQueryStores[name as keyof typeof infiniteQueryStores] ||= proxy<
-      InfiniteQueryStore<Entity>
-    >({
+    const entityStore = (infiniteQueryStores[name as keyof typeof infiniteQueryStores] ||= {
       nodes: {},
-    })) as InfiniteQueryStore<Entity>;
+    }) as InfiniteQueryStore<Entity>;
+
+    const entityStoreNodes = entityStore.nodes;
 
     const result = useInfiniteReactQuery({
       queryKey: [name, variables, 'Infinite'] as readonly unknown[],
@@ -231,7 +230,7 @@ export function GraphQLReactQueryClient<
         for (const node of list(result)) {
           const key = uniq(node);
 
-          store.nodes[key] = node;
+          entityStoreNodes[key] = node;
         }
 
         return result;
@@ -244,15 +243,33 @@ export function GraphQLReactQueryClient<
     const firstPage = data?.pages[0];
     const lastPage = data?.pages[result.data.pages.length - 1];
 
-    const { nodes } = useSnapshot(store) as typeof store;
-
     const latestOrderEntity = useLatestRef(orderEntity);
+    const latestListFn = useLatestRef(list);
+    const latestUniq = useLatestRef(uniq);
 
     const stableOrderType = useStableObject(orderType);
 
-    const orderedList = useMemo(() => {
-      return orderBy(nodes, latestOrderEntity.current, stableOrderType);
-    }, [nodes, stableOrderType]);
+    const orderedList = useMemo<Entity[]>(() => {
+      if (!data) return [];
+
+      const currentListFn = latestListFn.current;
+      const currentUniq = latestUniq.current;
+
+      const values = data.pages.reduce((acc: Record<string, Entity>, page) => {
+        const listValues = currentListFn(page);
+
+        for (const entity of listValues) {
+          const key = currentUniq(entity);
+
+          // "entityStoreNodes" makes sure that whatever the order the data is, we always use the latest version available of the entity from the api
+          acc[key] = entityStoreNodes[key] || entity;
+        }
+
+        return acc;
+      }, {});
+
+      return orderBy(values, latestOrderEntity.current, stableOrderType);
+    }, [stableOrderType, data]);
 
     return { ...result, firstPage, lastPage, orderedList };
   }
