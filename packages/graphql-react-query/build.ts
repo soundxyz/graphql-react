@@ -28,6 +28,7 @@ await Promise.all([
         exports: {
           '.': './index.js',
           './*': './*.js',
+          './package.json': './package.json',
         },
       };
     },
