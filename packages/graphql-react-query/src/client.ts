@@ -16,6 +16,7 @@ import {
   UseQueryOptions,
 } from './reactQuery';
 import { useLatestRef, useStableObject } from './utils';
+import type {} from '@tanstack/react-query';
 
 import type { ExecutionResult } from 'graphql';
 

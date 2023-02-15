@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "changeset": "changeset",
-    "clean": "pnpm --workspace-concurrency=Infinity --no-sort --no-bail -r prepare && pnpm dlx rimraf@^2 \"**/node_modules\" && pnpm i && pnpm generate",
+    "clean": "pnpm dlx rimraf@^2 \"**/node_modules\" \"**/dist\" && pnpm i && pnpm generate",
     "generate": "pnpm -r --workspace-concurrency=Infinity generate",
     "prettier:check": "prettier \"**/*.{ts,tsx,js,cjs,mjs,json}\" --check",
     "prettier:write": "prettier \"**/*.{ts,tsx,js,cjs,mjs,json}\" --write",

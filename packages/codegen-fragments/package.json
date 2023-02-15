@@ -44,7 +44,6 @@
     "graphql": ">=16.6.0"
   },
   "publishConfig": {
-    "directory": "dist",
-    "linkDirectory": true
+    "directory": "dist"
   }
 }
