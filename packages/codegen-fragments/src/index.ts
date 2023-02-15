@@ -1,7 +1,7 @@
 import type { CodegenPlugin, Types } from '@graphql-codegen/plugin-helpers';
 import assert from 'assert';
 import { parse, printSchema } from 'graphql';
-import { resolve } from 'path';
+import { join } from 'path';
 
 import * as typescriptPlugin from '@graphql-codegen/typescript';
 import * as typescriptOperationPlugin from '@graphql-codegen/typescript-operations';
@@ -55,7 +55,7 @@ export const preset: Types.OutputPreset<{}> = {
     const processedSchema = parse(printSchema(processedSchemaAst));
     return [
       {
-        filename: resolve(options.baseOutputDir, 'types.ts'),
+        filename: join(options.baseOutputDir, 'types.ts'),
         config: {
           ...options.config,
           inlineFragmentTypes: 'mask',
@@ -66,7 +66,7 @@ export const preset: Types.OutputPreset<{}> = {
         schema: options.schema,
       },
       {
-        filename: resolve(options.baseOutputDir, 'documents.ts'),
+        filename: join(options.baseOutputDir, 'documents.ts'),
         config: {
           inlineFragmentTypes: 'mask',
         },
@@ -77,7 +77,7 @@ export const preset: Types.OutputPreset<{}> = {
         schemaAst: processedSchemaAst,
       },
       {
-        filename: resolve(options.baseOutputDir, 'fragment-masking.ts'),
+        filename: join(options.baseOutputDir, 'fragment-masking.ts'),
         config: {
           inlineFragmentTypes: 'mask',
         },
