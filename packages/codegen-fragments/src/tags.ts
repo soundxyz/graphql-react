@@ -1,11 +1,9 @@
 import {
-  buildSchema,
   DocumentNode,
   FragmentDefinitionNode,
   getOperationAST,
   OperationDefinitionNode,
   print,
-  printSchema,
   stripIgnoredCharacters,
 } from 'graphql';
 import { Kind } from 'graphql';
