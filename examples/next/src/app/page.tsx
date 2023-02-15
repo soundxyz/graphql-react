@@ -25,10 +25,6 @@ gql`
 export default function Page() {
   const { data } = useQuery(TestDocument, {});
 
-  console.log({
-    data,
-  });
-
   return (
     <div className={styles.container}>
       <p className={styles.p}>{data?.__typename || '...'}</p>
