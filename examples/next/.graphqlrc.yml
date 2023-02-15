@@ -8,3 +8,6 @@ extensions:
     generates:
       ./src/generated/:
         preset: '@soundxyz/codegen-fragments'
+        config:
+          enumsAsConst: true
+

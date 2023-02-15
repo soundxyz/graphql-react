@@ -120,14 +120,15 @@ export type ActivityFeedGroupFilterArgs = {
 };
 
 /** Activity feed group filter option */
-export enum ActivityFeedGroupFilterOption {
-  AddedToPlaylist = 'ADDED_TO_PLAYLIST',
-  All = 'ALL',
-  Collected = 'COLLECTED',
-  Likes = 'LIKES',
-  ReleaseDropped = 'RELEASE_DROPPED'
-}
+export const ActivityFeedGroupFilterOption = {
+  AddedToPlaylist: 'ADDED_TO_PLAYLIST',
+  All: 'ALL',
+  Collected: 'COLLECTED',
+  Likes: 'LIKES',
+  ReleaseDropped: 'RELEASE_DROPPED'
+} as const;
 
+export type ActivityFeedGroupFilterOption = typeof ActivityFeedGroupFilterOption[keyof typeof ActivityFeedGroupFilterOption];
 /** Union of activity feed group info */
 export type ActivityFeedGroupInfo = ReleaseDroppedAggregate | ReleasesAddedToShelfAggregate | ShelfCreatedAggregate | SongCollectedByManyAggregate | UserCollectedManySongsAggregate | UserLikedPlaylistAggregate | UserLikedSongsAggregate;
 
@@ -139,11 +140,12 @@ export type ActivityFeedReleaseSocialProof = {
 };
 
 /** Activity feed type */
-export enum ActivityFeedType {
-  Global = 'GLOBAL',
-  User = 'USER'
-}
+export const ActivityFeedType = {
+  Global: 'GLOBAL',
+  User: 'USER'
+} as const;
 
+export type ActivityFeedType = typeof ActivityFeedType[keyof typeof ActivityFeedType];
 /** Collector release added to playlist action entity */
 export type Airdrop = CollectorAction & Node & ReleaseAction & {
   __typename?: 'Airdrop';
@@ -369,14 +371,15 @@ export type ArtistActionConnectionEdge = Edge & {
 };
 
 /** Artist activity feed action type filter option */
-export enum ArtistActivityFeedActivityTypeFilterOption {
-  All = 'ALL',
-  Collections = 'COLLECTIONS',
-  Likes = 'LIKES',
-  Playlists = 'PLAYLISTS',
-  Releases = 'RELEASES'
-}
+export const ArtistActivityFeedActivityTypeFilterOption = {
+  All: 'ALL',
+  Collections: 'COLLECTIONS',
+  Likes: 'LIKES',
+  Playlists: 'PLAYLISTS',
+  Releases: 'RELEASES'
+} as const;
 
+export type ArtistActivityFeedActivityTypeFilterOption = typeof ArtistActivityFeedActivityTypeFilterOption[keyof typeof ArtistActivityFeedActivityTypeFilterOption];
 /** Filter artist activity types */
 export type ArtistActivityFeedFilterArgs = {
   /** Only get activity of given action type */
@@ -386,13 +389,14 @@ export type ArtistActivityFeedFilterArgs = {
 };
 
 /** Artist activity feed type filter option */
-export enum ArtistActivityFeedTypeFilterOption {
-  All = 'ALL',
-  Artist = 'ARTIST',
-  Collector = 'COLLECTOR',
-  Release = 'RELEASE'
-}
+export const ArtistActivityFeedTypeFilterOption = {
+  All: 'ALL',
+  Artist: 'ARTIST',
+  Collector: 'COLLECTOR',
+  Release: 'RELEASE'
+} as const;
 
+export type ArtistActivityFeedTypeFilterOption = typeof ArtistActivityFeedTypeFilterOption[keyof typeof ArtistActivityFeedTypeFilterOption];
 /** ArtistCollector */
 export type ArtistCollector = Node & {
   __typename?: 'ArtistCollector';
@@ -521,19 +525,21 @@ export type ArtistInfo = Node & {
 };
 
 /** Artist minted releases author filter option */
-export enum ArtistMintedReleasesAuthorFilterOption {
-  All = 'ALL',
-  OnlyAppearsOn = 'ONLY_APPEARS_ON',
-  OnlyAuthoredReleases = 'ONLY_AUTHORED_RELEASES'
-}
+export const ArtistMintedReleasesAuthorFilterOption = {
+  All: 'ALL',
+  OnlyAppearsOn: 'ONLY_APPEARS_ON',
+  OnlyAuthoredReleases: 'ONLY_AUTHORED_RELEASES'
+} as const;
 
+export type ArtistMintedReleasesAuthorFilterOption = typeof ArtistMintedReleasesAuthorFilterOption[keyof typeof ArtistMintedReleasesAuthorFilterOption];
 /** Artist minted releases credit split filter option */
-export enum ArtistMintedReleasesCreditSplitFilterOption {
-  All = 'ALL',
-  OnlyCreditSplits = 'ONLY_CREDIT_SPLITS',
-  OnlyNoCreditSplits = 'ONLY_NO_CREDIT_SPLITS'
-}
+export const ArtistMintedReleasesCreditSplitFilterOption = {
+  All: 'ALL',
+  OnlyCreditSplits: 'ONLY_CREDIT_SPLITS',
+  OnlyNoCreditSplits: 'ONLY_NO_CREDIT_SPLITS'
+} as const;
 
+export type ArtistMintedReleasesCreditSplitFilterOption = typeof ArtistMintedReleasesCreditSplitFilterOption[keyof typeof ArtistMintedReleasesCreditSplitFilterOption];
 /** Filter for artist minted releases. Default is only for artist sounds. */
 export type ArtistMintedReleasesFilter = {
   /** Filters on release credit split status */
@@ -551,19 +557,21 @@ export type ArtistMintedReleasesFilter = {
 };
 
 /** Artist releases author filter option */
-export enum ArtistReleasesAuthorFilterOption {
-  All = 'ALL',
-  OnlyAppearsOn = 'ONLY_APPEARS_ON',
-  OnlyAuthoredReleases = 'ONLY_AUTHORED_RELEASES'
-}
+export const ArtistReleasesAuthorFilterOption = {
+  All: 'ALL',
+  OnlyAppearsOn: 'ONLY_APPEARS_ON',
+  OnlyAuthoredReleases: 'ONLY_AUTHORED_RELEASES'
+} as const;
 
+export type ArtistReleasesAuthorFilterOption = typeof ArtistReleasesAuthorFilterOption[keyof typeof ArtistReleasesAuthorFilterOption];
 /** Artist releases credit split filter option */
-export enum ArtistReleasesCreditSplitFilterOption {
-  All = 'ALL',
-  OnlyCreditSplits = 'ONLY_CREDIT_SPLITS',
-  OnlyNoCreditSplits = 'ONLY_NO_CREDIT_SPLITS'
-}
+export const ArtistReleasesCreditSplitFilterOption = {
+  All: 'ALL',
+  OnlyCreditSplits: 'ONLY_CREDIT_SPLITS',
+  OnlyNoCreditSplits: 'ONLY_NO_CREDIT_SPLITS'
+} as const;
 
+export type ArtistReleasesCreditSplitFilterOption = typeof ArtistReleasesCreditSplitFilterOption[keyof typeof ArtistReleasesCreditSplitFilterOption];
 /** Filter for artist releases. Default is only for artist sounds. */
 export type ArtistReleasesFilter = {
   /** Filters on release credit split status */
@@ -581,21 +589,23 @@ export type ArtistReleasesFilter = {
 };
 
 /** Types of seasons for artists */
-export enum ArtistSeason {
-  Genesis = 'GENESIS',
-  SeasonFour = 'SEASON_FOUR',
-  SeasonOne = 'SEASON_ONE',
-  SeasonThree = 'SEASON_THREE',
-  SeasonTwo = 'SEASON_TWO'
-}
+export const ArtistSeason = {
+  Genesis: 'GENESIS',
+  SeasonFour: 'SEASON_FOUR',
+  SeasonOne: 'SEASON_ONE',
+  SeasonThree: 'SEASON_THREE',
+  SeasonTwo: 'SEASON_TWO'
+} as const;
 
+export type ArtistSeason = typeof ArtistSeason[keyof typeof ArtistSeason];
 /** Types of release sales */
-export enum AuctionType {
-  FixedQuantity = 'FIXED_QUANTITY',
-  OpenEdition = 'OPEN_EDITION',
-  RangeBound = 'RANGE_BOUND'
-}
+export const AuctionType = {
+  FixedQuantity: 'FIXED_QUANTITY',
+  OpenEdition: 'OPEN_EDITION',
+  RangeBound: 'RANGE_BOUND'
+} as const;
 
+export type AuctionType = typeof AuctionType[keyof typeof AuctionType];
 /** Simplified version of Release entity filtered on the owner public address */
 export type CollectedRelease = Node & {
   __typename?: 'CollectedRelease';
@@ -630,12 +640,13 @@ export type CollectedReleaseConnectionEdge = Edge & {
 };
 
 /** Name of the collection market */
-export enum CollectionMarketType {
-  Airdrop = 'AIRDROP',
-  PrimarySale = 'PRIMARY_SALE',
-  SecondarySale = 'SECONDARY_SALE'
-}
+export const CollectionMarketType = {
+  Airdrop: 'AIRDROP',
+  PrimarySale: 'PRIMARY_SALE',
+  SecondarySale: 'SECONDARY_SALE'
+} as const;
 
+export type CollectionMarketType = typeof CollectionMarketType[keyof typeof CollectionMarketType];
 /** Collector action entity */
 export type CollectorAction = {
   /** Date of action */
@@ -671,13 +682,14 @@ export type CollectorActivityFeedFilterArgs = {
 };
 
 /** Collector activity feed type filter option */
-export enum CollectorActivityFeedTypeFilterOption {
-  All = 'ALL',
-  Collections = 'COLLECTIONS',
-  Likes = 'LIKES',
-  Playlists = 'PLAYLISTS'
-}
+export const CollectorActivityFeedTypeFilterOption = {
+  All: 'ALL',
+  Collections: 'COLLECTIONS',
+  Likes: 'LIKES',
+  Playlists: 'PLAYLISTS'
+} as const;
 
+export type CollectorActivityFeedTypeFilterOption = typeof CollectorActivityFeedTypeFilterOption[keyof typeof CollectorActivityFeedTypeFilterOption];
 /** Comment entity */
 export type Comment = {
   __typename?: 'Comment';
@@ -727,11 +739,12 @@ export type ContractReleaseInput = {
 };
 
 /** Contract type, currently the playform only supports "ARTIST" */
-export enum ContractType {
-  Artist = 'ARTIST',
-  Edition = 'EDITION'
-}
+export const ContractType = {
+  Artist: 'ARTIST',
+  Edition: 'EDITION'
+} as const;
 
+export type ContractType = typeof ContractType[keyof typeof ContractType];
 /** Credit allocation entity */
 export type CreditAllocation = {
   __typename?: 'CreditAllocation';
@@ -761,16 +774,17 @@ export type CreditAllocationUploadStepInfo = {
 };
 
 /** Credit role type */
-export enum CreditRoleType {
-  Artist = 'ARTIST',
-  Curator = 'CURATOR',
-  Other = 'OTHER',
-  Producer = 'PRODUCER',
-  Remixer = 'REMIXER',
-  Songwriter = 'SONGWRITER',
-  VisualArtist = 'VISUAL_ARTIST'
-}
+export const CreditRoleType = {
+  Artist: 'ARTIST',
+  Curator: 'CURATOR',
+  Other: 'OTHER',
+  Producer: 'PRODUCER',
+  Remixer: 'REMIXER',
+  Songwriter: 'SONGWRITER',
+  VisualArtist: 'VISUAL_ARTIST'
+} as const;
 
+export type CreditRoleType = typeof CreditRoleType[keyof typeof CreditRoleType];
 /** Credit split entity */
 export type CreditSplit = {
   __typename?: 'CreditSplit';
@@ -879,12 +893,13 @@ export type DraftAllowlistFromReleaseInput = {
 export type DraftAllowlistInfo = ArtistCollectorsAllowlist | ManuallyAddedCollectorsAllowlist | ReleaseCollectorsAllowlist;
 
 /** Different draft allow list types */
-export enum DraftAllowlistType {
-  ArtistCollectors = 'ARTIST_COLLECTORS',
-  ManuallyAddedCollectors = 'MANUALLY_ADDED_COLLECTORS',
-  ReleaseCollectors = 'RELEASE_COLLECTORS'
-}
+export const DraftAllowlistType = {
+  ArtistCollectors: 'ARTIST_COLLECTORS',
+  ManuallyAddedCollectors: 'MANUALLY_ADDED_COLLECTORS',
+  ReleaseCollectors: 'RELEASE_COLLECTORS'
+} as const;
 
+export type DraftAllowlistType = typeof DraftAllowlistType[keyof typeof DraftAllowlistType];
 /** Draft auction configuration step info */
 export type DraftAuctionConfigurationInfo = {
   __typename?: 'DraftAuctionConfigurationInfo';
@@ -1055,14 +1070,15 @@ export type EggGame = {
 };
 
 /** Event type */
-export enum EventType {
-  Airdrop = 'AIRDROP',
-  EditionPurchased = 'EDITION_PURCHASED',
-  OrdersMatched = 'ORDERS_MATCHED',
-  Transfer = 'TRANSFER',
-  Unknown = 'UNKNOWN'
-}
+export const EventType = {
+  Airdrop: 'AIRDROP',
+  EditionPurchased: 'EDITION_PURCHASED',
+  OrdersMatched: 'ORDERS_MATCHED',
+  Transfer: 'TRANSFER',
+  Unknown: 'UNKNOWN'
+} as const;
 
+export type EventType = typeof EventType[keyof typeof EventType];
 /** Event entity */
 export type EventV2 = Node & {
   __typename?: 'EventV2';
@@ -1161,11 +1177,12 @@ export type KeyClientConnectionEdge = Edge & {
 };
 
 /** Status of Key Client */
-export enum KeyClientStatus {
-  Active = 'ACTIVE',
-  Inactive = 'INACTIVE'
-}
+export const KeyClientStatus = {
+  Active: 'ACTIVE',
+  Inactive: 'INACTIVE'
+} as const;
 
+export type KeyClientStatus = typeof KeyClientStatus[keyof typeof KeyClientStatus];
 /** Paginated latest sales events */
 export type LatestSalesConnection = Connection & {
   __typename?: 'LatestSalesConnection';
@@ -1213,11 +1230,12 @@ export type LatestSalesCursorFilterArgs = {
 };
 
 /** License for the release */
-export enum LicenseType {
-  AllRightsReserved = 'ALL_RIGHTS_RESERVED',
-  CreativeCommons = 'CREATIVE_COMMONS'
-}
+export const LicenseType = {
+  AllRightsReserved: 'ALL_RIGHTS_RESERVED',
+  CreativeCommons: 'CREATIVE_COMMONS'
+} as const;
 
+export type LicenseType = typeof LicenseType[keyof typeof LicenseType];
 /** Like action entity */
 export type LikeAction = {
   /** Date of action */
@@ -1273,28 +1291,29 @@ export type Media = {
 };
 
 /** Type of media entity, either Images or Audio */
-export enum MediaType {
-  ArtistBannerImage = 'ARTIST_BANNER_IMAGE',
-  ArtistFreeSaleAllowlist = 'ARTIST_FREE_SALE_ALLOWLIST',
-  ArtistPresaleAllowlist = 'ARTIST_PRESALE_ALLOWLIST',
-  Audio = 'AUDIO',
-  AudioTranscoded = 'AUDIO_TRANSCODED',
-  AvatarImage = 'AVATAR_IMAGE',
-  DraftAllowlistedAddressesCsv = 'DRAFT_ALLOWLISTED_ADDRESSES_CSV',
-  ReleaseBannerImage = 'RELEASE_BANNER_IMAGE',
-  ReleaseCoverImage = 'RELEASE_COVER_IMAGE',
-  ReleaseGoldenEggImage = 'RELEASE_GOLDEN_EGG_IMAGE',
-  ReleaseHoldersCsv = 'RELEASE_HOLDERS_CSV',
-  ReleaseWebAnimatedGoldenEggImage = 'RELEASE_WEB_ANIMATED_GOLDEN_EGG_IMAGE',
-  ReleaseWebAnimatedImage = 'RELEASE_WEB_ANIMATED_IMAGE',
-  ReleaseWebStaticAutogenImage = 'RELEASE_WEB_STATIC_AUTOGEN_IMAGE',
-  ReleaseWebStaticImage = 'RELEASE_WEB_STATIC_IMAGE',
-  TmpArtistBannerAutogenImage = 'TMP_ARTIST_BANNER_AUTOGEN_IMAGE',
-  TmpAvatarAutogenImage = 'TMP_AVATAR_AUTOGEN_IMAGE',
-  TmpUserBannerAutogenImage = 'TMP_USER_BANNER_AUTOGEN_IMAGE',
-  UserBannerImage = 'USER_BANNER_IMAGE'
-}
+export const MediaType = {
+  ArtistBannerImage: 'ARTIST_BANNER_IMAGE',
+  ArtistFreeSaleAllowlist: 'ARTIST_FREE_SALE_ALLOWLIST',
+  ArtistPresaleAllowlist: 'ARTIST_PRESALE_ALLOWLIST',
+  Audio: 'AUDIO',
+  AudioTranscoded: 'AUDIO_TRANSCODED',
+  AvatarImage: 'AVATAR_IMAGE',
+  DraftAllowlistedAddressesCsv: 'DRAFT_ALLOWLISTED_ADDRESSES_CSV',
+  ReleaseBannerImage: 'RELEASE_BANNER_IMAGE',
+  ReleaseCoverImage: 'RELEASE_COVER_IMAGE',
+  ReleaseGoldenEggImage: 'RELEASE_GOLDEN_EGG_IMAGE',
+  ReleaseHoldersCsv: 'RELEASE_HOLDERS_CSV',
+  ReleaseWebAnimatedGoldenEggImage: 'RELEASE_WEB_ANIMATED_GOLDEN_EGG_IMAGE',
+  ReleaseWebAnimatedImage: 'RELEASE_WEB_ANIMATED_IMAGE',
+  ReleaseWebStaticAutogenImage: 'RELEASE_WEB_STATIC_AUTOGEN_IMAGE',
+  ReleaseWebStaticImage: 'RELEASE_WEB_STATIC_IMAGE',
+  TmpArtistBannerAutogenImage: 'TMP_ARTIST_BANNER_AUTOGEN_IMAGE',
+  TmpAvatarAutogenImage: 'TMP_AVATAR_AUTOGEN_IMAGE',
+  TmpUserBannerAutogenImage: 'TMP_USER_BANNER_AUTOGEN_IMAGE',
+  UserBannerImage: 'USER_BANNER_IMAGE'
+} as const;
 
+export type MediaType = typeof MediaType[keyof typeof MediaType];
 /** Release info upload step info */
 export type MediaUploadStepInfo = {
   __typename?: 'MediaUploadStepInfo';
@@ -1338,11 +1357,12 @@ export type MetadataAttribute = {
 };
 
 /** Mint current time status */
-export enum MintTimeStatus {
-  Past = 'PAST',
-  Upcoming = 'UPCOMING'
-}
+export const MintTimeStatus = {
+  Past: 'PAST',
+  Upcoming: 'UPCOMING'
+} as const;
 
+export type MintTimeStatus = typeof MintTimeStatus[keyof typeof MintTimeStatus];
 /** Pagination parameters for Minted Releases connection */
 export type MintedReleasesCursorConnectionArgs = {
   /** Start forwards pagination since "after" cursor */
@@ -1390,11 +1410,12 @@ export type MintedReleasesCursorFilterArgs = {
 };
 
 /** Different minting types for mintingAccessConfig query */
-export enum MintingAccessConfigMintingType {
-  Free = 'FREE',
-  Presale = 'PRESALE'
-}
+export const MintingAccessConfigMintingType = {
+  Free: 'FREE',
+  Presale: 'PRESALE'
+} as const;
 
+export type MintingAccessConfigMintingType = typeof MintingAccessConfigMintingType[keyof typeof MintingAccessConfigMintingType];
 /** Mutations */
 export type Mutation = {
   __typename?: 'Mutation';
@@ -1726,12 +1747,13 @@ export type PlaylistTrack = {
 };
 
 /** Currently supported playlists */
-export enum PlaylistType {
-  Artist = 'ARTIST',
-  Holder = 'HOLDER',
-  Home = 'HOME'
-}
+export const PlaylistType = {
+  Artist: 'ARTIST',
+  Holder: 'HOLDER',
+  Home: 'HOME'
+} as const;
 
+export type PlaylistType = typeof PlaylistType[keyof typeof PlaylistType];
 /** Primary sale collector action entity */
 export type PrimarySale = ArtistAction & CollectorAction & Node & ReleaseAction & {
   __typename?: 'PrimarySale';
@@ -2410,14 +2432,15 @@ export type ReleaseActivityFeedFilterArgs = {
 };
 
 /** Release activity feed type filter option */
-export enum ReleaseActivityFeedTypeFilterOption {
-  All = 'ALL',
-  Collections = 'COLLECTIONS',
-  Likes = 'LIKES',
-  Playlists = 'PLAYLISTS',
-  Releases = 'RELEASES'
-}
+export const ReleaseActivityFeedTypeFilterOption = {
+  All: 'ALL',
+  Collections: 'COLLECTIONS',
+  Likes: 'LIKES',
+  Playlists: 'PLAYLISTS',
+  Releases: 'RELEASES'
+} as const;
 
+export type ReleaseActivityFeedTypeFilterOption = typeof ReleaseActivityFeedTypeFilterOption[keyof typeof ReleaseActivityFeedTypeFilterOption];
 /** Aggregate of all affiliate purchases of specific affiliate user and release */
 export type ReleaseAffiliateTotalPurchases = Node & {
   __typename?: 'ReleaseAffiliateTotalPurchases';
@@ -2445,12 +2468,13 @@ export type ReleaseAffiliateTotalPurchasesEdge = Edge & {
 };
 
 /** Release album reveal filter option */
-export enum ReleaseAlbumRevealFilterOption {
-  All = 'ALL',
-  OnlyNotRevealedAlbums = 'ONLY_NOT_REVEALED_ALBUMS',
-  OnlyRevealedAlbums = 'ONLY_REVEALED_ALBUMS'
-}
+export const ReleaseAlbumRevealFilterOption = {
+  All: 'ALL',
+  OnlyNotRevealedAlbums: 'ONLY_NOT_REVEALED_ALBUMS',
+  OnlyRevealedAlbums: 'ONLY_REVEALED_ALBUMS'
+} as const;
 
+export type ReleaseAlbumRevealFilterOption = typeof ReleaseAlbumRevealFilterOption[keyof typeof ReleaseAlbumRevealFilterOption];
 /** Release collector */
 export type ReleaseCollector = Node & {
   __typename?: 'ReleaseCollector';
@@ -2680,18 +2704,20 @@ export type ReleaseShelvesFilter = {
 };
 
 /** Release current status type */
-export enum ReleaseStatus {
-  AvailableToMint = 'AVAILABLE_TO_MINT',
-  SoldOut = 'SOLD_OUT'
-}
+export const ReleaseStatus = {
+  AvailableToMint: 'AVAILABLE_TO_MINT',
+  SoldOut: 'SOLD_OUT'
+} as const;
 
+export type ReleaseStatus = typeof ReleaseStatus[keyof typeof ReleaseStatus];
 /** Release type, currently the platform only supports "SINGLE" */
-export enum ReleaseType {
-  Album = 'ALBUM',
-  AlbumTrack = 'ALBUM_TRACK',
-  Single = 'SINGLE'
-}
+export const ReleaseType = {
+  Album: 'ALBUM',
+  AlbumTrack: 'ALBUM_TRACK',
+  Single: 'SINGLE'
+} as const;
 
+export type ReleaseType = typeof ReleaseType[keyof typeof ReleaseType];
 /** Release unliked action entity */
 export type ReleaseUnliked = ArtistAction & CollectorAction & LikeAction & Node & {
   __typename?: 'ReleaseUnliked';
@@ -3231,18 +3257,20 @@ export type ShelfReleasesSort = {
 };
 
 /** Shelf type */
-export enum ShelfType {
-  Default = 'DEFAULT',
-  UserLikedSounds = 'USER_LIKED_SOUNDS'
-}
+export const ShelfType = {
+  Default: 'DEFAULT',
+  UserLikedSounds: 'USER_LIKED_SOUNDS'
+} as const;
 
+export type ShelfType = typeof ShelfType[keyof typeof ShelfType];
 /** Filter based the type of shelf */
-export enum ShelfTypeFilter {
-  All = 'ALL',
-  Liked = 'LIKED',
-  UserCreated = 'USER_CREATED'
-}
+export const ShelfTypeFilter = {
+  All: 'ALL',
+  Liked: 'LIKED',
+  UserCreated: 'USER_CREATED'
+} as const;
 
+export type ShelfTypeFilter = typeof ShelfTypeFilter[keyof typeof ShelfTypeFilter];
 /** Input for Shelf.webEmbed */
 export type ShelfWebEmbedInput = {
   /** Customize html parameters */
@@ -3261,39 +3289,41 @@ export type SongCollectedByManyAggregate = {
 };
 
 /** Key the release was written in */
-export enum SongKeyType {
-  AFlatMajor = 'A_FLAT_MAJOR',
-  AMajor = 'A_MAJOR',
-  AMinor = 'A_MINOR',
-  BFlatMajor = 'B_FLAT_MAJOR',
-  BFlatMinor = 'B_FLAT_MINOR',
-  BMajor = 'B_MAJOR',
-  BMinor = 'B_MINOR',
-  CMajor = 'C_MAJOR',
-  CMinor = 'C_MINOR',
-  CSharpMinor = 'C_SHARP_MINOR',
-  DFlatMajor = 'D_FLAT_MAJOR',
-  DMajor = 'D_MAJOR',
-  DMinor = 'D_MINOR',
-  EFlatMajor = 'E_FLAT_MAJOR',
-  EFlatMinor = 'E_FLAT_MINOR',
-  EMajor = 'E_MAJOR',
-  EMinor = 'E_MINOR',
-  FMajor = 'F_MAJOR',
-  FMinor = 'F_MINOR',
-  FSharpMajor = 'F_SHARP_MAJOR',
-  FSharpMinor = 'F_SHARP_MINOR',
-  GMajor = 'G_MAJOR',
-  GMinor = 'G_MINOR',
-  GSharpMinor = 'G_SHARP_MINOR'
-}
+export const SongKeyType = {
+  AFlatMajor: 'A_FLAT_MAJOR',
+  AMajor: 'A_MAJOR',
+  AMinor: 'A_MINOR',
+  BFlatMajor: 'B_FLAT_MAJOR',
+  BFlatMinor: 'B_FLAT_MINOR',
+  BMajor: 'B_MAJOR',
+  BMinor: 'B_MINOR',
+  CMajor: 'C_MAJOR',
+  CMinor: 'C_MINOR',
+  CSharpMinor: 'C_SHARP_MINOR',
+  DFlatMajor: 'D_FLAT_MAJOR',
+  DMajor: 'D_MAJOR',
+  DMinor: 'D_MINOR',
+  EFlatMajor: 'E_FLAT_MAJOR',
+  EFlatMinor: 'E_FLAT_MINOR',
+  EMajor: 'E_MAJOR',
+  EMinor: 'E_MINOR',
+  FMajor: 'F_MAJOR',
+  FMinor: 'F_MINOR',
+  FSharpMajor: 'F_SHARP_MAJOR',
+  FSharpMinor: 'F_SHARP_MINOR',
+  GMajor: 'G_MAJOR',
+  GMinor: 'G_MINOR',
+  GSharpMinor: 'G_SHARP_MINOR'
+} as const;
 
+export type SongKeyType = typeof SongKeyType[keyof typeof SongKeyType];
 /** Ascending or Descending sort */
-export enum SortOrder {
-  Asc = 'ASC',
-  Desc = 'DESC'
-}
+export const SortOrder = {
+  Asc: 'ASC',
+  Desc: 'DESC'
+} as const;
 
+export type SortOrder = typeof SortOrder[keyof typeof SortOrder];
 /** Splits contract earnings */
 export type SplitsContractEarning = {
   __typename?: 'SplitsContractEarning';
@@ -3394,13 +3424,14 @@ export type SubscriptionUpdatedActivityFeedGroup = {
 };
 
 /** Time period to aggregate trending table queries */
-export enum TimePeriodAggEnum {
-  AllTime = 'ALL_TIME',
-  OneDay = 'ONE_DAY',
-  OneMonth = 'ONE_MONTH',
-  SevenDay = 'SEVEN_DAY'
-}
+export const TimePeriodAggEnum = {
+  AllTime: 'ALL_TIME',
+  OneDay: 'ONE_DAY',
+  OneMonth: 'ONE_MONTH',
+  SevenDay: 'SEVEN_DAY'
+} as const;
 
+export type TimePeriodAggEnum = typeof TimePeriodAggEnum[keyof typeof TimePeriodAggEnum];
 /** Total raised on Ethereum and USD */
 export type TotalRaised = {
   __typename?: 'TotalRaised';
@@ -3491,14 +3522,15 @@ export type TrendingArtistInfo = {
 };
 
 /** Type of sort parameter used for trending artists */
-export enum TrendingArtistsSortEnum {
-  NftsSold = 'NFTS_SOLD',
-  PrimarySales = 'PRIMARY_SALES',
-  SecondarySales = 'SECONDARY_SALES',
-  TotalSales = 'TOTAL_SALES',
-  UniqueCollectors = 'UNIQUE_COLLECTORS'
-}
+export const TrendingArtistsSortEnum = {
+  NftsSold: 'NFTS_SOLD',
+  PrimarySales: 'PRIMARY_SALES',
+  SecondarySales: 'SECONDARY_SALES',
+  TotalSales: 'TOTAL_SALES',
+  UniqueCollectors: 'UNIQUE_COLLECTORS'
+} as const;
 
+export type TrendingArtistsSortEnum = typeof TrendingArtistsSortEnum[keyof typeof TrendingArtistsSortEnum];
 /** Trending Collector information */
 export type TrendingCollectorInfo = {
   __typename?: 'TrendingCollectorInfo';
@@ -3517,12 +3549,13 @@ export type TrendingCollectorInfo = {
 };
 
 /** Type of sort paratemer used for trending collectors */
-export enum TrendingCollectorsSortEnum {
-  CreatorsSupported = 'CREATORS_SUPPORTED',
-  NftsBought = 'NFTS_BOUGHT',
-  TotalSpent = 'TOTAL_SPENT'
-}
+export const TrendingCollectorsSortEnum = {
+  CreatorsSupported: 'CREATORS_SUPPORTED',
+  NftsBought: 'NFTS_BOUGHT',
+  TotalSpent: 'TOTAL_SPENT'
+} as const;
 
+export type TrendingCollectorsSortEnum = typeof TrendingCollectorsSortEnum[keyof typeof TrendingCollectorsSortEnum];
 /** Trending Playlist Info */
 export type TrendingPlaylistInfo = {
   __typename?: 'TrendingPlaylistInfo';
@@ -3533,10 +3566,11 @@ export type TrendingPlaylistInfo = {
 };
 
 /** Type of sort paratemer used for trending playlists */
-export enum TrendingPlaylistsSortEnum {
-  Likes = 'LIKES'
-}
+export const TrendingPlaylistsSortEnum = {
+  Likes: 'LIKES'
+} as const;
 
+export type TrendingPlaylistsSortEnum = typeof TrendingPlaylistsSortEnum[keyof typeof TrendingPlaylistsSortEnum];
 /** Trending Release Info */
 export type TrendingReleaseInfo = {
   __typename?: 'TrendingReleaseInfo';
@@ -3557,17 +3591,19 @@ export type TrendingReleaseInfo = {
 };
 
 /** Type of sort paratemer used for trending releases */
-export enum TrendingReleasesSortEnum {
-  PrimarySales = 'PRIMARY_SALES',
-  SecondarySales = 'SECONDARY_SALES',
-  TotalSales = 'TOTAL_SALES'
-}
+export const TrendingReleasesSortEnum = {
+  PrimarySales: 'PRIMARY_SALES',
+  SecondarySales: 'SECONDARY_SALES',
+  TotalSales: 'TOTAL_SALES'
+} as const;
 
+export type TrendingReleasesSortEnum = typeof TrendingReleasesSortEnum[keyof typeof TrendingReleasesSortEnum];
 /** User relation type */
-export enum TypeOfRelation {
-  Following = 'FOLLOWING'
-}
+export const TypeOfRelation = {
+  Following: 'FOLLOWING'
+} as const;
 
+export type TypeOfRelation = typeof TypeOfRelation[keyof typeof TypeOfRelation];
 /** User entity */
 export type User = Node & {
   __typename?: 'User';
@@ -3861,3 +3897,11 @@ export type TestTwoQuery = (
   { __typename: 'Query' }
   & { ' $fragmentRefs'?: { 'TestFragmentFragment': TestFragmentFragment } }
 );
+
+export type ReleasesTestQueryVariables = Exact<{
+  filter: ReleasesCursorFilterArgs;
+  pagination: ReleasesCursorConnectionArgs;
+}>;
+
+
+export type ReleasesTestQuery = { __typename?: 'Query', releases: { __typename?: 'ReleaseConnection', edges: Array<{ __typename?: 'ReleaseConnectionEdge', cursor: string, node: { __typename?: 'Release', id: string, title: string, artist: { __typename?: 'Artist', id: string, name?: string | null } } }>, pageInfo: { __typename?: 'PageInfo', hasPreviousPage: boolean, hasNextPage: boolean, startCursor?: string | null, endCursor?: string | null } } };

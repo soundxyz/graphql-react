@@ -1,19 +1,24 @@
-import { createElement, ReactNode } from 'react';
+import orderBy from 'lodash-es/orderBy.js';
+import { createElement, ReactNode, useMemo } from 'react';
+import { proxy, useSnapshot } from 'valtio';
 
 import { StringDocumentNode } from '@soundxyz/gql-string';
+
 import {
   QueryClient,
   QueryClientConfig,
   QueryClientProvider,
   QueryKey,
+  useInfiniteQuery as useInfiniteReactQuery,
+  UseInfiniteQueryOptions,
   useMutation as useMutationReactQuery,
   UseMutationOptions,
   useQuery as useQueryReactQuery,
   UseQueryOptions,
 } from './reactQuery';
+import { useLatestRef, useStableObject } from './utils';
 
 import type { ExecutionResult } from 'graphql';
-
 export function GraphQLReactQueryClient({
   clientConfig,
   endpoint,
@@ -142,6 +147,105 @@ export function GraphQLReactQueryClient({
     });
   }
 
+  type CursorPageParam =
+    | {
+        after: string | null | undefined;
+        before?: undefined;
+      }
+    | {
+        before: string | null | undefined;
+        after?: undefined;
+      };
+
+  type StrictGetPageParam<Result> = (page: Result) => CursorPageParam;
+
+  type InfiniteQueryStore<Entity> = {
+    nodes: Record<string, Entity>;
+  };
+
+  const infiniteQueryStores: Record<string, InfiniteQueryStore<unknown>> = {};
+
+  function useInfiniteQuery<
+    Result extends Record<string, unknown>,
+    Variables extends Record<string, unknown>,
+    OperationName extends string,
+    Entity extends Record<string, unknown>,
+    Options extends Omit<UseInfiniteQueryOptions<Result>, 'queryKey' | 'queryFn'> & {
+      getNextPageParam?: StrictGetPageParam<Result>;
+      getPreviousPageParam?: StrictGetPageParam<Result>;
+    },
+  >(
+    { name }: StringDocumentNode<Result, Variables, OperationName>,
+    {
+      variables,
+
+      list,
+      uniq,
+      orderEntity,
+      orderType,
+
+      ...options
+    }: Options & {
+      variables: ({ pageParam }: { pageParam: CursorPageParam | null | undefined }) => Variables;
+
+      list(result: Result): Entity[];
+      uniq(entity: Entity): string;
+      orderEntity: [(entity: Entity) => unknown, ...((entity: Entity) => unknown)[]];
+      orderType: ['asc' | 'desc', ...('asc' | 'desc')[]];
+    },
+  ) {
+    const store = (infiniteQueryStores[name] ||= proxy<InfiniteQueryStore<Entity>>({
+      nodes: {},
+    })) as InfiniteQueryStore<Entity>;
+
+    const result = useInfiniteReactQuery({
+      queryKey: [name, variables, 'Infinite'] as readonly unknown[],
+      async queryFn({ pageParam }) {
+        const result = await fetcher<Result>({
+          operationName: name,
+          variables: variables({ pageParam }),
+        });
+
+        for (const node of list(result)) {
+          const key = uniq(node);
+
+          store.nodes[key] = node;
+        }
+
+        return result;
+      },
+      onSuccess(data) {
+        return options.onSuccess?.(data);
+      },
+      select: data => {
+        data.pageParams;
+        return {
+          ...data,
+        };
+      },
+      ...options,
+    });
+
+    const { data } = result;
+
+    const firstPage = data?.pages[0];
+    const lastPage = data?.pages[result.data.pages.length - 1];
+
+    const { nodes } = useSnapshot(store);
+
+    const latestOrderEntity = useLatestRef(orderEntity);
+
+    const stableOrderType = useStableObject(orderType);
+
+    const orderedList = useMemo(() => {
+      const nodesValues = Object.values(nodes) as Entity[];
+
+      return orderBy(nodesValues, latestOrderEntity.current, stableOrderType);
+    }, [nodes, stableOrderType]);
+
+    return { ...result, firstPage, lastPage, orderedList };
+  }
+
   function useMutation<
     Result extends Record<string, unknown>,
     Variables extends Record<string, unknown>,
@@ -165,5 +269,6 @@ export function GraphQLReactQueryClient({
     useQuery,
     useMutation,
     fetchGQL,
+    useInfiniteQuery,
   };
 }

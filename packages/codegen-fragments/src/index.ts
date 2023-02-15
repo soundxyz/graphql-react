@@ -53,6 +53,7 @@ export const preset: Types.OutputPreset<{}> = {
       {
         filename: resolve(options.baseOutputDir, 'types.ts'),
         config: {
+          ...options.config,
           inlineFragmentTypes: 'mask',
         },
         documents: sources,

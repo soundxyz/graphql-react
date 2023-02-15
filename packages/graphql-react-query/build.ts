@@ -21,7 +21,15 @@ await Promise.all([
     packageJson: pkg,
     distDir: 'dist',
     rewritePackage(pkg) {
-      return { ...pkg, main: 'index.js', types: 'index.d.ts' };
+      return {
+        ...pkg,
+        main: 'index.js',
+        types: 'index.d.ts',
+        exports: {
+          '.': './index.js',
+          './*': './*.js',
+        },
+      };
     },
   }),
   execaCommand(`tsc -p tsconfig.build.json`),

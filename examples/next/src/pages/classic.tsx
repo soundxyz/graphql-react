@@ -1,4 +1,6 @@
 import type { GetStaticPropsResult, InferGetStaticPropsType } from 'next';
+import Link from 'next/link';
+
 import { gql } from '@soundxyz/gql-string';
 
 import styles from '../app/styles.module.css';
@@ -28,6 +30,7 @@ export default function Classic({ test }: InferGetStaticPropsType<typeof getStat
 
   return (
     <div className={styles.container}>
+      <Link href="/releases">Releases</Link>
       <p className={styles.p}>{data.__typename}</p>
       <Now info={data} />
     </div>
