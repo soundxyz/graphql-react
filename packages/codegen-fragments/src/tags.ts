@@ -1,9 +1,11 @@
 import {
+  buildSchema,
   DocumentNode,
   FragmentDefinitionNode,
   getOperationAST,
   OperationDefinitionNode,
   print,
+  printSchema,
   stripIgnoredCharacters,
 } from 'graphql';
 import { Kind } from 'graphql';
@@ -91,7 +93,12 @@ export const plugin: PluginFunction<{
     return acc;
   }, []);
 
-  const optimizedDocuments = optimizeDocuments(schema, filteredDocuments, {
+  const processedSchema = buildSchema(printSchema(schema).replace(/\! \=/g, '='), {
+    assumeValid: true,
+    assumeValidSDL: true,
+  });
+
+  const optimizedDocuments = optimizeDocuments(processedSchema, filteredDocuments, {
     assumeValid: true,
   });
 
