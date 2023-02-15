@@ -2,8 +2,8 @@ declare const result: unique symbol;
 declare const variables: unique symbol;
 
 export type StringDocumentNode<
-  Result extends Record<string, unknown> = Record<string, any>,
-  Variables extends Record<string, unknown> = Record<string, any>,
+  Result = Record<string, any>,
+  Variables = Record<string, any>,
 > = string & { [result]: Result; [variables]: Variables };
 
 export declare type ResultOf<T> = T extends StringDocumentNode<
