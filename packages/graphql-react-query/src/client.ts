@@ -19,6 +19,7 @@ import {
 import { useLatestRef, useStableObject } from './utils';
 
 import type { ExecutionResult } from 'graphql';
+
 export function GraphQLReactQueryClient({
   clientConfig,
   endpoint,
@@ -231,16 +232,14 @@ export function GraphQLReactQueryClient({
     const firstPage = data?.pages[0];
     const lastPage = data?.pages[result.data.pages.length - 1];
 
-    const { nodes } = useSnapshot(store);
+    const { nodes } = useSnapshot(store) as typeof store;
 
     const latestOrderEntity = useLatestRef(orderEntity);
 
     const stableOrderType = useStableObject(orderType);
 
     const orderedList = useMemo(() => {
-      const nodesValues = Object.values(nodes) as Entity[];
-
-      return orderBy(nodesValues, latestOrderEntity.current, stableOrderType);
+      return orderBy(nodes, latestOrderEntity.current, stableOrderType);
     }, [nodes, stableOrderType]);
 
     return { ...result, firstPage, lastPage, orderedList };
