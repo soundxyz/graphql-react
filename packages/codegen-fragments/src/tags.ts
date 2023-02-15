@@ -11,6 +11,7 @@ import { Kind } from 'graphql';
 import { PluginFunction } from '@graphql-codegen/plugin-helpers';
 import { optimizeDocuments } from '@graphql-tools/relay-operation-optimizer';
 import { Source } from '@graphql-tools/utils';
+import { BaseVisitor, RawConfig } from '@graphql-codegen/visitor-plugin-common';
 
 export type OperationOrFragment = {
   initialName: string;
@@ -70,10 +71,16 @@ function getFragmentDefinitions(documentNodes: DocumentNode[]): FragmentDefiniti
 const importTypes = `import type * as Types from './types';\n`;
 const importMasking = `import type { StringDocumentNode } from '@soundxyz/gql-string';\n`;
 
-export const plugin: PluginFunction<{
-  sourcesWithOperations: Array<SourceWithOperations>;
-  useTypeImports?: boolean;
-}> = async (schema, documents, { sourcesWithOperations }) => {
+export const plugin: PluginFunction<
+  RawConfig & {
+    sourcesWithOperations: Array<SourceWithOperations>;
+    useTypeImports?: boolean;
+  }
+> = async (schema, documents, config) => {
+  const { sourcesWithOperations } = config;
+
+  const visitor = new BaseVisitor(config, {});
+
   const fragments = getFragmentDefinitions(
     documents.reduce((acc: DocumentNode[], value) => {
       if (!value.document) return acc;
@@ -95,7 +102,8 @@ export const plugin: PluginFunction<{
     assumeValid: true,
   });
 
-  const operations: Record<string, string> = {};
+  const operationsRaw = new Set<string>();
+  const operationsConverted: Record<string, string> = {};
 
   const operationsNames: string[] = [];
 
@@ -103,7 +111,7 @@ export const plugin: PluginFunction<{
     importTypes,
     importMasking,
     ...fragments.map(value => {
-      const name = value.name.value;
+      const name = visitor.convertName(value.name.value);
 
       return `\nexport const ${name}FragmentDoc = '' as unknown as StringDocumentNode<Types.${name}Fragment, never>;`;
     }),
@@ -116,13 +124,15 @@ export const plugin: PluginFunction<{
 
       if (!type) return acc;
 
-      const name = ast.name.value;
+      operationsRaw.add(ast.name.value);
+
+      const name = visitor.convertName(ast.name.value);
 
       operationsNames.push(name);
 
       const doc = stripIgnoredCharacters(print(value));
 
-      operations[name] = doc;
+      operationsConverted[name] = doc;
 
       acc.push(
         `\nexport const ${name}Document = '${doc}' as unknown as StringDocumentNode<Types.${name}${type},Types.${name}${type}Variables>;`,
@@ -130,15 +140,18 @@ export const plugin: PluginFunction<{
       return acc;
     }, []),
     ...[
-      '\n',
-      ...Object.entries(operations).reduce(
-        (acc: string[], [operationName, _doc]) => {
-          acc.push(`${operationName}: ${operationName}Document,`);
-          return acc;
-        },
-        ['export const Operations = {'],
-      ),
-      '} as const;',
+      '\nexport type OperationNames = ' +
+        Array.from(operationsRaw)
+          .map(v => `\`${v}\``)
+          .join(' | ') +
+        ';\n',
+    ],
+    ...[
+      'export type Operations = ' +
+        Object.values(operationsConverted)
+          .map(v => `\`${v}\``)
+          .join(' | ') +
+        ';\n',
     ],
     '\n',
   ].join(`\n`);
