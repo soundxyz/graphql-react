@@ -93,12 +93,7 @@ export const plugin: PluginFunction<{
     return acc;
   }, []);
 
-  const processedSchema = buildSchema(printSchema(schema).replace(/\! \=/g, '='), {
-    assumeValid: true,
-    assumeValidSDL: true,
-  });
-
-  const optimizedDocuments = optimizeDocuments(processedSchema, filteredDocuments, {
+  const optimizedDocuments = optimizeDocuments(schema, filteredDocuments, {
     assumeValid: true,
   });
 

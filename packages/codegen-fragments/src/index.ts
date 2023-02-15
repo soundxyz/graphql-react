@@ -1,5 +1,6 @@
 import type { CodegenPlugin, Types } from '@graphql-codegen/plugin-helpers';
 import assert from 'assert';
+import { parse, printSchema } from 'graphql';
 import { resolve } from 'path';
 
 import * as typescriptPlugin from '@graphql-codegen/typescript';
@@ -8,6 +9,7 @@ import { ClientSideBaseVisitor } from '@graphql-codegen/visitor-plugin-common';
 
 import * as fragmentMaskingPlugin from './fragment-masking-plugin';
 import { processSources } from './process-sources';
+import { processSchema } from './processSchema';
 import * as gqlTagPlugin from './tags';
 
 export const preset: Types.OutputPreset<{}> = {
@@ -49,6 +51,8 @@ export const preset: Types.OutputPreset<{}> = {
       [`fragment-masking`]: fragmentMaskingPlugin,
     };
 
+    const processedSchemaAst = processSchema(options.schemaAst);
+    const processedSchema = parse(printSchema(processedSchemaAst));
     return [
       {
         filename: resolve(options.baseOutputDir, 'types.ts'),
@@ -69,7 +73,8 @@ export const preset: Types.OutputPreset<{}> = {
         documents: sources,
         pluginMap: documentsPluginMap,
         plugins: [{ [`gen-dts`]: { sourcesWithOperations } }],
-        schema: options.schema,
+        schema: processedSchema,
+        schemaAst: processedSchemaAst,
       },
       {
         filename: resolve(options.baseOutputDir, 'fragment-masking.ts'),
