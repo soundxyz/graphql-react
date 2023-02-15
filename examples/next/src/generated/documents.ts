@@ -11,13 +11,10 @@ export const TestMutateDocument = 'mutation TestMutate($publicAddress:String!){g
 
 export const TestTwoDocument = 'query TestTwo{__typename now}' as unknown as StringDocumentNode<Types.TestTwoQuery,Types.TestTwoQueryVariables>;
 
-export const ReleasesTestDocument = 'query ReleasesTest($filter:ReleasesCursorFilterArgs!$pagination:ReleasesCursorConnectionArgs!){releases(filter:$filter pagination:$pagination){edges{node{id title artist{id name}}cursor}pageInfo{hasPreviousPage hasNextPage startCursor endCursor}}}' as unknown as StringDocumentNode<Types.ReleasesTestQuery,Types.ReleasesTestQueryVariables>;
+export const ReleasesTestDocument = 'query releasesTest($filter:ReleasesCursorFilterArgs!$pagination:ReleasesCursorConnectionArgs!){releases(filter:$filter pagination:$pagination){edges{node{id title artist{id name}}cursor}pageInfo{hasPreviousPage hasNextPage startCursor endCursor}}}' as unknown as StringDocumentNode<Types.ReleasesTestQuery,Types.ReleasesTestQueryVariables>;
 
+export type OperationNames = `Test` | `TestMutate` | `TestTwo` | `releasesTest`;
 
-export const Operations = {
-Test: TestDocument,
-TestMutate: TestMutateDocument,
-TestTwo: TestTwoDocument,
-ReleasesTest: ReleasesTestDocument,
-} as const;
+export type Operations = `query Test{__typename now}` | `mutation TestMutate($publicAddress:String!){generateAuthChallenge(publicAddress:$publicAddress)}` | `query TestTwo{__typename now}` | `query releasesTest($filter:ReleasesCursorFilterArgs!$pagination:ReleasesCursorConnectionArgs!){releases(filter:$filter pagination:$pagination){edges{node{id title artist{id name}}cursor}pageInfo{hasPreviousPage hasNextPage startCursor endCursor}}}`;
+
 

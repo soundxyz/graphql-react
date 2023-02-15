@@ -1,11 +1,12 @@
 import Link from 'next/link';
 import { Fragment, useEffect, useState } from 'react';
 
-import { useInfiniteQuery, gql } from '../client/query';
+import { useInfiniteQuery, gql, invalidateOperations, resetOperations } from '../client/query';
+import { ReleasesTestDocument } from '../generated/documents';
 import { ReleaseType } from '../generated/types';
 
 gql`
-  query ReleasesTest(
+  query releasesTest(
     $filter: ReleasesCursorFilterArgs!
     $pagination: ReleasesCursorConnectionArgs!
   ) {
@@ -39,7 +40,7 @@ export default function Releases() {
     firstPage,
     lastPage,
     orderedList: flatList,
-  } = useInfiniteQuery('ReleasesTest', {
+  } = useInfiniteQuery(ReleasesTestDocument, {
     getNextPageParam(lastPage) {
       return {
         after: lastPage.releases.pageInfo.endCursor,
@@ -109,6 +110,29 @@ export default function Releases() {
           />
           <label>Auto fetch</label>
         </span>
+
+        <button
+          onClick={() => {
+            invalidateOperations({
+              operations: [ReleasesTestDocument, 'query Test{__typename now}'],
+            });
+          }}
+        >
+          Refetch
+        </button>
+
+        <button
+          onClick={() => {
+            resetOperations({
+              operations: [ReleasesTestDocument, 'query Test{__typename now}'],
+              filters: {
+                type: 'all',
+              },
+            });
+          }}
+        >
+          Clear
+        </button>
 
         <h2>Manual pagination</h2>
 

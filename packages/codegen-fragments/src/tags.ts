@@ -102,7 +102,8 @@ export const plugin: PluginFunction<
     assumeValid: true,
   });
 
-  const operations: Record<string, string> = {};
+  const operationsRaw = new Set<string>();
+  const operationsConverted: Record<string, string> = {};
 
   const operationsNames: string[] = [];
 
@@ -123,13 +124,15 @@ export const plugin: PluginFunction<
 
       if (!type) return acc;
 
+      operationsRaw.add(ast.name.value);
+
       const name = visitor.convertName(ast.name.value);
 
       operationsNames.push(name);
 
       const doc = stripIgnoredCharacters(print(value));
 
-      operations[name] = doc;
+      operationsConverted[name] = doc;
 
       acc.push(
         `\nexport const ${name}Document = '${doc}' as unknown as StringDocumentNode<Types.${name}${type},Types.${name}${type}Variables>;`,
@@ -137,17 +140,18 @@ export const plugin: PluginFunction<
       return acc;
     }, []),
     ...[
-      '\n',
-      ...Object.entries(operations).reduce(
-        (acc: string[], [operationNameRaw, _doc]) => {
-          const operationName = visitor.convertName(operationNameRaw);
-
-          acc.push(`${operationName}: ${operationName}Document,`);
-          return acc;
-        },
-        ['export const Operations = {'],
-      ),
-      '} as const;',
+      '\nexport type OperationNames = ' +
+        Array.from(operationsRaw)
+          .map(v => `\`${v}\``)
+          .join(' | ') +
+        ';\n',
+    ],
+    ...[
+      'export type Operations = ' +
+        Object.values(operationsConverted)
+          .map(v => `\`${v}\``)
+          .join(' | ') +
+        ';\n',
     ],
     '\n',
   ].join(`\n`);

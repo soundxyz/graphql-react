@@ -4,6 +4,7 @@ import Link from 'next/link';
 import styles from '../app/styles.module.css';
 import { fetchGQL, useQuery, gql } from '../client/query';
 import { Now } from '../components/now';
+import { TestTwoDocument } from '../generated/documents';
 
 gql`
   query TestTwo {
@@ -15,13 +16,13 @@ gql`
 export const getStaticProps = async () => {
   return {
     props: {
-      test: await fetchGQL('TestTwo', {}),
+      test: await fetchGQL(TestTwoDocument, {}),
     },
   } satisfies GetStaticPropsResult<unknown>;
 };
 
 export default function Classic({ test }: InferGetStaticPropsType<typeof getStaticProps>) {
-  const { data = test } = useQuery('TestTwo', {
+  const { data = test } = useQuery(TestTwoDocument, {
     initialData: test,
   });
 
