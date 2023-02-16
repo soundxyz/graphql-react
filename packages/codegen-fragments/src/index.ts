@@ -68,9 +68,29 @@ export const preset: Types.OutputPreset<{}> = {
       },
     ];
 
+    const indexPluginMap: Record<string, CodegenPlugin<any>> = {
+      [`add`]: addPlugin,
+    };
+
+    const indexPlugins: Array<Types.ConfiguredPlugin> = [
+      {
+        [`add`]: {
+          content: `export * from './types'\nexport * from './documents';\nexport * from './fragment-masking';\n`,
+        },
+      },
+    ];
+
     const processedSchemaAst = processSchema(options.schemaAst);
     const processedSchema = parse(printSchema(processedSchemaAst));
     return [
+      {
+        filename: join(options.baseOutputDir, 'index.ts'),
+        config: {},
+        documents: [],
+        pluginMap: indexPluginMap,
+        plugins: indexPlugins,
+        schema: options.schema,
+      },
       {
         filename: join(options.baseOutputDir, 'types.ts'),
         config: {
