@@ -166,6 +166,10 @@ export function GraphQLReactQueryClient<
     nodes: Record<string, Entity>;
   };
 
+  type NonEmptyList<T> = readonly [T, ...T[]];
+
+  type AtLeastOne<T> = T | NonEmptyList<T>;
+
   const infiniteQueryStores: Record<string, InfiniteQueryStore<unknown>> = {};
 
   function useInfiniteQuery<
@@ -185,8 +189,7 @@ export function GraphQLReactQueryClient<
 
       list,
       uniq,
-      orderEntity,
-      orderType,
+      order,
 
       ...options
     }: Options & {
@@ -196,8 +199,7 @@ export function GraphQLReactQueryClient<
 
       list(result: Result): Entity[] | null | undefined | false | '' | 0;
       uniq(entity: Entity): string;
-      orderEntity: [(entity: Entity) => unknown, ...((entity: Entity) => unknown)[]];
-      orderType: ['asc' | 'desc', ...('asc' | 'desc')[]];
+      order?: readonly [AtLeastOne<(entity: Entity) => unknown>, AtLeastOne<'asc' | 'desc'>];
     },
   ) {
     const entityStore = (infiniteQueryStores[query + JSON.stringify(filterQueryKey)] ||= {
@@ -245,17 +247,18 @@ export function GraphQLReactQueryClient<
     const firstPage = data?.pages[0];
     const lastPage = data?.pages[result.data.pages.length - 1];
 
-    const latestOrderEntity = useLatestRef(orderEntity);
+    const latestOrder = useLatestRef(order?.[0]);
     const latestListFn = useLatestRef(list);
     const latestUniq = useLatestRef(uniq);
 
-    const stableOrderType = useStableObject(orderType);
+    const stableOrderType = useStableObject(order?.[1]);
 
     const orderedList = useMemo<Entity[]>(() => {
       if (!data) return [];
 
       const currentListFn = latestListFn.current;
       const currentUniq = latestUniq.current;
+      const currentOrder = latestOrder.current;
 
       const values = data.pages.reduce((acc: Record<string, Entity>, page) => {
         const listValues = currentListFn(page) || [];
@@ -270,7 +273,9 @@ export function GraphQLReactQueryClient<
         return acc;
       }, {});
 
-      return orderBy(values, latestOrderEntity.current, stableOrderType);
+      if (currentOrder) return orderBy(values, currentOrder, stableOrderType);
+
+      return Object.values(values);
     }, [stableOrderType, data]);
 
     return { ...result, firstPage, lastPage, orderedList, loadMoreNextPage, loadMorePreviousPage };
@@ -291,8 +296,6 @@ export function GraphQLReactQueryClient<
       ...options,
     });
   }
-
-  type NonEmptyList<T> = [T, ...T[]];
 
   async function invalidateOperations({
     filters,

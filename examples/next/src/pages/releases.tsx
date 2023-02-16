@@ -71,8 +71,7 @@ export default function Releases() {
     list(result) {
       return result.releases.edges.map(edge => edge.node);
     },
-    orderEntity: [v => v.title],
-    orderType: ['asc'],
+    order: [v => v.title, 'asc'],
     uniq(entity) {
       return entity.id;
     },
