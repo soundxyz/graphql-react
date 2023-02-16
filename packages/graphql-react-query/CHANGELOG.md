@@ -1,5 +1,12 @@
 # @soundxyz/graphql-react-query
 
+## 1.0.3
+
+### Patch Changes
+
+- [`0a03b61`](https://github.com/soundxyz/graphql-react-query/commit/0a03b61e165171ed763105d8c105786e5b159c50)
+  Thanks [@PabloSzx](https://github.com/PabloSzx)! - Allow false as pageParam
+
 ## 1.0.2
 
 ### Patch Changes
