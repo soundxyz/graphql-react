@@ -154,7 +154,7 @@ export function GraphQLReactQueryClient<
         after?: undefined;
       };
 
-  type StrictGetPageParam<Result> = (page: Result) => CursorPageParam;
+  type StrictGetPageParam<Result> = (page: Result) => CursorPageParam | null | undefined;
 
   type InfiniteQueryStore<Entity> = {
     nodes: Record<string, Entity>;
