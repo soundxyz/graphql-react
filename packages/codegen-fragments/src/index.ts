@@ -76,6 +76,7 @@ export const preset: Types.OutputPreset<{}> = {
         config: {
           ...options.config,
           inlineFragmentTypes: 'mask',
+          skipTypename: true,
         },
         documents: sources,
         pluginMap: tsPluginMap,
