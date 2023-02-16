@@ -1,5 +1,12 @@
 # @soundxyz/codegen-fragments
 
+## 1.0.3
+
+### Patch Changes
+
+- [`0f17ee7`](https://github.com/soundxyz/graphql-react-query/commit/0f17ee784e326cf144f008b888aa9c098fee69aa)
+  Thanks [@PabloSzx](https://github.com/PabloSzx)! - Index file re-exporting everything
+
 ## 1.0.2
 
 ### Patch Changes
