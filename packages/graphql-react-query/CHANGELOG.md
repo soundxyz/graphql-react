@@ -1,5 +1,13 @@
 # @soundxyz/graphql-react-query
 
+## 1.0.6
+
+### Patch Changes
+
+- [`7b42bc6`](https://github.com/soundxyz/graphql-react-query/commit/7b42bc673dbe4f519fb02a1108b06c658eb7f557)
+  Thanks [@PabloSzx](https://github.com/PabloSzx)! - Rework useInfiniteQuery order with optional +
+  flexible syntax
+
 ## 1.0.5
 
 ### Patch Changes
