@@ -184,7 +184,7 @@ export function GraphQLReactQueryClient<
     }: Options & {
       variables: ({ pageParam }: { pageParam: CursorPageParam | null | undefined }) => Variables;
 
-      list(result: Result): Entity[];
+      list(result: Result): Entity[] | null | undefined | false | '' | 0 | -0;
       uniq(entity: Entity): string;
       orderEntity: [(entity: Entity) => unknown, ...((entity: Entity) => unknown)[]];
       orderType: ['asc' | 'desc', ...('asc' | 'desc')[]];
@@ -204,7 +204,7 @@ export function GraphQLReactQueryClient<
           variables: variables({ pageParam }),
         });
 
-        for (const node of list(result)) {
+        for (const node of list(result) || []) {
           const key = uniq(node);
 
           entityStoreNodes[key] = node;
@@ -233,7 +233,7 @@ export function GraphQLReactQueryClient<
       const currentUniq = latestUniq.current;
 
       const values = data.pages.reduce((acc: Record<string, Entity>, page) => {
-        const listValues = currentListFn(page);
+        const listValues = currentListFn(page) || [];
 
         for (const entity of listValues) {
           const key = currentUniq(entity);
