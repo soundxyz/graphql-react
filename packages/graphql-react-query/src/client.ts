@@ -188,11 +188,7 @@ export function GraphQLReactQueryClient<
 
       ...options
     }: Options & {
-      variables: ({
-        pageParam,
-      }: {
-        pageParam: CursorPageParam | null | undefined | false;
-      }) => Variables;
+      variables: ({ pageParam }: { pageParam: CursorPageParam | null }) => Variables;
 
       list(result: Result): Entity[] | null | undefined | false | '' | 0;
       uniq(entity: Entity): string;
@@ -211,7 +207,7 @@ export function GraphQLReactQueryClient<
       async queryFn({ pageParam, signal }) {
         const result = await fetcher<Result>({
           query,
-          variables: variables({ pageParam }),
+          variables: variables({ pageParam: pageParam || null }),
           fetchOptions: {
             signal,
           },
