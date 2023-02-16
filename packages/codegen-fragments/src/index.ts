@@ -75,7 +75,7 @@ export const preset: Types.OutputPreset<{}> = {
     const indexPlugins: Array<Types.ConfiguredPlugin> = [
       {
         [`add`]: {
-          content: `export * from './types'\nexport * from './documents';\nexport * from './fragment-masking';\n`,
+          content: `/* eslint-disable */\nexport * from './types'\nexport * from './documents';\nexport * from './fragment-masking';\n`,
         },
       },
     ];
