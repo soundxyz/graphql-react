@@ -160,7 +160,7 @@ export function GraphQLReactQueryClient<
         after?: undefined;
       };
 
-  type StrictGetPageParam<Result> = (page: Result) => CursorPageParam | null | undefined;
+  type StrictGetPageParam<Result> = (page: Result) => CursorPageParam | false | null | undefined;
 
   type InfiniteQueryStore<Entity> = {
     nodes: Record<string, Entity>;
@@ -188,7 +188,11 @@ export function GraphQLReactQueryClient<
 
       ...options
     }: Options & {
-      variables: ({ pageParam }: { pageParam: CursorPageParam | null | undefined }) => Variables;
+      variables: ({
+        pageParam,
+      }: {
+        pageParam: CursorPageParam | null | undefined | false;
+      }) => Variables;
 
       list(result: Result): Entity[] | null | undefined | false | '' | 0;
       uniq(entity: Entity): string;
