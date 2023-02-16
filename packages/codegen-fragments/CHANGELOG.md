@@ -1,5 +1,13 @@
 # @soundxyz/codegen-fragments
 
+## 1.0.2
+
+### Patch Changes
+
+- [`0ef239a`](https://github.com/soundxyz/graphql-react-query/commit/0ef239a2dc3a87d0407312b63b9e493b1a78c97c)
+  Thanks [@PabloSzx](https://github.com/PabloSzx)! - Add "skipTypename" to typescript operations
+  plugin
+
 ## 1.0.1
 
 ### Patch Changes
