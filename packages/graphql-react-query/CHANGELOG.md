@@ -1,5 +1,13 @@
 # @soundxyz/graphql-react-query
 
+## 1.0.4
+
+### Patch Changes
+
+- [`ab8c32f`](https://github.com/soundxyz/graphql-react-query/commit/ab8c32f1acb712e61f6a8565ca50decf90db470a)
+  Thanks [@PabloSzx](https://github.com/PabloSzx)! - useInfiniteQuery always receive cursor obj or
+  null
+
 ## 1.0.3
 
 ### Patch Changes
