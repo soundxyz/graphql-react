@@ -181,6 +181,8 @@ export function GraphQLReactQueryClient<
     {
       variables,
 
+      filterQueryKey = {},
+
       list,
       uniq,
       orderEntity,
@@ -190,20 +192,22 @@ export function GraphQLReactQueryClient<
     }: Options & {
       variables: ({ pageParam }: { pageParam: CursorPageParam | null }) => Variables;
 
+      filterQueryKey?: unknown;
+
       list(result: Result): Entity[] | null | undefined | false | '' | 0;
       uniq(entity: Entity): string;
       orderEntity: [(entity: Entity) => unknown, ...((entity: Entity) => unknown)[]];
       orderType: ['asc' | 'desc', ...('asc' | 'desc')[]];
     },
   ) {
-    const entityStore = (infiniteQueryStores[query] ||= {
+    const entityStore = (infiniteQueryStores[query + JSON.stringify(filterQueryKey)] ||= {
       nodes: {},
     }) as InfiniteQueryStore<Entity>;
 
     const entityStoreNodes = entityStore.nodes;
 
     const result = useInfiniteReactQuery({
-      queryKey: [query, variables, 'Infinite'] as readonly unknown[],
+      queryKey: [query, filterQueryKey, variables, 'Infinite'] as readonly unknown[],
       async queryFn({ pageParam, signal }) {
         const result = await fetcher<Result>({
           query,
