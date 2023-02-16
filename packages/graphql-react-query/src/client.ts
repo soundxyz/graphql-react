@@ -184,7 +184,7 @@ export function GraphQLReactQueryClient<
     }: Options & {
       variables: ({ pageParam }: { pageParam: CursorPageParam | null | undefined }) => Variables;
 
-      list(result: Result): Entity[] | null | undefined | false | '' | 0 | -0;
+      list(result: Result): Entity[] | null | undefined | false | '' | 0;
       uniq(entity: Entity): string;
       orderEntity: [(entity: Entity) => unknown, ...((entity: Entity) => unknown)[]];
       orderType: ['asc' | 'desc', ...('asc' | 'desc')[]];
