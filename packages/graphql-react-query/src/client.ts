@@ -95,12 +95,18 @@ export function GraphQLReactQueryClient<
     ...clientConfig,
     defaultOptions: {
       queries: {
-        queryFn({ queryKey }) {
+        queryFn({ queryKey, signal }) {
           const [query, variables] = queryKey;
 
           if (typeof query !== 'string') throw Error(`Invalid GraphQL operation given`);
 
-          return fetcher({ query, variables });
+          return fetcher({
+            query,
+            variables,
+            fetchOptions: {
+              signal,
+            },
+          });
         },
       },
     },
@@ -198,10 +204,13 @@ export function GraphQLReactQueryClient<
 
     const result = useInfiniteReactQuery({
       queryKey: [query, variables, 'Infinite'] as readonly unknown[],
-      async queryFn({ pageParam }) {
+      async queryFn({ pageParam, signal }) {
         const result = await fetcher<Result>({
           query,
           variables: variables({ pageParam }),
+          fetchOptions: {
+            signal,
+          },
         });
 
         for (const node of list(result) || []) {
