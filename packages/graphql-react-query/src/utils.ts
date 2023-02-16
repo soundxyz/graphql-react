@@ -1,5 +1,5 @@
 import equal from 'fast-deep-equal';
-import { MutableRefObject, useMemo, useRef } from 'react';
+import { MutableRefObject, useCallback, useMemo, useRef } from 'react';
 
 export function useLatestRef<T>(value: T) {
   const ref = useRef<T | null>(null);
@@ -17,4 +17,16 @@ export function useStableObject<T>(obj: T) {
     ref.current = obj;
     return obj;
   }, [obj]);
+}
+
+export function useStableCallback<Cb extends (...args: any[]) => unknown>(cb: Cb) {
+  const latestCb = useLatestRef(cb);
+
+  return useCallback<Cb>(
+    // @ts-expect-error - we don't have strong types for useCallback
+    function Callback(...args) {
+      return latestCb.current(...args);
+    },
+    [],
+  );
 }

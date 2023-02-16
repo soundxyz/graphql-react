@@ -15,7 +15,7 @@ import {
   useQuery as useQueryReactQuery,
   UseQueryOptions,
 } from './reactQuery';
-import { useLatestRef, useStableObject } from './utils';
+import { useLatestRef, useStableCallback, useStableObject } from './utils';
 import type {
   InvalidateOptions,
   InvalidateQueryFilters,
@@ -215,7 +215,19 @@ export function GraphQLReactQueryClient<
       ...options,
     });
 
-    const { data } = result;
+    const { data, hasNextPage, hasPreviousPage, fetchNextPage, fetchPreviousPage } = result;
+
+    const loadMoreNextPage = useStableCallback(() => {
+      if (hasNextPage) return fetchNextPage();
+
+      return null;
+    });
+
+    const loadMorePreviousPage = useStableCallback(() => {
+      if (hasPreviousPage) return fetchPreviousPage();
+
+      return null;
+    });
 
     const firstPage = data?.pages[0];
     const lastPage = data?.pages[result.data.pages.length - 1];
@@ -248,7 +260,7 @@ export function GraphQLReactQueryClient<
       return orderBy(values, latestOrderEntity.current, stableOrderType);
     }, [stableOrderType, data]);
 
-    return { ...result, firstPage, lastPage, orderedList };
+    return { ...result, firstPage, lastPage, orderedList, loadMoreNextPage, loadMorePreviousPage };
   }
 
   function useMutation<
