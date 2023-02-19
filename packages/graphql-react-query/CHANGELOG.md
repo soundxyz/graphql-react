@@ -1,5 +1,12 @@
 # @soundxyz/graphql-react-query
 
+## 1.0.7
+
+### Patch Changes
+
+- [`6707019`](https://github.com/soundxyz/graphql-react-query/commit/670701940aab57c0955f9b22fbc1654d1b26ce02)
+  Thanks [@PabloSzx](https://github.com/PabloSzx)! - Target ES2019 instead of ES2020
+
 ## 1.0.6
 
 ### Patch Changes
