@@ -14,7 +14,7 @@ await Promise.all([
     clean: false,
     format: 'interop',
     outDir: 'dist',
-    target: 'es2020',
+    target: 'es2019',
     sourcemap: false,
   }),
   writePackageJson({
