@@ -43,12 +43,12 @@ export default function Releases() {
   } = useInfiniteQuery(ReleasesTestDocument, {
     getNextPageParam(lastPage) {
       return {
-        after: lastPage.releases.pageInfo.endCursor,
+        after: lastPage.data.releases.pageInfo.endCursor,
       };
     },
     getPreviousPageParam(firstPage) {
       return {
-        before: firstPage.releases.pageInfo.startCursor,
+        before: firstPage.data.releases.pageInfo.startCursor,
       };
     },
     variables({ pageParam = null }) {
@@ -80,10 +80,14 @@ export default function Releases() {
   const [autoFetch, setAutoFetch] = useState(false);
 
   useEffect(() => {
-    if (lastPage?.releases.pageInfo.hasNextPage && autoFetch) {
+    if (lastPage?.data.releases.pageInfo.hasNextPage && autoFetch) {
       fetchNextPage();
     }
-  }, [lastPage?.releases.pageInfo.endCursor, lastPage?.releases.pageInfo.hasNextPage, autoFetch]);
+  }, [
+    lastPage?.data.releases.pageInfo.endCursor,
+    lastPage?.data.releases.pageInfo.hasNextPage,
+    autoFetch,
+  ]);
 
   return (
     <>
@@ -136,12 +140,15 @@ export default function Releases() {
         <h2>Manual pagination</h2>
 
         <button
-          disabled={!firstPage?.releases.pageInfo.startCursor}
+          disabled={!firstPage?.data.releases.pageInfo.startCursor}
           onClick={() => fetchPreviousPage()}
         >
           Prev Page
         </button>
-        <button disabled={!lastPage?.releases.pageInfo.endCursor} onClick={() => fetchNextPage()}>
+        <button
+          disabled={!lastPage?.data.releases.pageInfo.endCursor}
+          onClick={() => fetchNextPage()}
+        >
           Next Page
         </button>
       </div>
@@ -163,7 +170,7 @@ export default function Releases() {
           return (
             <Fragment key={index}>
               <h4>{index}</h4>
-              {list.releases.edges.map(edge => {
+              {list.data.releases.edges.map(edge => {
                 return (
                   <li key={edge.node.id}>
                     {edge.node.title} - {edge.node.artist.name}

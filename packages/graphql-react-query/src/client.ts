@@ -25,6 +25,8 @@ import type {
 
 import type { ExecutionResult } from 'graphql';
 
+export type ExecutionResultWithData<Data> = Omit<ExecutionResult, 'data'> & { data: Data };
+
 export function GraphQLReactQueryClient<
   Operations extends string = '',
   _OperationNames extends string = '',
@@ -47,7 +49,7 @@ export function GraphQLReactQueryClient<
     query: string;
     variables: unknown;
     fetchOptions?: Partial<RequestInit>;
-  }): Promise<Result> {
+  }): Promise<ExecutionResultWithData<Result>> {
     const res = await fetch(endpoint, {
       method: 'POST',
       headers: {
@@ -59,36 +61,56 @@ export function GraphQLReactQueryClient<
       ...extraFetchOptions,
     });
 
-    const { errors, data = null }: ExecutionResult<Result> = await res
-      .json()
-      .catch(() => ({ errors: [{ name: 'Network Error unexpected payload' }] }));
+    const {
+      errors,
+      data = null,
+      extensions,
+    }: ExecutionResult<Result> = await res.json().catch(() => {
+      throw Error('Network error, unexpected payload');
+    });
 
-    if (errors?.length) {
-      if (errors.length > 1) {
-        const err = Error('Multiple Errors', {
+    if (!data) {
+      if (errors?.length) {
+        if (errors.length > 1) {
+          const err = Error('Multiple Errors', {
+            cause: {
+              errors,
+            },
+          });
+
+          for (const err of errors) {
+            console.error(err);
+          }
+          Object.assign(err, {
+            graphqlErrors: errors,
+          });
+
+          throw err;
+        }
+
+        const { message } = errors[0]!;
+
+        throw new Error(message, {
           cause: {
-            errors,
+            query,
+            variables,
           },
         });
-
-        for (const err of errors) {
-          console.error(err);
-        }
-        Object.assign(err, {
-          graphqlErrors: errors,
-        });
-
-        throw err;
       }
 
-      const { message } = errors[0]!;
-
-      throw new Error(message);
+      throw Error('Unexpected missing data', {
+        cause: {
+          query,
+          variables,
+        },
+      });
     }
 
-    if (!data) throw Error(`Missing data from API`);
-
-    return data;
+    return {
+      data,
+      errors,
+      extensions,
+    };
   }
 
   const client = new QueryClient({
@@ -133,18 +155,25 @@ export function GraphQLReactQueryClient<
     });
   }
 
-  function useQuery<Result, Variables>(
+  function useQuery<
+    Result,
+    Variables,
+    QueryData extends ExecutionResultWithData<Result>,
+    Options extends UseQueryOptions<ExecutionResultWithData<Result>, Error, QueryData, QueryKey>,
+  >(
     query: StringDocumentNode<Result, Variables>,
     {
       variables,
       ...options
     }: Variables extends Record<string, never>
-      ? UseQueryOptions<Result, Error, Result, QueryKey> & {
+      ? Options & {
           variables?: undefined;
         }
-      : UseQueryOptions<Result, Error, Result, QueryKey> & { variables: Variables },
+      : Options & {
+          variables: Variables;
+        },
   ) {
-    return useQueryReactQuery<Result, Error, Result>({
+    return useQueryReactQuery<ExecutionResultWithData<Result>, Error, QueryData>({
       queryKey: [query, variables],
       ...options,
     });
@@ -176,9 +205,12 @@ export function GraphQLReactQueryClient<
     Result,
     Variables,
     Entity extends Record<string, unknown>,
-    Options extends Omit<UseInfiniteQueryOptions<Result>, 'queryKey' | 'queryFn'> & {
-      getNextPageParam?: StrictGetPageParam<Result>;
-      getPreviousPageParam?: StrictGetPageParam<Result>;
+    Options extends Omit<
+      UseInfiniteQueryOptions<ExecutionResultWithData<Result>>,
+      'queryKey' | 'queryFn'
+    > & {
+      getNextPageParam?: StrictGetPageParam<ExecutionResultWithData<Result>>;
+      getPreviousPageParam?: StrictGetPageParam<ExecutionResultWithData<Result>>;
     },
   >(
     query: StringDocumentNode<Result, Variables>,
@@ -211,7 +243,7 @@ export function GraphQLReactQueryClient<
     const result = useInfiniteReactQuery({
       queryKey: [query, filterQueryKey, variables, 'Infinite'] as readonly unknown[],
       async queryFn({ pageParam, signal }) {
-        const result = await fetcher<Result>({
+        const response = await fetcher<Result>({
           query,
           variables: variables({ pageParam: pageParam || null }),
           fetchOptions: {
@@ -219,13 +251,19 @@ export function GraphQLReactQueryClient<
           },
         });
 
-        for (const node of list(result) || []) {
-          const key = uniq(node);
+        try {
+          for (const node of list(response.data) || []) {
+            const key = uniq(node);
 
-          entityStoreNodes[key] = node;
+            entityStoreNodes[key] = node;
+          }
+        } catch (cause) {
+          throw Error('Internal server error. Unexpected payload', {
+            cause,
+          });
         }
 
-        return result;
+        return response;
       },
       ...options,
     });
@@ -261,7 +299,7 @@ export function GraphQLReactQueryClient<
       const currentOrder = latestOrder.current;
 
       const values = data.pages.reduce((acc: Record<string, Entity>, page) => {
-        const listValues = currentListFn(page) || [];
+        const listValues = page.data ? currentListFn(page.data) || [] : [];
 
         for (const entity of listValues) {
           const key = currentUniq(entity);

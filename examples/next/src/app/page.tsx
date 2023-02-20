@@ -26,8 +26,8 @@ export default function Page() {
 
   return (
     <div className={styles.container}>
-      <p className={styles.p}>{data?.__typename || '...'}</p>
-      {data && <Now info={data} />}
+      <p className={styles.p}>{data?.data.__typename || '...'}</p>
+      {data && <Now info={data.data} />}
     </div>
   );
 }
