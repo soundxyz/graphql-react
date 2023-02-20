@@ -322,11 +322,11 @@ export function GraphQLReactQueryClient<
   function useMutation<
     Result,
     Variables,
-    Options extends UseMutationOptions<Result, Error, Variables>,
+    Options extends UseMutationOptions<ExecutionResultWithData<Result>, Error, Variables>,
   >(mutation: StringDocumentNode<Result, Variables>, options: Options) {
     return useMutationReactQuery({
       mutationFn(variables) {
-        return fetcher({
+        return fetcher<Result>({
           query: mutation,
           variables,
         });
