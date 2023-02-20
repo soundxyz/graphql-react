@@ -1,5 +1,12 @@
 # @soundxyz/graphql-react-query
 
+## 2.0.1
+
+### Patch Changes
+
+- [`80bf18a`](https://github.com/soundxyz/graphql-react-query/commit/80bf18a2c54039a7f4c51ff69edc5c12c41f2e31)
+  Thanks [@PabloSzx](https://github.com/PabloSzx)! - Sync useMutation types
+
 ## 2.0.0
 
 ### Major Changes
