@@ -11,7 +11,7 @@
     "prepare": "bob-tsm build.ts"
   },
   "devDependencies": {
-    "@types/node": "^18.13.0",
+    "@types/node": "^18.14.0",
     "bob-ts": "^4.1.1",
     "bob-tsm": "^1.1.2",
     "esbuild": "^0.17.9",
