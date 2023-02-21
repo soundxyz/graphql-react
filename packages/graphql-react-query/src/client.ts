@@ -247,7 +247,7 @@ export function GraphQLReactQueryClient<
     const result = useInfiniteReactQuery({
       queryKey: [query, filterQueryKey, variables, 'Infinite'] as readonly unknown[],
       async queryFn({ pageParam, signal }) {
-        const response = await fetcher<Result>({
+        const response: ExecutionResultWithData<Result> = await fetcher<Result>({
           query,
           variables: variables({ pageParam: pageParam || null }),
           fetchOptions: {
@@ -269,7 +269,7 @@ export function GraphQLReactQueryClient<
 
         if (onFetchCompleted) {
           try {
-            onFetchCompleted(response);
+            Promise.all([onFetchCompleted(response)]).catch(() => null);
           } catch (err) {}
         }
 
