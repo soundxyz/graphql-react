@@ -223,11 +223,15 @@ export function GraphQLReactQueryClient<
       uniq,
       order,
 
+      onFetchCompleted,
+
       ...options
     }: Options & {
       variables: ({ pageParam }: { pageParam: CursorPageParam | null }) => Variables;
 
       filterQueryKey?: unknown;
+
+      onFetchCompleted?(result: ExecutionResultWithData<Result>): void;
 
       list(result: Result): Entity[] | null | undefined | false | '' | 0;
       uniq(entity: Entity): string;
@@ -261,6 +265,12 @@ export function GraphQLReactQueryClient<
           throw Error('Internal server error. Unexpected payload', {
             cause,
           });
+        }
+
+        if (onFetchCompleted) {
+          try {
+            onFetchCompleted(response);
+          } catch (err) {}
         }
 
         return response;
