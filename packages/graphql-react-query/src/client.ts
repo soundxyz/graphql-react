@@ -27,6 +27,16 @@ import type { ExecutionResult } from 'graphql';
 
 export type ExecutionResultWithData<Data> = Omit<ExecutionResult, 'data'> & { data: Data };
 
+export type EffectCallback<Result, Variables> = ({
+  operation,
+  result,
+  variables,
+}: {
+  operation: StringDocumentNode<Result, Variables>;
+  result: ExecutionResultWithData<Result>;
+  variables: Variables;
+}) => void;
+
 export function GraphQLReactQueryClient<
   Operations extends string = '',
   _OperationNames extends string = '',
@@ -41,6 +51,8 @@ export function GraphQLReactQueryClient<
   headers: Readonly<Record<string, unknown>>;
   fetchOptions?: Partial<RequestInit>;
 }) {
+  const effectsStore: Record<string, Set<EffectCallback<unknown, unknown>> | null> = {};
+
   async function fetcher<Result = unknown>({
     query,
     variables,
@@ -106,12 +118,59 @@ export function GraphQLReactQueryClient<
       });
     }
 
+    const effects = effectsStore[query];
+
+    if (effects) {
+      for (const effect of effects) {
+        try {
+          Promise.all([
+            effect({
+              operation: query as StringDocumentNode<unknown, unknown>,
+              result: { errors, data, extensions },
+              variables,
+            }),
+          ]).catch(() => null);
+        } catch (err) {}
+      }
+    }
+
     return {
       data,
       errors,
       extensions,
     };
   }
+
+  const Effects = {
+    /**
+     * Add an effect callback to be called every time the specified operation request has been completed
+     *
+     * It returns a callback that's going to stop the effect from being called
+     *
+     * @example
+     * addEffect(TestQuery, ({ operation, result: { data }, variables }) => {
+     *  console.log({
+     *    operation,
+     *    data,
+     *    variables
+     *  });
+     * });
+     */
+    onCompleted<Result, Variables>(
+      operation: StringDocumentNode<Result, Variables>,
+      callback: EffectCallback<Result, Variables>,
+    ) {
+      const effects = (effectsStore[operation] ||= new Set());
+
+      effects.add(callback as EffectCallback<unknown, unknown>);
+
+      return function removeEffect() {
+        effects.delete(callback as EffectCallback<unknown, unknown>);
+
+        if (effects.size === 0) effectsStore[operation] = null;
+      };
+    },
+  } as const;
 
   const client = new QueryClient({
     ...clientConfig,
@@ -407,5 +466,6 @@ export function GraphQLReactQueryClient<
     gql,
     invalidateOperations,
     resetOperations,
+    Effects,
   };
 }
