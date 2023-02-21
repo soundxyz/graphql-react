@@ -1,5 +1,14 @@
 # @soundxyz/graphql-react-query
 
+## 2.2.0
+
+### Minor Changes
+
+- [#32](https://github.com/soundxyz/graphql-react-query/pull/32)
+  [`1d15157`](https://github.com/soundxyz/graphql-react-query/commit/1d1515778fe146df6a31e38db59203cf3d6f1c61)
+  Thanks [@PabloSzx](https://github.com/PabloSzx)! - New "Effects" available at
+  GraphQLReactQueryClient
+
 ## 2.1.1
 
 ### Patch Changes
