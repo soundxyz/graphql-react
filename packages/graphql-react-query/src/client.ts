@@ -141,6 +141,20 @@ export function GraphQLReactQueryClient<
     };
   }
 
+  /**
+   * Add an effect callback to be called every time the specified operation request has been completed
+   *
+   * It returns a callback that's going to stop the effect from being called
+   *
+   * @example
+   * addEffect(TestQuery, ({ operation, result: { data }, variables }) => {
+   *  console.log({
+   *    operation,
+   *    data,
+   *    variables
+   *  });
+   * });
+   */
   function addEffect<Result, Variables>(
     operation: StringDocumentNode<Result, Variables>,
     callback: EffectCallback<Result, Variables>,
