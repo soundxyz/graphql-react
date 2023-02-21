@@ -134,11 +134,14 @@ export function GraphQLReactQueryClient<
       }
     }
 
-    return {
+    const result: ExecutionResultWithData<Result> = {
       data,
-      errors,
-      extensions,
     };
+
+    if (errors) result.errors = errors;
+    if (extensions) result.extensions = extensions;
+
+    return result;
   }
 
   const Effects = {
