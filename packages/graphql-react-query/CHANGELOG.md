@@ -1,5 +1,12 @@
 # @soundxyz/graphql-react-query
 
+## 2.1.1
+
+### Patch Changes
+
+- [`7ad2b0a`](https://github.com/soundxyz/graphql-react-query/commit/7ad2b0a5037d0a80dfa4fc82b15432f5f816bcdb)
+  Thanks [@PabloSzx](https://github.com/PabloSzx)! - Return entityStore within useInfiniteQuery
+
 ## 2.1.0
 
 ### Minor Changes
