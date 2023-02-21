@@ -141,34 +141,36 @@ export function GraphQLReactQueryClient<
     };
   }
 
-  /**
-   * Add an effect callback to be called every time the specified operation request has been completed
-   *
-   * It returns a callback that's going to stop the effect from being called
-   *
-   * @example
-   * addEffect(TestQuery, ({ operation, result: { data }, variables }) => {
-   *  console.log({
-   *    operation,
-   *    data,
-   *    variables
-   *  });
-   * });
-   */
-  function addEffect<Result, Variables>(
-    operation: StringDocumentNode<Result, Variables>,
-    callback: EffectCallback<Result, Variables>,
-  ) {
-    const effects = (effectsStore[operation] ||= new Set());
+  const Effects = {
+    /**
+     * Add an effect callback to be called every time the specified operation request has been completed
+     *
+     * It returns a callback that's going to stop the effect from being called
+     *
+     * @example
+     * addEffect(TestQuery, ({ operation, result: { data }, variables }) => {
+     *  console.log({
+     *    operation,
+     *    data,
+     *    variables
+     *  });
+     * });
+     */
+    onCompleted<Result, Variables>(
+      operation: StringDocumentNode<Result, Variables>,
+      callback: EffectCallback<Result, Variables>,
+    ) {
+      const effects = (effectsStore[operation] ||= new Set());
 
-    effects.add(callback as EffectCallback<unknown, unknown>);
+      effects.add(callback as EffectCallback<unknown, unknown>);
 
-    return function removeEffect() {
-      effects.delete(callback as EffectCallback<unknown, unknown>);
+      return function removeEffect() {
+        effects.delete(callback as EffectCallback<unknown, unknown>);
 
-      if (effects.size === 0) effectsStore[operation] = null;
-    };
-  }
+        if (effects.size === 0) effectsStore[operation] = null;
+      };
+    },
+  } as const;
 
   const client = new QueryClient({
     ...clientConfig,
@@ -464,6 +466,6 @@ export function GraphQLReactQueryClient<
     gql,
     invalidateOperations,
     resetOperations,
-    addEffect,
+    Effects,
   };
 }
