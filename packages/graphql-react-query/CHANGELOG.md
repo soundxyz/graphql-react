@@ -1,5 +1,13 @@
 # @soundxyz/graphql-react-query
 
+## 2.1.0
+
+### Minor Changes
+
+- [`60e76db`](https://github.com/soundxyz/graphql-react-query/commit/60e76db5e8b503c2ff29d15129c8bbba2f5a92dd)
+  Thanks [@PabloSzx](https://github.com/PabloSzx)! - New "onFetchCompleted" option on
+  useInfiniteQuery
+
 ## 2.0.1
 
 ### Patch Changes
