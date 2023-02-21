@@ -1,5 +1,12 @@
 # @soundxyz/graphql-react-query
 
+## 2.2.1
+
+### Patch Changes
+
+- [`6029412`](https://github.com/soundxyz/graphql-react-query/commit/60294128a6095e79cffb357aed112a23f9943c29)
+  Thanks [@PabloSzx](https://github.com/PabloSzx)! - Fix undefined properties are not present
+
 ## 2.2.0
 
 ### Minor Changes
