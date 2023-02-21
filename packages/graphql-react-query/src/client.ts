@@ -326,7 +326,15 @@ export function GraphQLReactQueryClient<
       return Object.values(values);
     }, [stableOrderType, data]);
 
-    return { ...result, firstPage, lastPage, orderedList, loadMoreNextPage, loadMorePreviousPage };
+    return {
+      ...result,
+      firstPage,
+      lastPage,
+      orderedList,
+      loadMoreNextPage,
+      loadMorePreviousPage,
+      entityStore,
+    };
   }
 
   function useMutation<
