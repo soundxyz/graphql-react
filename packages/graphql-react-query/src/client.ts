@@ -43,7 +43,7 @@ export function GraphQLReactQueryClient<
 >({
   clientConfig,
   endpoint,
-  headers,
+  headers: headersGlobal,
   fetchOptions,
 }: {
   clientConfig?: QueryClientConfig;
@@ -52,6 +52,8 @@ export function GraphQLReactQueryClient<
   fetchOptions?: Partial<RequestInit>;
 }) {
   const effectsStore: Record<string, Set<EffectCallback<unknown, unknown>> | null> = {};
+
+  const uniqueFetches: Record<string, Promise<Response> | null> = {};
 
   async function fetcher<Result = unknown>({
     query,
@@ -62,15 +64,27 @@ export function GraphQLReactQueryClient<
     variables: unknown;
     fetchOptions?: Partial<RequestInit>;
   }): Promise<ExecutionResultWithData<Result>> {
-    const res = await fetch(endpoint, {
+    const body = JSON.stringify({ query, variables });
+    const headers = {
+      'content-type': 'application/json',
+      ...headersGlobal,
+      ...extraFetchOptions?.headers,
+      ...fetchOptions?.headers,
+    };
+
+    const fetchKey = JSON.stringify({
+      body,
+      headersFetch: headers,
+    });
+
+    const res = await (uniqueFetches[fetchKey] ||= fetch(endpoint, {
       method: 'POST',
-      headers: {
-        'content-type': 'application/json',
-        ...headers,
-      },
-      body: JSON.stringify({ query, variables }),
+      body,
       ...fetchOptions,
       ...extraFetchOptions,
+      headers,
+    })).finally(() => {
+      uniqueFetches[fetchKey] = null;
     });
 
     const {
