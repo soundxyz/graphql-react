@@ -1,5 +1,12 @@
 # @soundxyz/graphql-react-query
 
+## 2.2.2
+
+### Patch Changes
+
+- [`20dc5de`](https://github.com/soundxyz/graphql-react-query/commit/20dc5de86dddaf70483e840362710f4053ce398b)
+  Thanks [@PabloSzx](https://github.com/PabloSzx)! - Idempotent concurrent fetcher calls
+
 ## 2.2.1
 
 ### Patch Changes
