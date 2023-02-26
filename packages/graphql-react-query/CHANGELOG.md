@@ -1,5 +1,13 @@
 # @soundxyz/graphql-react-query
 
+## 2.3.0
+
+### Minor Changes
+
+- [`c82d1f7`](https://github.com/soundxyz/graphql-react-query/commit/c82d1f7315432eed12816631f119e017745be074)
+  Thanks [@PabloSzx](https://github.com/PabloSzx)! - Add "fetchQuery" that uses internal client
+  fetchQuery with graphql abstraction
+
 ## 2.2.2
 
 ### Patch Changes
