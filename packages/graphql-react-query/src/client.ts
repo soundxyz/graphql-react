@@ -280,6 +280,30 @@ export function GraphQLReactQueryClient<
     });
   }
 
+  function prefetchQuery<
+    Result,
+    Variables,
+    QueryData extends ExecutionResultWithData<Result>,
+    Options extends FetchQueryOptions<ExecutionResultWithData<Result>, Error, QueryData, QueryKey>,
+  >(
+    query: StringDocumentNode<Result, Variables>,
+    {
+      variables,
+      ...options
+    }: Variables extends Record<string, never>
+      ? Options & {
+          variables?: undefined;
+        }
+      : Options & {
+          variables: Variables;
+        },
+  ) {
+    return client.prefetchQuery<ExecutionResultWithData<Result>, Error, QueryData>({
+      queryKey: [query, variables],
+      ...options,
+    });
+  }
+
   type CursorPageParam =
     | {
         after: string | null | undefined;
@@ -502,6 +526,7 @@ export function GraphQLReactQueryClient<
     client,
     GraphQLReactQueryProvider,
     useQuery,
+    prefetchQuery,
     fetchQuery,
     useMutation,
     fetchGQL,
