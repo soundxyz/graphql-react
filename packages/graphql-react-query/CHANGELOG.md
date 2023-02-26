@@ -1,5 +1,12 @@
 # @soundxyz/graphql-react-query
 
+## 2.3.1
+
+### Patch Changes
+
+- [`b45e2f9`](https://github.com/soundxyz/graphql-react-query/commit/b45e2f901967a65dab6b6985a53eea258b6219d5)
+  Thanks [@PabloSzx](https://github.com/PabloSzx)! - Export prefetchQuery as alternative
+
 ## 2.3.0
 
 ### Minor Changes
