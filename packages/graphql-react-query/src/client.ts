@@ -17,6 +17,7 @@ import {
 } from './reactQuery';
 import { useLatestRef, useStableCallback, useStableObject } from './utils';
 import type {
+  FetchQueryOptions,
   InvalidateOptions,
   InvalidateQueryFilters,
   ResetOptions,
@@ -255,6 +256,30 @@ export function GraphQLReactQueryClient<
     });
   }
 
+  function fetchQuery<
+    Result,
+    Variables,
+    QueryData extends ExecutionResultWithData<Result>,
+    Options extends FetchQueryOptions<ExecutionResultWithData<Result>, Error, QueryData, QueryKey>,
+  >(
+    query: StringDocumentNode<Result, Variables>,
+    {
+      variables,
+      ...options
+    }: Variables extends Record<string, never>
+      ? Options & {
+          variables?: undefined;
+        }
+      : Options & {
+          variables: Variables;
+        },
+  ) {
+    return client.fetchQuery<ExecutionResultWithData<Result>, Error, QueryData>({
+      queryKey: [query, variables],
+      ...options,
+    });
+  }
+
   type CursorPageParam =
     | {
         after: string | null | undefined;
@@ -477,6 +502,7 @@ export function GraphQLReactQueryClient<
     client,
     GraphQLReactQueryProvider,
     useQuery,
+    fetchQuery,
     useMutation,
     fetchGQL,
     useInfiniteQuery,
