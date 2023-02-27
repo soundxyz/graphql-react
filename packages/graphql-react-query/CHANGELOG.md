@@ -1,5 +1,12 @@
 # @soundxyz/graphql-react-query
 
+## 2.3.2
+
+### Patch Changes
+
+- [`083b36b`](https://github.com/soundxyz/graphql-react-query/commit/083b36b522ebd35ad65647bfc33f7f20ac1109a5)
+  Thanks [@PabloSzx](https://github.com/PabloSzx)! - Fix React Query client default options extended
+
 ## 2.3.1
 
 ### Patch Changes
