@@ -193,6 +193,7 @@ export function GraphQLReactQueryClient<
   const client = new QueryClient({
     ...clientConfig,
     defaultOptions: {
+      ...clientConfig?.defaultOptions,
       queries: {
         queryFn({ queryKey, signal }) {
           const [query, variables] = queryKey;
@@ -207,6 +208,7 @@ export function GraphQLReactQueryClient<
             },
           });
         },
+        ...clientConfig?.defaultOptions?.queries,
       },
     },
   });
