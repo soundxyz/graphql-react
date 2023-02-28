@@ -1,5 +1,12 @@
 # @soundxyz/graphql-react-query
 
+## 2.3.3
+
+### Patch Changes
+
+- [`fe8479f`](https://github.com/soundxyz/graphql-react-query/commit/fe8479f4b1bc2485c60502f679f13b9f2abb68ee)
+  Thanks [@PabloSzx](https://github.com/PabloSzx)! - Return clientConfig on init
+
 ## 2.3.2
 
 ### Patch Changes
