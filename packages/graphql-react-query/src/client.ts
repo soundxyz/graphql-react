@@ -42,7 +42,7 @@ export function GraphQLReactQueryClient<
   Operations extends string = '',
   _OperationNames extends string = '',
 >({
-  clientConfig,
+  clientConfig: clientConfigInput,
   endpoint,
   headers: headersGlobal,
   fetchOptions,
@@ -190,10 +190,10 @@ export function GraphQLReactQueryClient<
     },
   } as const;
 
-  const client = new QueryClient({
-    ...clientConfig,
+  const clientConfig: QueryClientConfig = {
+    ...clientConfigInput,
     defaultOptions: {
-      ...clientConfig?.defaultOptions,
+      ...clientConfigInput?.defaultOptions,
       queries: {
         queryFn({ queryKey, signal }) {
           const [query, variables] = queryKey;
@@ -208,10 +208,12 @@ export function GraphQLReactQueryClient<
             },
           });
         },
-        ...clientConfig?.defaultOptions?.queries,
+        ...clientConfigInput?.defaultOptions?.queries,
       },
     },
-  });
+  };
+
+  const client = new QueryClient(clientConfig);
 
   function GraphQLReactQueryProvider({ children }: { children: ReactNode }) {
     return createElement(QueryClientProvider, { client, children });
@@ -526,6 +528,7 @@ export function GraphQLReactQueryClient<
 
   return {
     client,
+    clientConfig,
     GraphQLReactQueryProvider,
     useQuery,
     prefetchQuery,
