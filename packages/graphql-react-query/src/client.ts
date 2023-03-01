@@ -407,16 +407,24 @@ export function GraphQLReactQueryClient<
       ...options,
     });
 
-    const { data, hasNextPage, hasPreviousPage, fetchNextPage, fetchPreviousPage } = result;
+    const {
+      data,
+      hasNextPage,
+      hasPreviousPage,
+      fetchNextPage,
+      fetchPreviousPage,
+      isFetchingNextPage,
+      isFetchingPreviousPage,
+    } = result;
 
     const loadMoreNextPage = useStableCallback(() => {
-      if (hasNextPage) return fetchNextPage();
+      if (hasNextPage && !isFetchingNextPage) return fetchNextPage();
 
       return null;
     });
 
     const loadMorePreviousPage = useStableCallback(() => {
-      if (hasPreviousPage) return fetchPreviousPage();
+      if (hasPreviousPage && !isFetchingPreviousPage) return fetchPreviousPage();
 
       return null;
     });
