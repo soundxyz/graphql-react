@@ -1,5 +1,13 @@
 # @soundxyz/graphql-react-query
 
+## 2.3.4
+
+### Patch Changes
+
+- [#45](https://github.com/soundxyz/graphql-react-query/pull/45)
+  [`24923fd`](https://github.com/soundxyz/graphql-react-query/commit/24923fdc51cdad7a970ce1319dd48e73556e18a9)
+  Thanks [@PabloSzx](https://github.com/PabloSzx)! - Prevent overlapping load more calls
+
 ## 2.3.3
 
 ### Patch Changes
