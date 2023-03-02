@@ -1,5 +1,16 @@
 # @soundxyz/graphql-react-query
 
+## 2.4.0
+
+### Minor Changes
+
+- [#44](https://github.com/soundxyz/graphql-react-query/pull/44)
+  [`b1c2a4c`](https://github.com/soundxyz/graphql-react-query/commit/b1c2a4c839107c48d08ae7170e52580c392337d8)
+  Thanks [@PabloSzx](https://github.com/PabloSzx)! - Expose "prefetchInfiniteQuery" helper function
+
+- [`e9a3e90`](https://github.com/soundxyz/graphql-react-query/commit/e9a3e901fe13e9e0df4a216f7065a0996238cf74)
+  Thanks [@PabloSzx](https://github.com/PabloSzx)! - Overridable Fetcher on GraphQLReactQueryClient
+
 ## 2.3.4
 
 ### Patch Changes
