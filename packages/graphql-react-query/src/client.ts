@@ -19,6 +19,7 @@ import {
 import { useLatestRef, useStableCallback, useStableObject } from './utils';
 
 import type {
+  FetchInfiniteQueryOptions,
   FetchQueryOptions,
   InvalidateOptions,
   InvalidateQueryFilters,
@@ -387,6 +388,59 @@ export function GraphQLReactQueryClient<
 
   const infiniteQueryStores: Record<string, InfiniteQueryStore<unknown>> = {};
 
+  async function infiniteQueryFn<Result, Variables, Entity>({
+    query,
+    variables,
+
+    list,
+    uniq,
+
+    onFetchCompleted,
+
+    signal,
+
+    entityStoreNodes,
+  }: {
+    query: StringDocumentNode<Result, Variables>;
+    variables: Variables;
+    list(result: Result): Entity[] | null | undefined | false | '' | 0;
+    uniq(entity: Entity): string;
+
+    onFetchCompleted: ((result: ExecutionResultWithData<Result>) => void) | undefined;
+
+    signal: AbortSignal | undefined;
+
+    entityStoreNodes: Record<string, Entity>;
+  }) {
+    const response = await GQLFetcher({
+      query,
+      variables,
+      fetchOptions: {
+        signal,
+      },
+    });
+
+    try {
+      for (const node of list(response.data) || []) {
+        const key = uniq(node);
+
+        entityStoreNodes[key] = node;
+      }
+    } catch (cause) {
+      throw Error('Internal server error. Unexpected payload', {
+        cause,
+      });
+    }
+
+    if (onFetchCompleted) {
+      try {
+        Promise.all([onFetchCompleted(response)]).catch(() => null);
+      } catch (err) {}
+    }
+
+    return response;
+  }
+
   function useInfiniteQuery<
     Result,
     Variables,
@@ -432,34 +486,20 @@ export function GraphQLReactQueryClient<
 
     const result = useInfiniteReactQuery({
       queryKey: [query, filterQueryKey, variables, 'Infinite'] as readonly unknown[],
-      async queryFn({ pageParam, signal }) {
-        const response = await GQLFetcher({
+      queryFn({ pageParam, signal }) {
+        return infiniteQueryFn({
           query,
           variables: variables({ pageParam: pageParam || null }),
-          fetchOptions: {
-            signal,
-          },
+
+          list,
+          uniq,
+
+          onFetchCompleted,
+
+          signal,
+
+          entityStoreNodes,
         });
-
-        try {
-          for (const node of list(response.data) || []) {
-            const key = uniq(node);
-
-            entityStoreNodes[key] = node;
-          }
-        } catch (cause) {
-          throw Error('Internal server error. Unexpected payload', {
-            cause,
-          });
-        }
-
-        if (onFetchCompleted) {
-          try {
-            Promise.all([onFetchCompleted(response)]).catch(() => null);
-          } catch (err) {}
-        }
-
-        return response;
       },
       ...options,
     });
@@ -529,6 +569,62 @@ export function GraphQLReactQueryClient<
       loadMorePreviousPage,
       entityStore,
     };
+  }
+
+  function prefetchInfiniteQuery<
+    Result,
+    Variables,
+    Entity extends Record<string, unknown>,
+    Options extends Omit<
+      FetchInfiniteQueryOptions<ExecutionResultWithData<Result>>,
+      'queryKey' | 'queryFn'
+    > & {
+      getNextPageParam?: StrictGetPageParam<ExecutionResultWithData<Result>>;
+      getPreviousPageParam?: StrictGetPageParam<ExecutionResultWithData<Result>>;
+    },
+  >(
+    query: StringDocumentNode<Result, Variables>,
+    {
+      filterQueryKey = {},
+      variables,
+
+      list,
+      uniq,
+
+      onFetchCompleted,
+
+      ...options
+    }: Options & {
+      filterQueryKey?: unknown;
+      variables: Variables;
+
+      list(result: Result): Entity[] | null | undefined | false | '' | 0;
+      uniq(entity: Entity): string;
+
+      onFetchCompleted?(result: ExecutionResultWithData<Result>): void;
+    },
+  ) {
+    const entityStore = (infiniteQueryStores[query + JSON.stringify(filterQueryKey)] ||= {
+      nodes: {},
+    }) as InfiniteQueryStore<Entity>;
+
+    const entityStoreNodes = entityStore.nodes;
+
+    return client.prefetchInfiniteQuery({
+      queryKey: [query, filterQueryKey, variables, 'Infinite'] as readonly unknown[],
+      queryFn({ signal }) {
+        return infiniteQueryFn({
+          query,
+          variables,
+          list,
+          uniq,
+          signal,
+          entityStoreNodes,
+          onFetchCompleted,
+        });
+      },
+      ...options,
+    });
   }
 
   function useMutation<
@@ -606,6 +702,7 @@ export function GraphQLReactQueryClient<
     useMutation,
     fetchGQL,
     useInfiniteQuery,
+    prefetchInfiniteQuery,
     gql,
     invalidateOperations,
     resetOperations,
