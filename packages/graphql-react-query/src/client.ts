@@ -1,5 +1,6 @@
 import orderBy from 'lodash-es/orderBy.js';
 import { createElement, ReactNode, useMemo } from 'react';
+import { z } from 'zod';
 
 import { gql, StringDocumentNode } from '@soundxyz/gql-string';
 
@@ -16,6 +17,7 @@ import {
   UseQueryOptions,
 } from './reactQuery';
 import { useLatestRef, useStableCallback, useStableObject } from './utils';
+
 import type {
   FetchQueryOptions,
   InvalidateOptions,
@@ -23,10 +25,11 @@ import type {
   ResetOptions,
   ResetQueryFilters,
 } from '@tanstack/react-query';
-
 import type { ExecutionResult } from 'graphql';
 
 export type ExecutionResultWithData<Data> = Omit<ExecutionResult, 'data'> & { data: Data };
+
+type PromiseOrValue<T> = T | Promise<T>;
 
 export type EffectCallback<Result, Variables> = ({
   operation,
@@ -38,6 +41,30 @@ export type EffectCallback<Result, Variables> = ({
   variables: Variables;
 }) => void;
 
+export type Fetcher = <Result = unknown, Variables = unknown>(args: {
+  query: StringDocumentNode<Result, Variables> | string;
+  variables: Variables | undefined;
+
+  fetchOptions: Partial<RequestInit> | undefined;
+}) => PromiseOrValue<ExecutionResult<Result>>;
+
+export const GraphQLExecutionResultSchema = z
+  .object({
+    data: z.record(z.unknown()).nullable().optional(),
+    errors: z
+      .array(
+        z.object({
+          message: z.string(),
+          locations: z.array(z.object({ line: z.number(), column: z.number() })).optional(),
+          path: z.array(z.union([z.string(), z.number()])).optional(),
+          extensions: z.record(z.unknown()).optional(),
+        }),
+      )
+      .optional(),
+    extensions: z.record(z.unknown()).optional(),
+  })
+  .transform(value => value as ExecutionResult);
+
 export function GraphQLReactQueryClient<
   Operations extends string = '',
   _OperationNames extends string = '',
@@ -46,54 +73,84 @@ export function GraphQLReactQueryClient<
   endpoint,
   headers: headersGlobal,
   fetchOptions,
+
+  fetcher: fetcherConfig,
 }: {
   clientConfig?: QueryClientConfig;
   endpoint: string;
-  headers: Readonly<Record<string, unknown>>;
+  headers: Readonly<Record<string, string>>;
   fetchOptions?: Partial<RequestInit>;
+
+  fetcher?: Fetcher;
 }) {
   const effectsStore: Record<string, Set<EffectCallback<unknown, unknown>> | null> = {};
 
   const uniqueFetches: Record<string, Promise<Response> | null> = {};
 
-  async function fetcher<Result = unknown>({
+  const fetcher: Fetcher =
+    fetcherConfig ||
+    async function Fetcher({ query, variables, fetchOptions }) {
+      const body = JSON.stringify({ query, variables });
+      const headers = {
+        'content-type': 'application/json',
+        ...fetchOptions?.headers,
+      };
+
+      const fetchKey = JSON.stringify({
+        body,
+        headersFetch: headers,
+      });
+
+      const res = await (uniqueFetches[fetchKey] ||= fetch(endpoint, {
+        method: 'POST',
+        body,
+        ...fetchOptions,
+        headers,
+      })).finally(() => {
+        uniqueFetches[fetchKey] = null;
+      });
+
+      const responseJson = await res
+        .json()
+        .then(value => GraphQLExecutionResultSchema.safeParse(value))
+        .catch(cause => {
+          throw Error('Network error, unexpected payload', {
+            cause,
+          });
+        });
+
+      if (responseJson.success) return responseJson.data as ExecutionResult<any>;
+
+      throw Error(`Unexpected API payload`, {
+        cause: responseJson.error,
+      });
+    };
+
+  async function GQLFetcher<Result = unknown, Variables = unknown>({
     query,
     variables,
     fetchOptions: extraFetchOptions,
   }: {
-    query: string;
-    variables: unknown;
+    query: StringDocumentNode<Result, Variables> | string;
+    variables: Variables | undefined;
     fetchOptions?: Partial<RequestInit>;
   }): Promise<ExecutionResultWithData<Result>> {
-    const body = JSON.stringify({ query, variables });
-    const headers = {
-      'content-type': 'application/json',
-      ...headersGlobal,
-      ...extraFetchOptions?.headers,
-      ...fetchOptions?.headers,
-    };
-
-    const fetchKey = JSON.stringify({
-      body,
-      headersFetch: headers,
-    });
-
-    const res = await (uniqueFetches[fetchKey] ||= fetch(endpoint, {
-      method: 'POST',
-      body,
-      ...fetchOptions,
-      ...extraFetchOptions,
-      headers,
-    })).finally(() => {
-      uniqueFetches[fetchKey] = null;
-    });
-
     const {
-      errors,
       data = null,
+      errors,
       extensions,
-    }: ExecutionResult<Result> = await res.json().catch(() => {
-      throw Error('Network error, unexpected payload');
+    } = await fetcher<Result, Variables>({
+      query,
+      variables,
+      fetchOptions: {
+        ...fetchOptions,
+        ...extraFetchOptions,
+        headers: {
+          ...headersGlobal,
+          ...fetchOptions?.headers,
+          ...extraFetchOptions?.headers,
+        },
+      },
     });
 
     if (!data) {
@@ -200,7 +257,7 @@ export function GraphQLReactQueryClient<
 
           if (typeof query !== 'string') throw Error(`Invalid GraphQL operation given`);
 
-          return fetcher({
+          return GQLFetcher({
             query,
             variables,
             fetchOptions: {
@@ -229,7 +286,7 @@ export function GraphQLReactQueryClient<
         ? { variables?: undefined }
         : { variables: Variables }),
   ) {
-    return fetcher<Result>({
+    return GQLFetcher({
       query,
       variables,
       fetchOptions,
@@ -376,7 +433,7 @@ export function GraphQLReactQueryClient<
     const result = useInfiniteReactQuery({
       queryKey: [query, filterQueryKey, variables, 'Infinite'] as readonly unknown[],
       async queryFn({ pageParam, signal }) {
-        const response: ExecutionResultWithData<Result> = await fetcher<Result>({
+        const response = await GQLFetcher({
           query,
           variables: variables({ pageParam: pageParam || null }),
           fetchOptions: {
@@ -477,11 +534,16 @@ export function GraphQLReactQueryClient<
   function useMutation<
     Result,
     Variables,
-    Options extends UseMutationOptions<ExecutionResultWithData<Result>, Error, Variables>,
+    Options extends UseMutationOptions<
+      ExecutionResultWithData<Result>,
+      Error,
+      Variables,
+      { query: StringDocumentNode<Result, Variables> }
+    >,
   >(mutation: StringDocumentNode<Result, Variables>, options: Options) {
     return useMutationReactQuery({
       mutationFn(variables) {
-        return fetcher<Result>({
+        return GQLFetcher<Result>({
           query: mutation,
           variables,
         });
