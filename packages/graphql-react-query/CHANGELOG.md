@@ -1,5 +1,15 @@
 # @soundxyz/graphql-react-query
 
+## 2.4.1
+
+### Patch Changes
+
+- [`c9e4738`](https://github.com/soundxyz/graphql-react-query/commit/c9e47387718cc19f946a85d00f541da890f24c24)
+  Thanks [@PabloSzx](https://github.com/PabloSzx)! - Allow undefined within headers client options
+
+- [`e7a8493`](https://github.com/soundxyz/graphql-react-query/commit/e7a8493e387d56d6a612942404bc92e216f63264)
+  Thanks [@PabloSzx](https://github.com/PabloSzx)! - Expose fetcher to be changed on the fly
+
 ## 2.4.0
 
 ### Minor Changes
