@@ -140,7 +140,7 @@ export function GraphQLReactQueryClient<
       data = null,
       errors,
       extensions,
-    } = await fetcher<Result, Variables>({
+    } = await GraphQLReactQuery.fetcher<Result, Variables>({
       query,
       variables,
       fetchOptions: {
