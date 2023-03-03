@@ -1,5 +1,12 @@
 # @soundxyz/graphql-react-query
 
+## 2.4.2
+
+### Patch Changes
+
+- [`5ccdcaf`](https://github.com/soundxyz/graphql-react-query/commit/5ccdcafaa6f52fb476601688002c122c93e1b169)
+  Thanks [@PabloSzx](https://github.com/PabloSzx)! - Fix using dynamic fetcher
+
 ## 2.4.1
 
 ### Patch Changes
