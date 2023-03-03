@@ -30,3 +30,17 @@ export function useStableCallback<Cb extends (...args: any[]) => unknown>(cb: Cb
     [],
   );
 }
+
+export type RemoveUndefined<T> = {
+  [K in keyof T as undefined extends T[K] ? never : K]: T[K];
+};
+
+export function filterUndefined<T extends object>(obj: T): RemoveUndefined<Partial<T>> {
+  const result = {} as Record<string, unknown>;
+  for (const [key, value] of Object.entries(obj)) {
+    if (value !== undefined) {
+      result[key] = value;
+    }
+  }
+  return result as RemoveUndefined<Partial<T>>;
+}

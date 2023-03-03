@@ -16,7 +16,7 @@ import {
   useQuery as useQueryReactQuery,
   UseQueryOptions,
 } from './reactQuery';
-import { useLatestRef, useStableCallback, useStableObject } from './utils';
+import { filterUndefined, useLatestRef, useStableCallback, useStableObject } from './utils';
 
 import type {
   FetchInfiniteQueryOptions,
@@ -79,7 +79,7 @@ export function GraphQLReactQueryClient<
 }: {
   clientConfig?: QueryClientConfig;
   endpoint: string;
-  headers: Readonly<Record<string, string>>;
+  headers: Readonly<Partial<Record<string, string>>>;
   fetchOptions?: Partial<RequestInit>;
 
   fetcher?: Fetcher;
@@ -146,11 +146,11 @@ export function GraphQLReactQueryClient<
       fetchOptions: {
         ...fetchOptions,
         ...extraFetchOptions,
-        headers: {
+        headers: filterUndefined({
           ...headersGlobal,
           ...fetchOptions?.headers,
           ...extraFetchOptions?.headers,
-        },
+        }),
       },
     });
 
