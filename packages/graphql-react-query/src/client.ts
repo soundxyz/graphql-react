@@ -692,12 +692,13 @@ export function GraphQLReactQueryClient<
     );
   }
 
-  return {
+  const GraphQLReactQuery = {
     client,
     clientConfig,
     GraphQLReactQueryProvider,
     useQuery,
     prefetchQuery,
+    fetcher,
     fetchQuery,
     useMutation,
     fetchGQL,
@@ -708,4 +709,6 @@ export function GraphQLReactQueryClient<
     resetOperations,
     Effects,
   };
+
+  return GraphQLReactQuery;
 }
