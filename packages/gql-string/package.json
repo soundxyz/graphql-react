@@ -14,7 +14,7 @@
     "@types/node": "^18.14.1",
     "bob-ts": "^4.1.1",
     "bob-tsm": "^1.1.2",
-    "esbuild": "^0.17.10",
+    "esbuild": "^0.17.11",
     "typescript": "^4.9.5"
   },
   "publishConfig": {
