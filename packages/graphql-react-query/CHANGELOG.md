@@ -1,5 +1,12 @@
 # @soundxyz/graphql-react-query
 
+## 2.4.4
+
+### Patch Changes
+
+- [`88eb464`](https://github.com/soundxyz/graphql-react-query/commit/88eb464be3b73648e452f72574e84c5eae2841f5)
+  Thanks [@PabloSzx](https://github.com/PabloSzx)! - Simplify Entity extends restriction
+
 ## 2.4.3
 
 ### Patch Changes
