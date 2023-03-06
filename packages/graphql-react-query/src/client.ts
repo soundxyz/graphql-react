@@ -444,7 +444,7 @@ export function GraphQLReactQueryClient<
   function useInfiniteQuery<
     Result,
     Variables,
-    Entity extends Partial<Record<string, unknown>>,
+    Entity extends {},
     Options extends Omit<
       UseInfiniteQueryOptions<ExecutionResultWithData<Result>>,
       'queryKey' | 'queryFn'
@@ -574,7 +574,7 @@ export function GraphQLReactQueryClient<
   function prefetchInfiniteQuery<
     Result,
     Variables,
-    Entity extends Partial<Record<string, unknown>>,
+    Entity extends {},
     Options extends Omit<
       FetchInfiniteQueryOptions<ExecutionResultWithData<Result>>,
       'queryKey' | 'queryFn'
