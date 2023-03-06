@@ -1,5 +1,12 @@
 # @soundxyz/graphql-react-query
 
+## 2.4.3
+
+### Patch Changes
+
+- [`46fa35a`](https://github.com/soundxyz/graphql-react-query/commit/46fa35a74607d7860f87e025f84c00badc57246d)
+  Thanks [@PabloSzx](https://github.com/PabloSzx)! - Fix partial object extends infinite query
+
 ## 2.4.2
 
 ### Patch Changes
