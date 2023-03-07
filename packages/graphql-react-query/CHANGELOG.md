@@ -1,5 +1,20 @@
 # @soundxyz/graphql-react-query
 
+## 3.0.0
+
+### Major Changes
+
+- [#54](https://github.com/soundxyz/graphql-react-query/pull/54)
+  [`496ba3c`](https://github.com/soundxyz/graphql-react-query/commit/496ba3c0a500ed13d7f967ebec80175a9d351f77)
+  Thanks [@PabloSzx](https://github.com/PabloSzx)! - Fix strict types on query hook options
+
+### Minor Changes
+
+- [#54](https://github.com/soundxyz/graphql-react-query/pull/54)
+  [`496ba3c`](https://github.com/soundxyz/graphql-react-query/commit/496ba3c0a500ed13d7f967ebec80175a9d351f77)
+  Thanks [@PabloSzx](https://github.com/PabloSzx)! - Allow giving "false" on variables as implied
+  `enabled: false`
+
 ## 2.5.0
 
 ### Minor Changes
