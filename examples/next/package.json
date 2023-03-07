@@ -13,13 +13,13 @@
     "watch": "graphql-codegen --watch"
   },
   "dependencies": {
-    "@graphql-codegen/typescript": "^3.0.1",
+    "@graphql-codegen/typescript": "^3.0.2",
     "@graphql-typed-document-node/core": "^3.1.2",
     "@soundxyz/gql-string": "workspace:*",
     "@soundxyz/graphql-react-query": "workspace:*"
   },
   "devDependencies": {
-    "@graphql-codegen/cli": "^3.2.1",
+    "@graphql-codegen/cli": "^3.2.2",
     "@graphql-codegen/core": "^3.1.0",
     "@soundxyz/codegen-fragments": "workspace:*",
     "@types/node": "^18.14.6",
