@@ -562,6 +562,8 @@ export function GraphQLReactQueryClient<
 
     return {
       ...result,
+      isLoadingNewPage:
+        result.isLoading || result.isFetchingNextPage || result.isFetchingPreviousPage,
       firstPage,
       lastPage,
       orderedList,
