@@ -6,10 +6,6 @@ import { Now } from '../components/now';
 import { TestDocument } from '../generated/documents';
 import styles from './styles.module.css';
 
-export const metadata = {
-  title: 'Hello World',
-};
-
 gql`
   query Test {
     __typename

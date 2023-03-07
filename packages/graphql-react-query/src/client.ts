@@ -305,10 +305,10 @@ export function GraphQLReactQueryClient<
       variables,
       ...options
     }: Variables extends Record<string, never>
-      ? Options & {
+      ? Pick<Options, keyof UseQueryOptions> & {
           variables?: undefined;
         }
-      : Options & {
+      : Pick<Options, keyof UseQueryOptions> & {
           variables: Variables;
         },
   ) {
@@ -329,10 +329,10 @@ export function GraphQLReactQueryClient<
       variables,
       ...options
     }: Variables extends Record<string, never>
-      ? Options & {
+      ? Pick<Options, keyof FetchQueryOptions> & {
           variables?: undefined;
         }
-      : Options & {
+      : Pick<Options, keyof FetchQueryOptions> & {
           variables: Variables;
         },
   ) {
@@ -353,10 +353,10 @@ export function GraphQLReactQueryClient<
       variables,
       ...options
     }: Variables extends Record<string, never>
-      ? Options & {
+      ? Pick<Options, keyof FetchQueryOptions> & {
           variables?: undefined;
         }
-      : Options & {
+      : Pick<Options, keyof FetchQueryOptions> & {
           variables: Variables;
         },
   ) {
@@ -466,7 +466,7 @@ export function GraphQLReactQueryClient<
       onFetchCompleted,
 
       ...options
-    }: Options & {
+    }: Pick<Options, keyof Omit<UseInfiniteQueryOptions, 'queryKey' | 'queryFn'>> & {
       variables: ({ pageParam }: { pageParam: CursorPageParam | null }) => Variables;
 
       filterQueryKey?: unknown;
@@ -573,18 +573,7 @@ export function GraphQLReactQueryClient<
     };
   }
 
-  function prefetchInfiniteQuery<
-    Result,
-    Variables,
-    Entity extends {},
-    Options extends Omit<
-      FetchInfiniteQueryOptions<ExecutionResultWithData<Result>>,
-      'queryKey' | 'queryFn'
-    > & {
-      getNextPageParam?: StrictGetPageParam<ExecutionResultWithData<Result>>;
-      getPreviousPageParam?: StrictGetPageParam<ExecutionResultWithData<Result>>;
-    },
-  >(
+  function prefetchInfiniteQuery<Result, Variables, Entity extends {}>(
     query: StringDocumentNode<Result, Variables>,
     {
       filterQueryKey = {},
@@ -596,7 +585,10 @@ export function GraphQLReactQueryClient<
       onFetchCompleted,
 
       ...options
-    }: Options & {
+    }: Omit<FetchInfiniteQueryOptions<ExecutionResultWithData<Result>>, 'queryKey' | 'queryFn'> & {
+      getNextPageParam?: StrictGetPageParam<ExecutionResultWithData<Result>>;
+      getPreviousPageParam?: StrictGetPageParam<ExecutionResultWithData<Result>>;
+    } & {
       filterQueryKey?: unknown;
       variables: Variables;
 
@@ -629,16 +621,15 @@ export function GraphQLReactQueryClient<
     });
   }
 
-  function useMutation<
-    Result,
-    Variables,
-    Options extends UseMutationOptions<
+  function useMutation<Result, Variables>(
+    mutation: StringDocumentNode<Result, Variables>,
+    options: UseMutationOptions<
       ExecutionResultWithData<Result>,
       Error,
       Variables,
       { query: StringDocumentNode<Result, Variables> }
     >,
-  >(mutation: StringDocumentNode<Result, Variables>, options: Options) {
+  ) {
     return useMutationReactQuery({
       mutationFn(variables) {
         return GQLFetcher<Result>({
