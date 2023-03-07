@@ -301,18 +301,20 @@ export function GraphQLReactQueryClient<
     query: Doc,
     {
       variables,
+      enabled = true,
       ...options
     }: VariablesOf<Doc> extends Record<string, never>
       ? UseQueryOptions<ExecutionResultWithData<ResultOf<Doc>>, Error, QueryData, QueryKey> & {
           variables?: undefined;
         }
       : UseQueryOptions<ExecutionResultWithData<ResultOf<Doc>>, Error, QueryData, QueryKey> & {
-          variables: VariablesOf<Doc>;
+          variables: VariablesOf<Doc> | false;
         },
   ) {
     return useQueryReactQuery<ExecutionResultWithData<ResultOf<Doc>>, Error, QueryData>({
       queryKey: [query, variables],
       ...options,
+      enabled: enabled && variables !== false,
     });
   }
 
@@ -452,6 +454,8 @@ export function GraphQLReactQueryClient<
 
       onFetchCompleted,
 
+      enabled = true,
+
       ...options
     }: Omit<
       UseInfiniteQueryOptions<ExecutionResultWithData<ResultOf<Doc>>, Error>,
@@ -460,7 +464,9 @@ export function GraphQLReactQueryClient<
       getNextPageParam?: StrictGetPageParam<ExecutionResultWithData<ResultOf<Doc>>>;
       getPreviousPageParam?: StrictGetPageParam<ExecutionResultWithData<ResultOf<Doc>>>;
 
-      variables: ({ pageParam }: { pageParam: CursorPageParam | null }) => VariablesOf<Doc>;
+      variables:
+        | false
+        | (({ pageParam }: { pageParam: CursorPageParam | null }) => VariablesOf<Doc>);
 
       filterQueryKey?: unknown;
 
@@ -479,22 +485,27 @@ export function GraphQLReactQueryClient<
 
     const result = useInfiniteReactQuery({
       queryKey: [query, filterQueryKey, variables, 'Infinite'] as readonly unknown[],
-      queryFn({ pageParam, signal }) {
-        return infiniteQueryFn({
-          query,
-          variables: variables({ pageParam: pageParam || null }),
+      queryFn: variables
+        ? ({ pageParam, signal }) => {
+            return infiniteQueryFn({
+              query,
+              variables: variables({ pageParam: pageParam || null }),
 
-          list,
-          uniq,
+              list,
+              uniq,
 
-          onFetchCompleted,
+              onFetchCompleted,
 
-          signal,
+              signal,
 
-          entityStoreNodes,
-        });
-      },
+              entityStoreNodes,
+            });
+          }
+        : () => {
+            throw Error(`Missing variables required to execute query!`);
+          },
       ...options,
+      enabled: enabled && !!variables,
     });
 
     const {
