@@ -2,7 +2,7 @@ import orderBy from 'lodash-es/orderBy.js';
 import { createElement, ReactNode, useMemo } from 'react';
 import { z } from 'zod';
 
-import { gql, StringDocumentNode } from '@soundxyz/gql-string';
+import { gql, ResultOf, StringDocumentNode, VariablesOf } from '@soundxyz/gql-string';
 
 import {
   QueryClient,
@@ -295,24 +295,22 @@ export function GraphQLReactQueryClient<
   }
 
   function useQuery<
-    Result,
-    Variables,
-    QueryData extends ExecutionResultWithData<Result>,
-    Options extends UseQueryOptions<ExecutionResultWithData<Result>, Error, QueryData, QueryKey>,
+    Doc extends StringDocumentNode<any, any>,
+    QueryData = ExecutionResultWithData<ResultOf<Doc>>,
   >(
-    query: StringDocumentNode<Result, Variables>,
+    query: Doc,
     {
       variables,
       ...options
-    }: Variables extends Record<string, never>
-      ? Pick<Options, keyof UseQueryOptions> & {
+    }: VariablesOf<Doc> extends Record<string, never>
+      ? UseQueryOptions<ExecutionResultWithData<ResultOf<Doc>>, Error, QueryData, QueryKey> & {
           variables?: undefined;
         }
-      : Pick<Options, keyof UseQueryOptions> & {
-          variables: Variables;
+      : UseQueryOptions<ExecutionResultWithData<ResultOf<Doc>>, Error, QueryData, QueryKey> & {
+          variables: VariablesOf<Doc>;
         },
   ) {
-    return useQueryReactQuery<ExecutionResultWithData<Result>, Error, QueryData>({
+    return useQueryReactQuery<ExecutionResultWithData<ResultOf<Doc>>, Error, QueryData>({
       queryKey: [query, variables],
       ...options,
     });
@@ -441,19 +439,8 @@ export function GraphQLReactQueryClient<
     return response;
   }
 
-  function useInfiniteQuery<
-    Result,
-    Variables,
-    Entity extends {},
-    Options extends Omit<
-      UseInfiniteQueryOptions<ExecutionResultWithData<Result>>,
-      'queryKey' | 'queryFn'
-    > & {
-      getNextPageParam?: StrictGetPageParam<ExecutionResultWithData<Result>>;
-      getPreviousPageParam?: StrictGetPageParam<ExecutionResultWithData<Result>>;
-    },
-  >(
-    query: StringDocumentNode<Result, Variables>,
+  function useInfiniteQuery<Doc extends StringDocumentNode<any, any>, Entity extends {}>(
+    query: Doc,
     {
       variables,
 
@@ -466,14 +453,20 @@ export function GraphQLReactQueryClient<
       onFetchCompleted,
 
       ...options
-    }: Pick<Options, keyof Omit<UseInfiniteQueryOptions, 'queryKey' | 'queryFn'>> & {
-      variables: ({ pageParam }: { pageParam: CursorPageParam | null }) => Variables;
+    }: Omit<
+      UseInfiniteQueryOptions<ExecutionResultWithData<ResultOf<Doc>>, Error>,
+      'queryKey' | 'queryFn'
+    > & {
+      getNextPageParam?: StrictGetPageParam<ExecutionResultWithData<ResultOf<Doc>>>;
+      getPreviousPageParam?: StrictGetPageParam<ExecutionResultWithData<ResultOf<Doc>>>;
+
+      variables: ({ pageParam }: { pageParam: CursorPageParam | null }) => VariablesOf<Doc>;
 
       filterQueryKey?: unknown;
 
-      onFetchCompleted?(result: ExecutionResultWithData<Result>): void;
+      onFetchCompleted?(result: ExecutionResultWithData<ResultOf<Doc>>): void;
 
-      list(result: Result): Entity[] | null | undefined | false | '' | 0;
+      list(result: ResultOf<Doc>): Entity[] | null | undefined | false | '' | 0;
       uniq(entity: Entity): string;
       order?: readonly [AtLeastOne<(entity: Entity) => unknown>, AtLeastOne<'asc' | 'desc'>];
     },
