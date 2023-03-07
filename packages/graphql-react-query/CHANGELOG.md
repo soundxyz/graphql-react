@@ -1,5 +1,13 @@
 # @soundxyz/graphql-react-query
 
+## 2.5.0
+
+### Minor Changes
+
+- [`39d825d`](https://github.com/soundxyz/graphql-react-query/commit/39d825db6ff35df9a8a4a7d0adc1445c58026b79)
+  Thanks [@PabloSzx](https://github.com/PabloSzx)! - New useInfiniteQuery.isLoadingNewPage which is
+  effectively isLoading || isFetchingNextPage || isFetchingPreviousPage
+
 ## 2.4.4
 
 ### Patch Changes
