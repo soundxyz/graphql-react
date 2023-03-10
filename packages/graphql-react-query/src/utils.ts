@@ -1,5 +1,6 @@
 import equal from 'fast-deep-equal';
 import { MutableRefObject, useCallback, useMemo, useRef } from 'react';
+import { useSnapshot } from 'valtio';
 
 export function useLatestRef<T>(value: T) {
   const ref = useRef<T | null>(null);
@@ -43,4 +44,8 @@ export function filterUndefined<T extends object>(obj: T): RemoveUndefined<Parti
     }
   }
   return result as RemoveUndefined<Partial<T>>;
+}
+
+export function useProxySnapshot<T extends object>(proxyObject: T): T {
+  return useSnapshot(proxyObject) as T;
 }

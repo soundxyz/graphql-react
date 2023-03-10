@@ -1,7 +1,7 @@
 import orderBy from 'lodash-es/orderBy.js';
 import { createElement, ReactNode, useMemo } from 'react';
 import { z } from 'zod';
-
+import { proxy } from 'valtio';
 import { gql, ResultOf, StringDocumentNode, VariablesOf } from '@soundxyz/gql-string';
 
 import {
@@ -16,7 +16,13 @@ import {
   useQuery as useQueryReactQuery,
   UseQueryOptions,
 } from './reactQuery';
-import { filterUndefined, useLatestRef, useStableCallback, useStableObject } from './utils';
+import {
+  filterUndefined,
+  useLatestRef,
+  useProxySnapshot,
+  useStableCallback,
+  useStableObject,
+} from './utils';
 
 import type {
   FetchInfiniteQueryOptions,
@@ -477,9 +483,9 @@ export function GraphQLReactQueryClient<
       order?: readonly [AtLeastOne<(entity: Entity) => unknown>, AtLeastOne<'asc' | 'desc'>];
     },
   ) {
-    const entityStore = (infiniteQueryStores[query + JSON.stringify(filterQueryKey)] ||= {
+    const entityStore = (infiniteQueryStores[query + JSON.stringify(filterQueryKey)] ||= proxy({
       nodes: {},
-    }) as InfiniteQueryStore<Entity>;
+    })) as InfiniteQueryStore<Entity>;
 
     const entityStoreNodes = entityStore.nodes;
 
@@ -539,6 +545,8 @@ export function GraphQLReactQueryClient<
 
     const stableOrderType = useStableObject(order?.[1]);
 
+    const { nodes: entityStoreNodesSnapshot } = useProxySnapshot(entityStore);
+
     const orderedList = useMemo<Entity[]>(() => {
       if (!data) return [];
 
@@ -553,7 +561,7 @@ export function GraphQLReactQueryClient<
           const key = currentUniq(entity);
 
           // "entityStoreNodes" makes sure that whatever the order the data is, we always use the latest version available of the entity from the api
-          acc[key] = entityStoreNodes[key] || entity;
+          acc[key] = entityStoreNodesSnapshot[key] || entity;
         }
 
         return acc;
@@ -562,7 +570,7 @@ export function GraphQLReactQueryClient<
       if (currentOrder) return orderBy(values, currentOrder, stableOrderType);
 
       return Object.values(values);
-    }, [stableOrderType, data]);
+    }, [stableOrderType, data, entityStoreNodesSnapshot]);
 
     return {
       ...result,
@@ -602,11 +610,11 @@ export function GraphQLReactQueryClient<
       onFetchCompleted?(result: ExecutionResultWithData<Result>): void;
     },
   ) {
-    const entityStore = (infiniteQueryStores[query + JSON.stringify(filterQueryKey)] ||= {
+    const { nodes: entityStoreNodes } = (infiniteQueryStores[
+      query + JSON.stringify(filterQueryKey)
+    ] ||= proxy({
       nodes: {},
-    }) as InfiniteQueryStore<Entity>;
-
-    const entityStoreNodes = entityStore.nodes;
+    })) as InfiniteQueryStore<Entity>;
 
     return client.prefetchInfiniteQuery({
       queryKey: [query, filterQueryKey, variables, 'Infinite'] as readonly unknown[],
