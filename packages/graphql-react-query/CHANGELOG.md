@@ -1,5 +1,12 @@
 # @soundxyz/graphql-react-query
 
+## 3.1.0
+
+### Minor Changes
+
+- [`22d144c`](https://github.com/soundxyz/graphql-react/commit/22d144c4ea6393652897cdeb4f041cfdaf10e42d)
+  Thanks [@PabloSzx](https://github.com/PabloSzx)! - Use valtio for pagination entity stores
+
 ## 3.0.0
 
 ### Major Changes
