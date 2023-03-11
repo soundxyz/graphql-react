@@ -27,10 +27,13 @@ import {
 import type {
   FetchInfiniteQueryOptions,
   FetchQueryOptions,
+  InfiniteData,
   InvalidateOptions,
   InvalidateQueryFilters,
   ResetOptions,
   ResetQueryFilters,
+  SetDataOptions,
+  Updater,
 } from '@tanstack/react-query';
 import type { ExecutionResult } from 'graphql';
 
@@ -489,8 +492,22 @@ export function GraphQLReactQueryClient<
 
     const entityStoreNodes = entityStore.nodes;
 
+    const queryKey: readonly unknown[] = [query, filterQueryKey, !!variables, 'Infinite'];
+
+    const setInfiniteQueryData = useStableCallback(
+      (
+        updater: Updater<
+          InfiniteData<ExecutionResultWithData<ResultOf<Doc>>> | undefined,
+          InfiniteData<ExecutionResultWithData<ResultOf<Doc>>> | undefined
+        >,
+        options?: SetDataOptions,
+      ) => {
+        client.setQueryData(queryKey, updater, options);
+      },
+    );
+
     const result = useInfiniteReactQuery({
-      queryKey: [query, filterQueryKey, variables, 'Infinite'] as readonly unknown[],
+      queryKey,
       queryFn: variables
         ? ({ pageParam, signal }) => {
             return infiniteQueryFn({
@@ -582,6 +599,7 @@ export function GraphQLReactQueryClient<
       loadMoreNextPage,
       loadMorePreviousPage,
       entityStore,
+      setInfiniteQueryData,
     };
   }
 
