@@ -358,10 +358,10 @@ export function GraphQLReactQueryClient<
         if (variables === false) return;
 
         setQueryData(
-          // @ts-expect-error Not able to map required variables generic conditional
           {
             query,
-            variables,
+            // Not able to map required variables generic conditional
+            variables: variables as any,
             options,
           },
           updater,
