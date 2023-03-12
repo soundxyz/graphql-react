@@ -303,6 +303,27 @@ export function GraphQLReactQueryClient<
     });
   }
 
+  function setQueryData<Doc extends StringDocumentNode>(
+    {
+      query,
+      options,
+      variables,
+    }: {
+      query: Doc;
+      options?: SetDataOptions;
+    } & (VariablesOf<Doc> extends Record<string, never>
+      ? {
+          variables?: undefined;
+        }
+      : { variables: VariablesOf<Doc> }),
+    updater: Updater<
+      ExecutionResultWithData<ResultOf<Doc>> | undefined,
+      ExecutionResultWithData<ResultOf<Doc>> | undefined
+    >,
+  ) {
+    client.setQueryData([query, variables], updater, options);
+  }
+
   function useQuery<
     Doc extends StringDocumentNode<any, any>,
     QueryData = ExecutionResultWithData<ResultOf<Doc>>,
@@ -320,11 +341,38 @@ export function GraphQLReactQueryClient<
           variables: VariablesOf<Doc> | false;
         },
   ) {
-    return useQueryReactQuery<ExecutionResultWithData<ResultOf<Doc>>, Error, QueryData>({
+    const result = useQueryReactQuery<ExecutionResultWithData<ResultOf<Doc>>, Error, QueryData>({
       queryKey: [query, variables],
       ...options,
       enabled: enabled && variables !== false,
     });
+
+    const setQueryDataCallback = useStableCallback(
+      (
+        updater: Updater<
+          ExecutionResultWithData<ResultOf<Doc>> | undefined,
+          ExecutionResultWithData<ResultOf<Doc>> | undefined
+        >,
+        options?: SetDataOptions,
+      ) => {
+        if (variables === false) return;
+
+        setQueryData(
+          // @ts-expect-error Not able to map required variables generic conditional
+          {
+            query,
+            variables,
+            options,
+          },
+          updater,
+        );
+      },
+    );
+
+    return {
+      ...result,
+      setQueryData: setQueryDataCallback,
+    };
   }
 
   function fetchQuery<
@@ -768,6 +816,7 @@ export function GraphQLReactQueryClient<
     GraphQLReactQueryProvider,
     useQuery,
     prefetchQuery,
+    setQueryData,
     fetcher,
     fetchQuery,
     useMutation,
