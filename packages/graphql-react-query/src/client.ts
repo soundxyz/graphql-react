@@ -450,6 +450,42 @@ export function GraphQLReactQueryClient<
     return response;
   }
 
+  function setInfiniteQueryData<Doc extends StringDocumentNode>(
+    {
+      query,
+      filterQueryKey,
+      options,
+    }: {
+      query: Doc;
+      filterQueryKey?: unknown;
+      options?: SetDataOptions;
+    },
+    updater: Updater<
+      InfiniteData<ExecutionResultWithData<ResultOf<Doc>>> | undefined,
+      InfiniteData<ExecutionResultWithData<ResultOf<Doc>>> | undefined
+    >,
+  ) {
+    const queryKey = infiniteQueryKey({
+      query,
+      variables: true,
+      filterQueryKey,
+    });
+
+    client.setQueryData(queryKey, updater, options);
+  }
+
+  function infiniteQueryKey<Doc extends StringDocumentNode>({
+    query,
+    filterQueryKey,
+    variables,
+  }: {
+    query: Doc;
+    filterQueryKey?: unknown;
+    variables: boolean | Function;
+  }) {
+    return [query, filterQueryKey, !!variables, 'Infinite'] as const;
+  }
+
   function useInfiniteQuery<Doc extends StringDocumentNode<any, any>, Entity extends {}>(
     query: Doc,
     {
@@ -492,9 +528,13 @@ export function GraphQLReactQueryClient<
 
     const entityStoreNodes = entityStore.nodes;
 
-    const queryKey: readonly unknown[] = [query, filterQueryKey, !!variables, 'Infinite'];
+    const queryKey: QueryKey = infiniteQueryKey({
+      query,
+      filterQueryKey,
+      variables,
+    });
 
-    const setInfiniteQueryData = useStableCallback(
+    const setInfiniteQueryDataCallback = useStableCallback(
       (
         updater: Updater<
           InfiniteData<ExecutionResultWithData<ResultOf<Doc>>> | undefined,
@@ -502,7 +542,14 @@ export function GraphQLReactQueryClient<
         >,
         options?: SetDataOptions,
       ) => {
-        client.setQueryData(queryKey, updater, options);
+        setInfiniteQueryData(
+          {
+            query,
+            filterQueryKey,
+            options,
+          },
+          updater,
+        );
       },
     );
 
@@ -599,7 +646,7 @@ export function GraphQLReactQueryClient<
       loadMoreNextPage,
       loadMorePreviousPage,
       entityStore,
-      setInfiniteQueryData,
+      setInfiniteQueryData: setInfiniteQueryDataCallback,
     };
   }
 
@@ -727,6 +774,7 @@ export function GraphQLReactQueryClient<
     fetchGQL,
     useInfiniteQuery,
     prefetchInfiniteQuery,
+    setInfiniteQueryData,
     gql,
     invalidateOperations,
     resetOperations,
