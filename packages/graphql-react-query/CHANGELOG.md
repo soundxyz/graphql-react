@@ -1,5 +1,17 @@
 # @soundxyz/graphql-react-query
 
+## 3.2.0
+
+### Minor Changes
+
+- [#57](https://github.com/soundxyz/graphql-react/pull/57)
+  [`3bbf451`](https://github.com/soundxyz/graphql-react/commit/3bbf451aab2f60409d32fd3d1b81a1fcc36faef1)
+  Thanks [@PabloSzx](https://github.com/PabloSzx)! - New "setQueryData" helper
+
+- [#57](https://github.com/soundxyz/graphql-react/pull/57)
+  [`3bbf451`](https://github.com/soundxyz/graphql-react/commit/3bbf451aab2f60409d32fd3d1b81a1fcc36faef1)
+  Thanks [@PabloSzx](https://github.com/PabloSzx)! - New "setInfiniteQueryData" helpers
+
 ## 3.1.0
 
 ### Minor Changes
