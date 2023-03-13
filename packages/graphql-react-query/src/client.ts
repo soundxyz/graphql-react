@@ -27,13 +27,10 @@ import {
 import type {
   FetchInfiniteQueryOptions,
   FetchQueryOptions,
-  InfiniteData,
   InvalidateOptions,
   InvalidateQueryFilters,
   ResetOptions,
   ResetQueryFilters,
-  SetDataOptions,
-  Updater,
 } from '@tanstack/react-query';
 import type { ExecutionResult } from 'graphql';
 
@@ -303,27 +300,6 @@ export function GraphQLReactQueryClient<
     });
   }
 
-  function setQueryData<Doc extends StringDocumentNode>(
-    {
-      query,
-      options,
-      variables,
-    }: {
-      query: Doc;
-      options?: SetDataOptions;
-    } & (VariablesOf<Doc> extends Record<string, never>
-      ? {
-          variables?: undefined;
-        }
-      : { variables: VariablesOf<Doc> }),
-    updater: Updater<
-      ExecutionResultWithData<ResultOf<Doc>> | undefined,
-      ExecutionResultWithData<ResultOf<Doc>> | undefined
-    >,
-  ) {
-    client.setQueryData([query, variables], updater, options);
-  }
-
   function useQuery<
     Doc extends StringDocumentNode<any, any>,
     QueryData = ExecutionResultWithData<ResultOf<Doc>>,
@@ -341,38 +317,11 @@ export function GraphQLReactQueryClient<
           variables: VariablesOf<Doc> | false;
         },
   ) {
-    const result = useQueryReactQuery<ExecutionResultWithData<ResultOf<Doc>>, Error, QueryData>({
+    return useQueryReactQuery<ExecutionResultWithData<ResultOf<Doc>>, Error, QueryData>({
       queryKey: [query, variables],
       ...options,
       enabled: enabled && variables !== false,
     });
-
-    const setQueryDataCallback = useStableCallback(
-      (
-        updater: Updater<
-          ExecutionResultWithData<ResultOf<Doc>> | undefined,
-          ExecutionResultWithData<ResultOf<Doc>> | undefined
-        >,
-        options?: SetDataOptions,
-      ) => {
-        if (variables === false) return;
-
-        setQueryData(
-          {
-            query,
-            // Not able to map required variables generic conditional
-            variables: variables as any,
-            options,
-          },
-          updater,
-        );
-      },
-    );
-
-    return {
-      ...result,
-      setQueryData: setQueryDataCallback,
-    };
   }
 
   function fetchQuery<
@@ -498,42 +447,6 @@ export function GraphQLReactQueryClient<
     return response;
   }
 
-  function setInfiniteQueryData<Doc extends StringDocumentNode>(
-    {
-      query,
-      filterQueryKey,
-      options,
-    }: {
-      query: Doc;
-      filterQueryKey?: unknown;
-      options?: SetDataOptions;
-    },
-    updater: Updater<
-      InfiniteData<ExecutionResultWithData<ResultOf<Doc>>> | undefined,
-      InfiniteData<ExecutionResultWithData<ResultOf<Doc>>> | undefined
-    >,
-  ) {
-    const queryKey = infiniteQueryKey({
-      query,
-      variables: true,
-      filterQueryKey,
-    });
-
-    client.setQueryData(queryKey, updater, options);
-  }
-
-  function infiniteQueryKey<Doc extends StringDocumentNode>({
-    query,
-    filterQueryKey,
-    variables,
-  }: {
-    query: Doc;
-    filterQueryKey?: unknown;
-    variables: boolean | Function;
-  }) {
-    return [query, filterQueryKey, !!variables, 'Infinite'] as const;
-  }
-
   function useInfiniteQuery<Doc extends StringDocumentNode<any, any>, Entity extends {}>(
     query: Doc,
     {
@@ -576,33 +489,8 @@ export function GraphQLReactQueryClient<
 
     const entityStoreNodes = entityStore.nodes;
 
-    const queryKey: QueryKey = infiniteQueryKey({
-      query,
-      filterQueryKey,
-      variables,
-    });
-
-    const setInfiniteQueryDataCallback = useStableCallback(
-      (
-        updater: Updater<
-          InfiniteData<ExecutionResultWithData<ResultOf<Doc>>> | undefined,
-          InfiniteData<ExecutionResultWithData<ResultOf<Doc>>> | undefined
-        >,
-        options?: SetDataOptions,
-      ) => {
-        setInfiniteQueryData(
-          {
-            query,
-            filterQueryKey,
-            options,
-          },
-          updater,
-        );
-      },
-    );
-
     const result = useInfiniteReactQuery({
-      queryKey,
+      queryKey: [query, filterQueryKey, variables, 'Infinite'] as readonly unknown[],
       queryFn: variables
         ? ({ pageParam, signal }) => {
             return infiniteQueryFn({
@@ -694,7 +582,6 @@ export function GraphQLReactQueryClient<
       loadMoreNextPage,
       loadMorePreviousPage,
       entityStore,
-      setInfiniteQueryData: setInfiniteQueryDataCallback,
     };
   }
 
@@ -816,14 +703,12 @@ export function GraphQLReactQueryClient<
     GraphQLReactQueryProvider,
     useQuery,
     prefetchQuery,
-    setQueryData,
     fetcher,
     fetchQuery,
     useMutation,
     fetchGQL,
     useInfiniteQuery,
     prefetchInfiniteQuery,
-    setInfiniteQueryData,
     gql,
     invalidateOperations,
     resetOperations,
