@@ -182,13 +182,6 @@ export function GraphQLReactWS<ConnectionInitPayload extends Record<string, unkn
     return { subscriptionIterator, abortController, abortSignal };
   }
 
-  type OnData<Doc extends StringDocumentNode> = (
-    resultWithData: ExecutionResultWithData<ResultOf<Doc>>,
-  ) => void;
-  type OnError<Doc extends StringDocumentNode> = (
-    resultWithError: ExecutionResultWithErrors<ResultOf<Doc>>,
-  ) => void;
-
   function useSubscription<Doc extends StringDocumentNode>({
     query,
     onData,
@@ -297,3 +290,10 @@ export function GraphQLReactWS<ConnectionInitPayload extends Record<string, unkn
     useSubscription,
   };
 }
+
+export type OnData<Doc extends StringDocumentNode> = (
+  resultWithData: ExecutionResultWithData<ResultOf<Doc>>,
+) => void;
+export type OnError<Doc extends StringDocumentNode> = (
+  resultWithError: ExecutionResultWithErrors<ResultOf<Doc>>,
+) => void;
