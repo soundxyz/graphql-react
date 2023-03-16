@@ -251,9 +251,11 @@ export function GraphQLReactWS<ConnectionInitPayload extends Record<string, unkn
 
               onDataCallback(result);
               setData(result);
+              latestData.current = result;
 
               if (!errors && latestError.current) {
                 setError(null);
+                latestError.current = null;
               }
             }
 
@@ -266,6 +268,7 @@ export function GraphQLReactWS<ConnectionInitPayload extends Record<string, unkn
 
               onErrorCallback(result);
               setError(result);
+              latestError.current = result;
             }
           }
         },
