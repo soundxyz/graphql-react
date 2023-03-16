@@ -191,21 +191,30 @@ export function GraphQLReactWS<ConnectionInitPayload extends Record<string, unkn
     onData,
     onError,
     variables,
+
+    initialData = null,
   }: {
     query: Doc;
     onData?: OnData<Doc>;
     onError?: OnError<Doc>;
+
+    initialData?: ExecutionResultWithData<ResultOf<Doc>> | null;
   } & (VariablesOf<Doc> extends Record<string, never>
     ? { variables?: undefined }
     : { variables: VariablesOf<Doc> | false })) {
     const store: SubscriptionStore<Doc> = (subscriptionStores[query + JSON.stringify(variables)] ||=
       proxy<SubscriptionStore<Doc>>({
-        data: null,
+        data: initialData,
         error: null,
         ref: ref({
-          current: null,
+          current: initialData,
         }),
       }));
+
+    if (initialData && !store.data) {
+      store.data = initialData;
+      store.ref.current = initialData;
+    }
 
     const { data, error } = useProxySnapshot(store);
 
