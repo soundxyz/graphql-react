@@ -1,5 +1,6 @@
-import { useRef, useMemo, MutableRefObject, useCallback } from 'react';
 import equal from 'fast-deep-equal';
+import { MutableRefObject, useCallback, useMemo, useRef } from 'react';
+import { useSnapshot } from 'valtio';
 
 export function useStableValue<T>(obj: T) {
   const ref = useRef(obj);
@@ -29,4 +30,8 @@ export function useStableCallback<Cb extends (...args: any[]) => unknown>(cb: Cb
     },
     [],
   );
+}
+
+export function useProxySnapshot<T extends object>(proxyObject: T): T {
+  return useSnapshot(proxyObject) as T;
 }

@@ -1,8 +1,10 @@
-import { createClient, ClientOptions, SubscribePayload, ExecutionResult } from 'graphql-ws';
-import type { ResultOf, StringDocumentNode, VariablesOf } from '@soundxyz/gql-string';
-import { useLatestRef, useStableCallback, useStableValue } from './utils';
-import { useEffect, useMemo, useState } from 'react';
+import { ClientOptions, createClient, ExecutionResult, SubscribePayload } from 'graphql-ws';
+import { useEffect, useMemo } from 'react';
+import { proxy } from 'valtio';
 
+import { useProxySnapshot, useStableCallback, useStableValue } from './utils';
+
+import type { ResultOf, StringDocumentNode, VariablesOf } from '@soundxyz/gql-string';
 export type ExecutionResultWithData<Data> = Omit<ExecutionResult<unknown, unknown>, 'data'> & {
   data: Data;
 };
@@ -182,6 +184,8 @@ export function GraphQLReactWS<ConnectionInitPayload extends Record<string, unkn
     return { subscriptionIterator, abortController, abortSignal };
   }
 
+  const subscriptionStores: Record<string, SubscriptionStore<StringDocumentNode>> = {};
+
   function useSubscription<Doc extends StringDocumentNode>({
     query,
     onData,
@@ -194,13 +198,13 @@ export function GraphQLReactWS<ConnectionInitPayload extends Record<string, unkn
   } & (VariablesOf<Doc> extends Record<string, never>
     ? { variables?: undefined }
     : { variables: VariablesOf<Doc> | false })) {
-    const [data, setData] = useState<ExecutionResultWithData<ResultOf<Doc>> | null>(null);
+    const store: SubscriptionStore<Doc> = (subscriptionStores[query + JSON.stringify(variables)] ||=
+      proxy<SubscriptionStore<Doc>>({
+        data: null,
+        error: null,
+      }));
 
-    const latestData = useLatestRef(data);
-
-    const [error, setError] = useState<ExecutionResultWithErrors<ResultOf<Doc>> | null>(null);
-
-    const latestError = useLatestRef(error);
+    const { data, error } = useProxySnapshot(store);
 
     const onDataCallback = useStableCallback<OnData<Doc>>(resultWithData => {
       if (!onData) return;
@@ -243,12 +247,11 @@ export function GraphQLReactWS<ConnectionInitPayload extends Record<string, unkn
               };
 
               onDataCallback(result);
-              setData(result);
-              latestData.current = result;
 
-              if (!errors && latestError.current) {
-                setError(null);
-                latestError.current = null;
+              store.data = result;
+
+              if (!errors && store.error) {
+                store.error = null;
               }
             }
 
@@ -260,8 +263,7 @@ export function GraphQLReactWS<ConnectionInitPayload extends Record<string, unkn
               };
 
               onErrorCallback(result);
-              setError(result);
-              latestError.current = result;
+              store.error = result;
             }
           }
         },
@@ -279,9 +281,8 @@ export function GraphQLReactWS<ConnectionInitPayload extends Record<string, unkn
     return {
       subscription,
       data,
-      latestData,
       error,
-      latestError,
+      store,
     };
   }
   return {
@@ -297,3 +298,8 @@ export type OnData<Doc extends StringDocumentNode> = (
 export type OnError<Doc extends StringDocumentNode> = (
   resultWithError: ExecutionResultWithErrors<ResultOf<Doc>>,
 ) => void;
+
+export type SubscriptionStore<Doc extends StringDocumentNode> = {
+  data: ExecutionResultWithData<ResultOf<Doc>> | null;
+  error: ExecutionResultWithErrors<ResultOf<Doc>> | null;
+};
