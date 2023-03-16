@@ -238,32 +238,24 @@ export function GraphQLReactWS<ConnectionInitPayload extends Record<string, unkn
           variables: variables as any,
         },
         async function* ({ iterator }) {
-          for await (const { data, errors, ...rest } of iterator) {
-            if (data) {
-              const result = {
-                data,
-                errors,
-                ...rest,
-              };
+          for await (const result of iterator) {
+            if (result.data) {
+              const resultWithData = result as ExecutionResultWithData<ResultOf<Doc>>;
 
-              onDataCallback(result);
+              onDataCallback(resultWithData);
 
-              store.data = result;
+              if (store.data !== resultWithData) store.data = resultWithData;
 
-              if (!errors && store.error) {
+              if (!result.errors && store.error) {
                 store.error = null;
               }
             }
 
-            if (errors) {
-              const result = {
-                data,
-                errors,
-                ...rest,
-              };
+            if (result.errors) {
+              const resultWithError = result as ExecutionResultWithErrors<ResultOf<Doc>>;
 
-              onErrorCallback(result);
-              store.error = result;
+              onErrorCallback(resultWithError);
+              if (store.error !== resultWithError) store.error = resultWithError;
             }
           }
         },
