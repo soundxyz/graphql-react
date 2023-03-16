@@ -1,6 +1,6 @@
 import { ClientOptions, createClient, ExecutionResult, SubscribePayload } from 'graphql-ws';
 import { useEffect, useMemo } from 'react';
-import { proxy } from 'valtio';
+import { proxy, ref } from 'valtio';
 
 import { useProxySnapshot, useStableCallback, useStableValue } from './utils';
 
@@ -202,6 +202,9 @@ export function GraphQLReactWS<ConnectionInitPayload extends Record<string, unkn
       proxy<SubscriptionStore<Doc>>({
         data: null,
         error: null,
+        ref: ref({
+          current: null,
+        }),
       }));
 
     const { data, error } = useProxySnapshot(store);
@@ -240,23 +243,34 @@ export function GraphQLReactWS<ConnectionInitPayload extends Record<string, unkn
         async function* ({ iterator }) {
           for await (const result of iterator) {
             if (result.data) {
-              const resultWithData = result as ExecutionResultWithData<ResultOf<Doc>>;
+              const resultWithData = {
+                ...result,
+                data: result.data,
+              };
+
+              if (store.ref.current !== result) {
+                store.data = resultWithData;
+
+                if (!result.errors && store.error) {
+                  store.error = null;
+                }
+              }
 
               onDataCallback(resultWithData);
-
-              if (store.data !== resultWithData) store.data = resultWithData;
-
-              if (!result.errors && store.error) {
-                store.error = null;
-              }
             }
 
             if (result.errors) {
-              const resultWithError = result as ExecutionResultWithErrors<ResultOf<Doc>>;
+              const resultWithError = {
+                ...result,
+                errors: result.errors,
+              };
+
+              if (store.ref.current !== result) store.error = resultWithError;
 
               onErrorCallback(resultWithError);
-              if (store.error !== resultWithError) store.error = resultWithError;
             }
+
+            store.ref.current = result;
           }
         },
       );
@@ -294,4 +308,5 @@ export type OnError<Doc extends StringDocumentNode> = (
 export type SubscriptionStore<Doc extends StringDocumentNode> = {
   data: ExecutionResultWithData<ResultOf<Doc>> | null;
   error: ExecutionResultWithErrors<ResultOf<Doc>> | null;
+  ref: { current: ExecutionResult<ResultOf<Doc>, unknown> | null };
 };
