@@ -9,16 +9,16 @@ export function GraphQLReactWS<ConnectionInitPayload extends Record<string, unkn
   const client = createClient(graphqlWsOptions);
 
   type SubscribeInfo<Doc extends StringDocumentNode> = {
-    iterator: AsyncGenerator<ExecutionResult<ResultOf<Doc>, unknown>, undefined, unknown>;
+    iterator: AsyncGenerator<ExecutionResult<ResultOf<Doc>, unknown>, unknown, unknown>;
     cleanup(): void;
   };
 
-  function subscribe<Doc extends StringDocumentNode>({
+  function graphqlWsSubscribe<Doc extends StringDocumentNode>({
     payload,
-    onCleanup,
+    onDispose,
   }: {
     payload: SubscribePayload;
-    onCleanup(): void;
+    onDispose(): void;
   }): SubscribeInfo<Doc> {
     let deferred: {
       resolve: (done: boolean) => void;
@@ -47,10 +47,13 @@ export function GraphQLReactWS<ConnectionInitPayload extends Record<string, unkn
 
     function cleanup() {
       dispose();
-      onCleanup();
+      onDispose();
+
+      done = true;
+      deferred?.resolve(true);
     }
 
-    const iterator: AsyncGenerator<ExecutionResult<ResultOf<Doc>, unknown>> = {
+    const iterator: AsyncGenerator<ExecutionResult<ResultOf<Doc>, unknown>, unknown, unknown> = {
       [Symbol.asyncIterator]() {
         return this;
       },
@@ -66,7 +69,7 @@ export function GraphQLReactWS<ConnectionInitPayload extends Record<string, unkn
         throw err;
       },
       async return() {
-        dispose();
+        cleanup();
         return { done: true, value: undefined };
       },
     };
@@ -79,44 +82,98 @@ export function GraphQLReactWS<ConnectionInitPayload extends Record<string, unkn
 
   type Channel<Doc extends StringDocumentNode> = {
     subscription: SubscribeInfo<Doc>;
+    subscriptionsControllers: Set<AbortController>;
   };
 
   const storeChannels: Map<string, Channel<StringDocumentNode>> = new Map();
 
-  function channel<Doc extends StringDocumentNode>({
-    query,
-    variables,
-  }: {
-    query: Doc;
-    variables?: VariablesOf<Doc>;
-  }) {
+  function subscribe<
+    Doc extends StringDocumentNode,
+    Subscription extends AsyncGenerator<unknown, unknown, unknown>,
+  >(
+    {
+      query,
+      variables,
+    }: {
+      query: Doc;
+    } & (VariablesOf<Doc> extends Record<string, never>
+      ? { variables?: undefined }
+      : { variables: VariablesOf<Doc> }),
+    subscription: (args: {
+      data: AsyncGenerator<ExecutionResult<ResultOf<Doc>, unknown>, unknown, unknown>;
+      abortSignal: AbortSignal;
+      abortController: AbortController;
+    }) => Subscription,
+  ): Subscription {
     const payload: SubscribePayload = {
       query,
       variables,
     };
-
     const payloadKey = JSON.stringify(payload);
 
-    const existingChannel = storeChannels.get(payloadKey) as Channel<Doc>;
+    let channel: Channel<Doc>;
 
-    if (existingChannel) return existingChannel;
+    const existingChannel = storeChannels.get(payloadKey);
 
-    const newChannel: Channel<Doc> = {
-      subscription: subscribe<Doc>({
-        payload,
-        onCleanup() {
-          storeChannels.delete(payloadKey);
-        },
-      }),
+    if (existingChannel) {
+      channel = existingChannel;
+    } else {
+      const subscriptionsControllers = new Set<AbortController>();
+      channel = {
+        subscription: graphqlWsSubscribe({
+          payload,
+          onDispose() {
+            storeChannels.delete(payloadKey);
+
+            for (const controller of subscriptionsControllers) {
+              controller.abort();
+            }
+            subscriptionsControllers.clear();
+          },
+        }),
+        subscriptionsControllers,
+      };
+    }
+
+    const {
+      subscriptionsControllers: channelSubscriptionsControllers,
+      subscription: { cleanup: channelCleanup, iterator: channelIterator },
+    } = channel;
+
+    const abortController = new AbortController();
+    const abortSignal = abortController.signal;
+
+    function cleanupSubscriptionController() {
+      abortController.signal.removeEventListener('abort', cleanupSubscriptionController);
+
+      channelSubscriptionsControllers.delete(abortController);
+
+      if (channelSubscriptionsControllers.size === 0) channelCleanup();
+    }
+
+    abortController.signal.addEventListener('abort', cleanupSubscriptionController);
+
+    channelSubscriptionsControllers.add(abortController);
+
+    const subscriptionIterator = subscription({
+      data: channelIterator,
+      abortController,
+      abortSignal,
+    });
+
+    const subscriptionIteratorReturn = subscriptionIterator.return;
+
+    subscriptionIterator.return = () => {
+      abortController.abort();
+
+      return subscriptionIteratorReturn.call(subscriptionIterator, undefined);
     };
 
-    storeChannels.set(payloadKey, newChannel);
-
-    return newChannel;
+    return subscriptionIterator;
   }
 
   return {
     client,
-    channel,
+    subscribe,
   };
 }
