@@ -18,7 +18,7 @@ export function GraphQLReactWS<ConnectionInitPayload extends Record<string, unkn
 }: {
   graphqlWsOptions: ClientOptions<ConnectionInitPayload>;
 }) {
-  const client = createClient(graphqlWsOptions);
+  const client = typeof window === 'undefined' ? null : createClient(graphqlWsOptions);
 
   type SubscribeInfo<Doc extends StringDocumentNode> = {
     iterator: AsyncGenerator<ExecutionResult<ResultOf<Doc>, unknown>, unknown, unknown>;
@@ -36,6 +36,9 @@ export function GraphQLReactWS<ConnectionInitPayload extends Record<string, unkn
       resolve: (done: boolean) => void;
       reject: (err: unknown) => void;
     } | null = null;
+
+    if (!client) throw Error('graphql-ws client not available');
+
     const pending: ExecutionResult<ResultOf<Doc>, unknown>[] = [];
     let throwMe: unknown = null,
       done = false;
@@ -117,6 +120,8 @@ export function GraphQLReactWS<ConnectionInitPayload extends Record<string, unkn
       abortController: AbortController;
     }) => Subscription,
   ) {
+    if (!client) return null;
+
     const payload: SubscribePayload = {
       query,
       variables,
@@ -142,7 +147,7 @@ export function GraphQLReactWS<ConnectionInitPayload extends Record<string, unkn
             }
             subscriptionsControllers.clear();
           },
-        }),
+        })!,
         subscriptionsControllers,
       };
     }
