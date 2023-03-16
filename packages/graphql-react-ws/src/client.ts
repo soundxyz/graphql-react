@@ -8,27 +8,27 @@ export function GraphQLReactWS<ConnectionInitPayload extends Record<string, unkn
 }) {
   const client = createClient(graphqlWsOptions);
 
-  type SubscribeInfo<T> = {
-    iterator: AsyncGenerator<ExecutionResult<T, unknown>, undefined, unknown>;
+  type SubscribeInfo<Doc extends StringDocumentNode> = {
+    iterator: AsyncGenerator<ExecutionResult<ResultOf<Doc>, unknown>, undefined, unknown>;
     cleanup(): void;
   };
 
-  function subscribe<T>({
+  function subscribe<Doc extends StringDocumentNode>({
     payload,
     onCleanup,
   }: {
     payload: SubscribePayload;
     onCleanup(): void;
-  }): SubscribeInfo<T> {
+  }): SubscribeInfo<Doc> {
     let deferred: {
       resolve: (done: boolean) => void;
       reject: (err: unknown) => void;
     } | null = null;
-    const pending: ExecutionResult<T, unknown>[] = [];
+    const pending: ExecutionResult<ResultOf<Doc>, unknown>[] = [];
     let throwMe: unknown = null,
       done = false;
 
-    const dispose = client.subscribe<T>(payload, {
+    const dispose = client.subscribe<ResultOf<Doc>>(payload, {
       next: data => {
         pending.push(data);
         deferred?.resolve(false);
@@ -50,7 +50,7 @@ export function GraphQLReactWS<ConnectionInitPayload extends Record<string, unkn
       onCleanup();
     }
 
-    const iterator: AsyncGenerator<ExecutionResult<T, unknown>> = {
+    const iterator: AsyncGenerator<ExecutionResult<ResultOf<Doc>, unknown>> = {
       [Symbol.asyncIterator]() {
         return this;
       },
@@ -77,11 +77,11 @@ export function GraphQLReactWS<ConnectionInitPayload extends Record<string, unkn
     };
   }
 
-  type Channel<T> = {
-    subscription: SubscribeInfo<T>;
+  type Channel<Doc extends StringDocumentNode> = {
+    subscription: SubscribeInfo<Doc>;
   };
 
-  const storeChannels: Map<string, Channel<unknown>> = new Map();
+  const storeChannels: Map<string, Channel<StringDocumentNode>> = new Map();
 
   function channel<Doc extends StringDocumentNode>({
     query,
@@ -97,12 +97,12 @@ export function GraphQLReactWS<ConnectionInitPayload extends Record<string, unkn
 
     const payloadKey = JSON.stringify(payload);
 
-    const existingChannel = storeChannels.get(payloadKey) as Channel<ResultOf<Doc>>;
+    const existingChannel = storeChannels.get(payloadKey) as Channel<Doc>;
 
     if (existingChannel) return existingChannel;
 
-    const newChannel: Channel<ResultOf<Doc>> = {
-      subscription: subscribe<ResultOf<Doc>>({
+    const newChannel: Channel<Doc> = {
+      subscription: subscribe<Doc>({
         payload,
         onCleanup() {
           storeChannels.delete(payloadKey);
