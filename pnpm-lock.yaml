@@ -189,6 +189,7 @@ importers:
       graphql: 16.6.0
       react: 18.2.0
       typescript: 4.9.5
+    publishDirectory: dist
 
 packages:
 
