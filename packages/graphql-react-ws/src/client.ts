@@ -1,5 +1,15 @@
 import { createClient, ClientOptions, SubscribePayload, ExecutionResult } from 'graphql-ws';
 import type { ResultOf, StringDocumentNode, VariablesOf } from '@soundxyz/gql-string';
+import { useLatestRef, useStableCallback, useStableValue } from './utils';
+import { useEffect, useMemo, useState } from 'react';
+
+export type ExecutionResultWithData<Data> = Omit<ExecutionResult<unknown, unknown>, 'data'> & {
+  data: Data;
+};
+
+export type ExecutionResultWithErrors<Data> = Omit<ExecutionResult<Data, unknown>, 'errors'> & {
+  errors: ExecutionResult['errors'];
+};
 
 export function GraphQLReactWS<ConnectionInitPayload extends Record<string, unknown>>({
   graphqlWsOptions,
@@ -100,11 +110,11 @@ export function GraphQLReactWS<ConnectionInitPayload extends Record<string, unkn
       ? { variables?: undefined }
       : { variables: VariablesOf<Doc> }),
     subscription: (args: {
-      data: AsyncGenerator<ExecutionResult<ResultOf<Doc>, unknown>, unknown, unknown>;
+      iterator: AsyncGenerator<ExecutionResult<ResultOf<Doc>, unknown>, unknown, unknown>;
       abortSignal: AbortSignal;
       abortController: AbortController;
     }) => Subscription,
-  ): Subscription {
+  ) {
     const payload: SubscribePayload = {
       query,
       variables,
@@ -156,7 +166,7 @@ export function GraphQLReactWS<ConnectionInitPayload extends Record<string, unkn
     channelSubscriptionsControllers.add(abortController);
 
     const subscriptionIterator = subscription({
-      data: channelIterator,
+      iterator: channelIterator,
       abortController,
       abortSignal,
     });
@@ -169,11 +179,118 @@ export function GraphQLReactWS<ConnectionInitPayload extends Record<string, unkn
       return subscriptionIteratorReturn.call(subscriptionIterator, undefined);
     };
 
-    return subscriptionIterator;
+    return { subscriptionIterator, abortController, abortSignal };
   }
 
+  type OnData<Doc extends StringDocumentNode> = (
+    resultWithData: ExecutionResultWithData<ResultOf<Doc>>,
+  ) => void;
+  type OnError<Doc extends StringDocumentNode> = (
+    resultWithError: ExecutionResultWithErrors<ResultOf<Doc>>,
+  ) => void;
+
+  function useSubscription<Doc extends StringDocumentNode>({
+    query,
+    onData,
+    onError,
+    variables,
+  }: {
+    query: Doc;
+    onData?: OnData<Doc>;
+    onError?: OnError<Doc>;
+  } & (VariablesOf<Doc> extends Record<string, never>
+    ? { variables?: undefined }
+    : { variables: VariablesOf<Doc> | false })) {
+    const [data, setData] = useState<ExecutionResultWithData<ResultOf<Doc>> | null>(null);
+
+    const latestData = useLatestRef(data);
+
+    const [error, setError] = useState<ExecutionResultWithErrors<ResultOf<Doc>> | null>(null);
+
+    const latestError = useLatestRef(error);
+
+    const onDataCallback = useStableCallback<OnData<Doc>>(resultWithData => {
+      if (!onData) return;
+
+      try {
+        Promise.all([onData(resultWithData)]).catch(console.error);
+      } catch (err) {
+        console.error(err);
+      }
+    });
+
+    const onErrorCallback = useStableCallback<OnError<Doc>>(resultWithError => {
+      if (!onError) return;
+
+      try {
+        Promise.all([onError(resultWithError)]).catch(console.error);
+      } catch (err) {
+        console.error(err);
+      }
+    });
+
+    const stableVariables = useStableValue(variables);
+
+    const subscription = useMemo(() => {
+      if (typeof window === 'undefined' || stableVariables === false) return null;
+
+      return subscribe(
+        {
+          query,
+          // Can't verify the conditional types around optional variables
+          variables: variables as any,
+        },
+        async function* ({ iterator }) {
+          for await (const { data, errors, ...rest } of iterator) {
+            if (data) {
+              const result = {
+                data,
+                errors,
+                ...rest,
+              };
+
+              onDataCallback(result);
+              setData(result);
+
+              if (!errors && latestError.current) {
+                setError(null);
+              }
+            }
+
+            if (errors) {
+              const result = {
+                data,
+                errors,
+                ...rest,
+              };
+
+              onErrorCallback(result);
+              setError(result);
+            }
+          }
+        },
+      );
+    }, []);
+
+    useEffect(() => {
+      if (!subscription) return;
+
+      return () => {
+        subscription.abortController.abort();
+      };
+    }, [subscription]);
+
+    return {
+      subscription,
+      data,
+      latestData,
+      error,
+      latestError,
+    };
+  }
   return {
     client,
     subscribe,
+    useSubscription,
   };
 }
