@@ -189,7 +189,36 @@ export function GraphQLReactWS<ConnectionInitPayload extends Record<string, unkn
     return { subscriptionIterator, abortController, abortSignal };
   }
 
-  const subscriptionStores: Record<string, SubscriptionStore<StringDocumentNode>> = {};
+  const subscriptionStores: Map<string, SubscriptionStore<StringDocumentNode>> = new Map();
+
+  function getSubscriptionStore<Doc extends StringDocumentNode>({
+    query,
+    variables,
+    initialData = null,
+  }: {
+    query: Doc;
+    initialData?: ExecutionResultWithData<ResultOf<Doc>> | null;
+  } & (VariablesOf<Doc> extends Record<string, never>
+    ? { variables?: undefined }
+    : { variables: VariablesOf<Doc> | false })): SubscriptionStore<Doc> {
+    const storeKey = query + JSON.stringify(variables);
+
+    const existingStore: SubscriptionStore<Doc> | undefined = subscriptionStores.get(storeKey);
+
+    if (existingStore) return existingStore;
+
+    const newStore = proxy<SubscriptionStore<Doc>>({
+      data: initialData,
+      error: null,
+      ref: ref({
+        current: initialData,
+      }),
+    });
+
+    subscriptionStores.set(storeKey, newStore);
+
+    return newStore;
+  }
 
   function useSubscription<Doc extends StringDocumentNode>({
     query,
@@ -207,14 +236,12 @@ export function GraphQLReactWS<ConnectionInitPayload extends Record<string, unkn
   } & (VariablesOf<Doc> extends Record<string, never>
     ? { variables?: undefined }
     : { variables: VariablesOf<Doc> | false })) {
-    const store: SubscriptionStore<Doc> = (subscriptionStores[query + JSON.stringify(variables)] ||=
-      proxy<SubscriptionStore<Doc>>({
-        data: initialData,
-        error: null,
-        ref: ref({
-          current: initialData,
-        }),
-      }));
+    const store: SubscriptionStore<Doc> = getSubscriptionStore({
+      query,
+      // Can't verify the conditional types around optional variables
+      variables: variables as any,
+      initialData,
+    });
 
     if (initialData && !store.data) {
       store.data = initialData;
@@ -305,10 +332,38 @@ export function GraphQLReactWS<ConnectionInitPayload extends Record<string, unkn
       store,
     };
   }
+
+  function setSubscriptionData<Doc extends StringDocumentNode>(
+    {
+      query,
+      variables,
+    }: {
+      query: Doc;
+    } & (VariablesOf<Doc> extends Record<string, never>
+      ? { variables?: undefined }
+      : { variables: VariablesOf<Doc> }),
+    data: ExecutionResultWithData<ResultOf<Doc>>,
+  ) {
+    const store = getSubscriptionStore({
+      query,
+      // Can't verify the conditional types around optional variables
+      variables: variables as any,
+      initialData: data,
+    });
+
+    if (store.ref.current !== data) {
+      store.data = data;
+      store.ref.current = data;
+    }
+  }
+
   return {
     client,
     subscribe,
     useSubscription,
+    subscriptionStores,
+    setSubscriptionData,
+    getSubscriptionStore,
   };
 }
 
