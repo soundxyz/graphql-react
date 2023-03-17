@@ -1,5 +1,13 @@
 # @soundxyz/graphql-react-query
 
+## 3.3.0
+
+### Minor Changes
+
+- [`b489e0d`](https://github.com/soundxyz/graphql-react/commit/b489e0d36f0b3229907efafb9a64ab3989009910)
+  Thanks [@PabloSzx](https://github.com/PabloSzx)! - New "latestData" returned value from
+  useInfiniteQuery
+
 ## 3.2.0
 
 ### Minor Changes
