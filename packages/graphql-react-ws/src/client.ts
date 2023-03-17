@@ -102,10 +102,7 @@ export function GraphQLReactWS<ConnectionInitPayload extends Record<string, unkn
 
   const storeChannels: Map<string, Channel<StringDocumentNode>> = new Map();
 
-  function subscribe<
-    Doc extends StringDocumentNode,
-    Subscription extends AsyncGenerator<unknown, unknown, unknown>,
-  >(
+  function subscribe<Doc extends StringDocumentNode, Subscription extends unknown>(
     {
       query,
       variables,
@@ -118,7 +115,7 @@ export function GraphQLReactWS<ConnectionInitPayload extends Record<string, unkn
       iterator: AsyncGenerator<ExecutionResult<ResultOf<Doc>, unknown>, unknown, unknown>;
       abortSignal: AbortSignal;
       abortController: AbortController;
-    }) => Subscription,
+    }) => Promise<Subscription>,
   ) {
     if (!client) return null;
 
@@ -172,21 +169,18 @@ export function GraphQLReactWS<ConnectionInitPayload extends Record<string, unkn
 
     channelSubscriptionsControllers.add(abortController);
 
-    const subscriptionIterator = subscription({
+    const subscriptionValue = subscription({
       iterator: channelIterator,
       abortController,
       abortSignal,
+    }).catch(err => {
+      console.error(err);
+      return null;
     });
 
-    const subscriptionIteratorReturn = subscriptionIterator.return;
+    subscriptionValue.finally(() => abortController.abort());
 
-    subscriptionIterator.return = () => {
-      abortController.abort();
-
-      return subscriptionIteratorReturn.call(subscriptionIterator, undefined);
-    };
-
-    return { subscriptionIterator, abortController, abortSignal };
+    return { subscription: subscriptionValue, abortController, abortSignal };
   }
 
   const subscriptionStores: Map<string, SubscriptionStore<StringDocumentNode>> = new Map();
@@ -281,7 +275,7 @@ export function GraphQLReactWS<ConnectionInitPayload extends Record<string, unkn
           // Can't verify the conditional types around optional variables
           variables: variables as any,
         },
-        async function* ({ iterator }) {
+        async function ({ iterator }) {
           for await (const result of iterator) {
             if (result.data) {
               const resultWithData = {
