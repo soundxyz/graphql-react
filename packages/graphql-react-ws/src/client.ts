@@ -200,7 +200,7 @@ export function GraphQLReactWS<ConnectionInitPayload extends Record<string, unkn
     initialData?: ExecutionResultWithData<ResultOf<Doc>> | null;
   } & (VariablesOf<Doc> extends Record<string, never>
     ? { variables?: undefined }
-    : { variables: VariablesOf<Doc> | false })): SubscriptionStore<Doc> {
+    : { variables: VariablesOf<Doc> })): SubscriptionStore<Doc> {
     const storeKey = query + JSON.stringify(variables);
 
     const existingStore: SubscriptionStore<Doc> | undefined = subscriptionStores.get(storeKey);
