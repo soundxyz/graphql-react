@@ -1,5 +1,5 @@
 import orderBy from 'lodash-es/orderBy.js';
-import { createElement, ReactNode, useMemo } from 'react';
+import { createElement, ReactNode, useMemo, useState } from 'react';
 import { z } from 'zod';
 import { proxy } from 'valtio';
 import { gql, ResultOf, StringDocumentNode, VariablesOf } from '@soundxyz/gql-string';
@@ -601,11 +601,15 @@ export function GraphQLReactQueryClient<
       },
     );
 
+    const [latestData, setLatestData] = useState<ExecutionResultWithData<ResultOf<Doc>> | null>(
+      null,
+    );
+
     const result = useInfiniteReactQuery({
       queryKey,
       queryFn: variables
-        ? ({ pageParam, signal }) => {
-            return infiniteQueryFn({
+        ? async ({ pageParam, signal }) => {
+            const result = await infiniteQueryFn({
               query,
               variables: variables({ pageParam: pageParam || null }),
 
@@ -618,6 +622,10 @@ export function GraphQLReactQueryClient<
 
               entityStoreNodes,
             });
+
+            setLatestData(result);
+
+            return result;
           }
         : () => {
             throw Error(`Missing variables required to execute query!`);
@@ -695,6 +703,7 @@ export function GraphQLReactQueryClient<
       loadMorePreviousPage,
       entityStore,
       setInfiniteQueryData: setInfiniteQueryDataCallback,
+      latestData,
     };
   }
 
