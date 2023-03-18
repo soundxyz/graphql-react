@@ -1,5 +1,13 @@
 # @soundxyz/graphql-react-query-example-next
 
+## 1.0.31
+
+### Patch Changes
+
+- Updated dependencies
+  [[`bd71aa2`](https://github.com/soundxyz/graphql-react/commit/bd71aa2900f897b53a410aaed83fc19cc7e31f91)]:
+  - @soundxyz/graphql-react-query@3.3.1
+
 ## 1.0.30
 
 ### Patch Changes
