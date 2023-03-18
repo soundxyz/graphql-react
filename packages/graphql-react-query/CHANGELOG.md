@@ -1,5 +1,13 @@
 # @soundxyz/graphql-react-query
 
+## 3.3.1
+
+### Patch Changes
+
+- [`bd71aa2`](https://github.com/soundxyz/graphql-react/commit/bd71aa2900f897b53a410aaed83fc19cc7e31f91)
+  Thanks [@PabloSzx](https://github.com/PabloSzx)! - "useInfiniteQuery" requires to specify at least
+  one getPageParam
+
 ## 3.3.0
 
 ### Minor Changes
