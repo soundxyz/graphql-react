@@ -18,6 +18,7 @@ import {
 } from './reactQuery';
 import {
   filterUndefined,
+  RequireAtLeastOne,
   useLatestRef,
   useProxySnapshot,
   useStableCallback,
@@ -553,22 +554,23 @@ export function GraphQLReactQueryClient<
     }: Omit<
       UseInfiniteQueryOptions<ExecutionResultWithData<ResultOf<Doc>>, Error>,
       'queryKey' | 'queryFn'
-    > & {
-      getNextPageParam?: StrictGetPageParam<ExecutionResultWithData<ResultOf<Doc>>>;
-      getPreviousPageParam?: StrictGetPageParam<ExecutionResultWithData<ResultOf<Doc>>>;
+    > &
+      RequireAtLeastOne<{
+        getNextPageParam?: StrictGetPageParam<ExecutionResultWithData<ResultOf<Doc>>>;
+        getPreviousPageParam?: StrictGetPageParam<ExecutionResultWithData<ResultOf<Doc>>>;
+      }> & {
+        variables:
+          | false
+          | (({ pageParam }: { pageParam: CursorPageParam | null }) => VariablesOf<Doc>);
 
-      variables:
-        | false
-        | (({ pageParam }: { pageParam: CursorPageParam | null }) => VariablesOf<Doc>);
+        filterQueryKey?: unknown;
 
-      filterQueryKey?: unknown;
+        onFetchCompleted?(result: ExecutionResultWithData<ResultOf<Doc>>): void;
 
-      onFetchCompleted?(result: ExecutionResultWithData<ResultOf<Doc>>): void;
-
-      list(result: ResultOf<Doc>): Entity[] | null | undefined | false | '' | 0;
-      uniq(entity: Entity): string;
-      order?: readonly [AtLeastOne<(entity: Entity) => unknown>, AtLeastOne<'asc' | 'desc'>];
-    },
+        list(result: ResultOf<Doc>): Entity[] | null | undefined | false | '' | 0;
+        uniq(entity: Entity): string;
+        order?: readonly [AtLeastOne<(entity: Entity) => unknown>, AtLeastOne<'asc' | 'desc'>];
+      },
   ) {
     const entityStore = (infiniteQueryStores[query + JSON.stringify(filterQueryKey)] ||= proxy({
       nodes: {},
