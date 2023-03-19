@@ -221,12 +221,16 @@ export function GraphQLReactWS<ConnectionInitPayload extends Record<string, unkn
     variables,
 
     initialData = null,
+
+    enabled = true,
   }: {
     query: Doc;
     onData?: OnData<Doc>;
     onError?: OnError<Doc>;
 
     initialData?: ExecutionResultWithData<ResultOf<Doc>> | null;
+
+    enabled?: boolean;
   } & (VariablesOf<Doc> extends Record<string, never>
     ? { variables?: undefined }
     : { variables: VariablesOf<Doc> | false })) {
@@ -267,13 +271,14 @@ export function GraphQLReactWS<ConnectionInitPayload extends Record<string, unkn
     const stableVariables = useStableValue(variables);
 
     const subscription = useMemo(() => {
-      if (typeof window === 'undefined' || stableVariables === false) return null;
+      if (typeof window === 'undefined' || stableVariables === false || enabled === false)
+        return null;
 
       return subscribe(
         {
           query,
           // Can't verify the conditional types around optional variables
-          variables: variables as any,
+          variables: stableVariables as any,
         },
         async function ({ iterator }) {
           for await (const result of iterator) {
@@ -309,7 +314,7 @@ export function GraphQLReactWS<ConnectionInitPayload extends Record<string, unkn
           }
         },
       );
-    }, []);
+    }, [stableVariables, enabled, query]);
 
     useEffect(() => {
       if (!subscription) return;
