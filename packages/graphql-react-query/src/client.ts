@@ -31,6 +31,7 @@ import type {
   InfiniteData,
   InvalidateOptions,
   InvalidateQueryFilters,
+  QueryFunction,
   ResetOptions,
   ResetQueryFilters,
   SetDataOptions,
@@ -258,24 +259,45 @@ export function GraphQLReactQueryClient<
     },
   } as const;
 
+  const defaultQueryFn: QueryFunction<unknown, QueryKey> = ({ queryKey, signal }) => {
+    const [query, variables] = queryKey;
+
+    if (typeof query !== 'string') throw Error(`Invalid GraphQL operation given`);
+
+    return GQLFetcher({
+      query,
+      variables,
+      fetchOptions: {
+        signal,
+      },
+    });
+  };
+
+  const queryFnWithFetchOptions: (
+    fetchOptions?: Partial<RequestInit>,
+  ) => QueryFunction<unknown, QueryKey> =
+    fetchOptions =>
+    ({ queryKey, signal }) => {
+      const [query, variables] = queryKey;
+
+      if (typeof query !== 'string') throw Error(`Invalid GraphQL operation given`);
+
+      return GQLFetcher({
+        query,
+        variables,
+        fetchOptions: {
+          signal,
+          ...fetchOptions,
+        },
+      });
+    };
+
   const clientConfig: QueryClientConfig = {
     ...clientConfigInput,
     defaultOptions: {
       ...clientConfigInput?.defaultOptions,
       queries: {
-        queryFn({ queryKey, signal }) {
-          const [query, variables] = queryKey;
-
-          if (typeof query !== 'string') throw Error(`Invalid GraphQL operation given`);
-
-          return GQLFetcher({
-            query,
-            variables,
-            fetchOptions: {
-              signal,
-            },
-          });
-        },
+        queryFn: defaultQueryFn,
         ...clientConfigInput?.defaultOptions?.queries,
       },
     },
@@ -333,16 +355,18 @@ export function GraphQLReactQueryClient<
     {
       variables,
       enabled = true,
+      fetchOptions,
       ...options
-    }: VariablesOf<Doc> extends Record<string, never>
+    }: (VariablesOf<Doc> extends Record<string, never>
       ? UseQueryOptions<ExecutionResultWithData<ResultOf<Doc>>, Error, QueryData, QueryKey> & {
           variables?: undefined;
         }
       : UseQueryOptions<ExecutionResultWithData<ResultOf<Doc>>, Error, QueryData, QueryKey> & {
           variables: VariablesOf<Doc> | false;
-        },
+        }) & { fetchOptions?: Partial<RequestInit> },
   ) {
     const result = useQueryReactQuery<ExecutionResultWithData<ResultOf<Doc>>, Error, QueryData>({
+      queryFn: fetchOptions ? queryFnWithFetchOptions(fetchOptions) : defaultQueryFn,
       queryKey: [query, variables],
       ...options,
       enabled: enabled && variables !== false,
