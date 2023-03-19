@@ -1,5 +1,12 @@
 # @soundxyz/graphql-react-query
 
+## 3.3.2
+
+### Patch Changes
+
+- [`e8ad117`](https://github.com/soundxyz/graphql-react/commit/e8ad1176910ccc2b55cf214b0733e66e32303e59)
+  Thanks [@PabloSzx](https://github.com/PabloSzx)! - Make filterQueryKey required
+
 ## 3.3.1
 
 ### Patch Changes
