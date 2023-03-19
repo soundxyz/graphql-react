@@ -356,6 +356,7 @@ export function GraphQLReactQueryClient<
       variables,
       enabled = true,
       fetchOptions,
+      filterQueryKey,
       ...options
     }: (VariablesOf<Doc> extends Record<string, never>
       ? UseQueryOptions<ExecutionResultWithData<ResultOf<Doc>>, Error, QueryData, QueryKey> & {
@@ -363,11 +364,12 @@ export function GraphQLReactQueryClient<
         }
       : UseQueryOptions<ExecutionResultWithData<ResultOf<Doc>>, Error, QueryData, QueryKey> & {
           variables: VariablesOf<Doc> | false;
-        }) & { fetchOptions?: Partial<RequestInit> },
+        }) & { fetchOptions?: Partial<RequestInit>; filterQueryKey?: unknown },
   ) {
     const result = useQueryReactQuery<ExecutionResultWithData<ResultOf<Doc>>, Error, QueryData>({
       queryFn: fetchOptions ? queryFnWithFetchOptions(fetchOptions) : defaultQueryFn,
-      queryKey: [query, variables],
+      queryKey:
+        filterQueryKey !== undefined ? [query, variables, filterQueryKey] : [query, variables],
       ...options,
       enabled: enabled && variables !== false,
     });
