@@ -1,5 +1,12 @@
 # @soundxyz/graphql-react-query
 
+## 3.4.0
+
+### Minor Changes
+
+- [`21d104a`](https://github.com/soundxyz/graphql-react/commit/21d104aa8e00b18347853a5ccea8d7462b3e9d9c)
+  Thanks [@PabloSzx](https://github.com/PabloSzx)! - Allow to customize fetch options with useQuery
+
 ## 3.3.2
 
 ### Patch Changes
