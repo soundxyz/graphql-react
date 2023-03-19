@@ -1,5 +1,13 @@
 # @soundxyz/graphql-react-ws
 
+## 1.0.1
+
+### Patch Changes
+
+- [`8f1cb6c`](https://github.com/soundxyz/graphql-react/commit/8f1cb6c89a27266f60e3aaa8b401acac9f93c37a)
+  Thanks [@PabloSzx](https://github.com/PabloSzx)! - Fix subscription on variable change + enabled
+  option
+
 ## 1.0.0
 
 ### Major Changes
