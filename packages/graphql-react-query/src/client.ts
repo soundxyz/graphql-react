@@ -506,7 +506,7 @@ export function GraphQLReactQueryClient<
       options,
     }: {
       query: Doc;
-      filterQueryKey?: unknown;
+      filterQueryKey: unknown;
       options?: SetDataOptions;
     },
     updater: Updater<
@@ -529,7 +529,7 @@ export function GraphQLReactQueryClient<
     variables,
   }: {
     query: Doc;
-    filterQueryKey?: unknown;
+    filterQueryKey: unknown;
     variables: boolean | Function;
   }) {
     return [query, filterQueryKey, !!variables, 'Infinite'] as const;
@@ -563,7 +563,7 @@ export function GraphQLReactQueryClient<
           | false
           | (({ pageParam }: { pageParam: CursorPageParam | null }) => VariablesOf<Doc>);
 
-        filterQueryKey?: unknown;
+        filterQueryKey: unknown;
 
         onFetchCompleted?(result: ExecutionResultWithData<ResultOf<Doc>>): void;
 
@@ -712,7 +712,7 @@ export function GraphQLReactQueryClient<
   function prefetchInfiniteQuery<Result, Variables, Entity extends {}>(
     query: StringDocumentNode<Result, Variables>,
     {
-      filterQueryKey = {},
+      filterQueryKey,
       variables,
 
       list,
@@ -725,7 +725,7 @@ export function GraphQLReactQueryClient<
       getNextPageParam?: StrictGetPageParam<ExecutionResultWithData<Result>>;
       getPreviousPageParam?: StrictGetPageParam<ExecutionResultWithData<Result>>;
     } & {
-      filterQueryKey?: unknown;
+      filterQueryKey: unknown;
       variables: Variables;
 
       list(result: Result): Entity[] | null | undefined | false | '' | 0;
