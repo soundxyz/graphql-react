@@ -1,5 +1,12 @@
 # @soundxyz/graphql-react-query
 
+## 3.5.3
+
+### Patch Changes
+
+- [`d0c3462`](https://github.com/soundxyz/graphql-react/commit/d0c34621f911867672afdfb3c4fd086c9db88acb)
+  Thanks [@PabloSzx](https://github.com/PabloSzx)! - Consume json from response only once
+
 ## 3.5.2
 
 ### Patch Changes
