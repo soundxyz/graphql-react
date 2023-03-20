@@ -126,6 +126,7 @@ export function GraphQLReactQueryClient<
         .json()
         .then(value => GraphQLExecutionResultSchema.safeParse(value))
         .catch(cause => {
+          console.error(cause);
           throw Error('Network error, unexpected payload', {
             cause,
           });
