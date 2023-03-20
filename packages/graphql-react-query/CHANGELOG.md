@@ -1,5 +1,12 @@
 # @soundxyz/graphql-react-query
 
+## 3.5.2
+
+### Patch Changes
+
+- [`cacca67`](https://github.com/soundxyz/graphql-react/commit/cacca677e6975fff73dae6b44916db1234def1bf)
+  Thanks [@PabloSzx](https://github.com/PabloSzx)! - Error log network error
+
 ## 3.5.1
 
 ### Patch Changes
