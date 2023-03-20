@@ -411,17 +411,21 @@ export function GraphQLReactQueryClient<
     query: StringDocumentNode<Result, Variables>,
     {
       variables,
+      fetchOptions,
+      filterQueryKey,
       ...options
-    }: Variables extends Record<string, never>
+    }: (Variables extends Record<string, never>
       ? Pick<Options, keyof FetchQueryOptions> & {
           variables?: undefined;
         }
       : Pick<Options, keyof FetchQueryOptions> & {
           variables: Variables;
-        },
+        }) & { fetchOptions?: Partial<RequestInit>; filterQueryKey?: unknown },
   ) {
     return client.fetchQuery<ExecutionResultWithData<Result>, Error, QueryData>({
-      queryKey: [query, variables],
+      queryKey:
+        filterQueryKey !== undefined ? [query, variables, filterQueryKey] : [query, variables],
+      queryFn: fetchOptions ? queryFnWithFetchOptions(fetchOptions) : defaultQueryFn,
       ...options,
     });
   }
