@@ -1,5 +1,13 @@
 # @soundxyz/graphql-react-query
 
+## 3.5.1
+
+### Patch Changes
+
+- [`a411881`](https://github.com/soundxyz/graphql-react/commit/a411881da8614ebd8c5ac135c94ba86cf9deadc1)
+  Thanks [@PabloSzx](https://github.com/PabloSzx)! - Extend filterQueryKey and fetchOptions to
+  fetchQuery
+
 ## 3.5.0
 
 ### Minor Changes
