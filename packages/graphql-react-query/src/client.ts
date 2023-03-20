@@ -97,7 +97,7 @@ export function GraphQLReactQueryClient<
 }) {
   const effectsStore: Record<string, Set<EffectCallback<unknown, unknown>> | null> = {};
 
-  const uniqueFetches: Record<string, Promise<Response> | null> = {};
+  const uniqueFetches: Record<string, Promise<unknown> | null> = {};
 
   const fetcher: Fetcher =
     fetcherConfig ||
@@ -118,19 +118,18 @@ export function GraphQLReactQueryClient<
         body,
         ...fetchOptions,
         headers,
-      })).finally(() => {
-        uniqueFetches[fetchKey] = null;
-      });
-
-      const responseJson = await res
-        .json()
-        .then(value => GraphQLExecutionResultSchema.safeParse(value))
+      }).then(response => response.json()))
         .catch(cause => {
           console.error(cause);
           throw Error('Network error, unexpected payload', {
             cause,
           });
+        })
+        .finally(() => {
+          uniqueFetches[fetchKey] = null;
         });
+
+      const responseJson = GraphQLExecutionResultSchema.safeParse(res);
 
       if (responseJson.success) return responseJson.data as ExecutionResult<any>;
 
