@@ -7,12 +7,20 @@ import type { StringDocumentNode } from '@soundxyz/gql-string';
 export const TestFragmentFragmentDoc = '' as unknown as StringDocumentNode<Types.TestFragmentFragment, never>;
 
 export const TestDocument = 'query Test{__typename now}' as unknown as StringDocumentNode<Types.TestQuery,Types.TestQueryVariables>;
+export type TestDocument = typeof TestDocument;
+
 
 export const TestMutateDocument = 'mutation TestMutate($publicAddress:String!){generateAuthChallenge(publicAddress:$publicAddress)}' as unknown as StringDocumentNode<Types.TestMutateMutation,Types.TestMutateMutationVariables>;
+export type TestMutateDocument = typeof TestMutateDocument;
+
 
 export const TestTwoDocument = 'query TestTwo{__typename now}' as unknown as StringDocumentNode<Types.TestTwoQuery,Types.TestTwoQueryVariables>;
+export type TestTwoDocument = typeof TestTwoDocument;
+
 
 export const ReleasesTestDocument = 'query releasesTest($filter:ReleasesCursorFilterArgs!$pagination:ReleasesCursorConnectionArgs!){releases(filter:$filter pagination:$pagination){edges{node{id title artist{id name}}cursor}pageInfo{hasPreviousPage hasNextPage startCursor endCursor}}}' as unknown as StringDocumentNode<Types.ReleasesTestQuery,Types.ReleasesTestQueryVariables>;
+export type ReleasesTestDocument = typeof ReleasesTestDocument;
+
 
 export type OperationNames = `Test` | `TestMutate` | `TestTwo` | `releasesTest`;
 

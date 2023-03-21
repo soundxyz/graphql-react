@@ -135,7 +135,7 @@ export const plugin: PluginFunction<
       operationsConverted[name] = doc;
 
       acc.push(
-        `\nexport const ${name}Document = '${doc}' as unknown as StringDocumentNode<Types.${name}${type},Types.${name}${type}Variables>;`,
+        `\nexport const ${name}Document = '${doc}' as unknown as StringDocumentNode<Types.${name}${type},Types.${name}${type}Variables>;\nexport type ${name}Document = typeof ${name}Document;\n`,
       );
       return acc;
     }, []),
