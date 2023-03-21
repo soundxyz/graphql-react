@@ -1,5 +1,12 @@
 # @soundxyz/graphql-react-query
 
+## 3.5.4
+
+### Patch Changes
+
+- [`0cfadbe`](https://github.com/soundxyz/graphql-react/commit/0cfadbe58b3d7ebf8d25ce5abada5c5edec1ead0)
+  Thanks [@PabloSzx](https://github.com/PabloSzx)! - EffectCallback optional variables
+
 ## 3.5.3
 
 ### Patch Changes
