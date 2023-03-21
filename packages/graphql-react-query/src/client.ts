@@ -50,7 +50,7 @@ export type EffectCallback<Result, Variables> = ({
 }: {
   operation: StringDocumentNode<Result, Variables>;
   result: ExecutionResultWithData<Result>;
-  variables: Variables;
+  variables?: Variables;
 }) => void;
 
 export type Fetcher = <Result = unknown, Variables = unknown>(args: {

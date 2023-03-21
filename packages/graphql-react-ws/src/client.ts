@@ -20,7 +20,7 @@ export type EffectCallback<Result, Variables> = ({
 }: {
   operation: StringDocumentNode<Result, Variables>;
   result: ExecutionResultWithData<Result>;
-  variables: Variables;
+  variables?: Variables;
 }) => void;
 
 export function GraphQLReactWS<ConnectionInitPayload extends Record<string, unknown>>({
