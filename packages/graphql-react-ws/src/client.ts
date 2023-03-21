@@ -13,6 +13,16 @@ export type ExecutionResultWithErrors<Data> = Omit<ExecutionResult<Data, unknown
   errors: ExecutionResult['errors'];
 };
 
+export type EffectCallback<Result, Variables> = ({
+  operation,
+  result,
+  variables,
+}: {
+  operation: StringDocumentNode<Result, Variables>;
+  result: ExecutionResultWithData<Result>;
+  variables: Variables;
+}) => void;
+
 export function GraphQLReactWS<ConnectionInitPayload extends Record<string, unknown>>({
   graphqlWsOptions,
 }: {
@@ -43,10 +53,31 @@ export function GraphQLReactWS<ConnectionInitPayload extends Record<string, unkn
     let throwMe: unknown = null,
       done = false;
 
+    const { query, variables } = payload;
+
     const dispose = client.subscribe<ResultOf<Doc>>(payload, {
-      next: data => {
-        pending.push(data);
+      next: result => {
+        pending.push(result);
         deferred?.resolve(false);
+
+        const effects = effectsStore[query];
+
+        if (effects && result.data) {
+          for (const effect of effects) {
+            try {
+              Promise.all([
+                effect({
+                  operation: query as StringDocumentNode<unknown, unknown>,
+                  result: {
+                    ...result,
+                    data: result.data,
+                  },
+                  variables,
+                }),
+              ]).catch(() => null);
+            } catch (err) {}
+          }
+        }
       },
       error: err => {
         throwMe = err;
@@ -99,6 +130,39 @@ export function GraphQLReactWS<ConnectionInitPayload extends Record<string, unkn
     subscription: SubscribeInfo<Doc>;
     subscriptionsControllers: Set<AbortController>;
   };
+
+  const effectsStore: Record<string, Set<EffectCallback<unknown, unknown>> | null> = {};
+
+  const Effects = {
+    /**
+     * Add an effect callback to be called every time the specified operation request has been completed
+     *
+     * It returns a callback that's going to stop the effect from being called
+     *
+     * @example
+     * addEffect(TestQuery, ({ operation, result: { data }, variables }) => {
+     *  console.log({
+     *    operation,
+     *    data,
+     *    variables
+     *  });
+     * });
+     */
+    onCompleted<Result, Variables>(
+      operation: StringDocumentNode<Result, Variables>,
+      callback: EffectCallback<Result, Variables>,
+    ) {
+      const effects = (effectsStore[operation] ||= new Set());
+
+      effects.add(callback as EffectCallback<unknown, unknown>);
+
+      return function removeEffect() {
+        effects.delete(callback as EffectCallback<unknown, unknown>);
+
+        if (effects.size === 0) effectsStore[operation] = null;
+      };
+    },
+  } as const;
 
   const storeChannels: Map<string, Channel<StringDocumentNode>> = new Map();
 
@@ -363,6 +427,7 @@ export function GraphQLReactWS<ConnectionInitPayload extends Record<string, unkn
     subscriptionStores,
     setSubscriptionData,
     getSubscriptionStore,
+    Effects,
   };
 }
 
