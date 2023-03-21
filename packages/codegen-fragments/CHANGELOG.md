@@ -1,5 +1,12 @@
 # @soundxyz/codegen-fragments
 
+## 1.1.0
+
+### Minor Changes
+
+- [`491f184`](https://github.com/soundxyz/graphql-react/commit/491f184c8bd2aaa346ef7612ee29473877032b2b)
+  Thanks [@PabloSzx](https://github.com/PabloSzx)! - Export type of document alongside
+
 ## 1.0.3
 
 ### Patch Changes
