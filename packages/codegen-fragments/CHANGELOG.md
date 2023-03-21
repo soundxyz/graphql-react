@@ -1,5 +1,12 @@
 # @soundxyz/codegen-fragments
 
+## 1.1.1
+
+### Patch Changes
+
+- [`0a0fe71`](https://github.com/soundxyz/graphql-react/commit/0a0fe7115ee60203f43e27c89e729fb4d948daa6)
+  Thanks [@PabloSzx](https://github.com/PabloSzx)! - Repeat export type for fragment docs
+
 ## 1.1.0
 
 ### Minor Changes
