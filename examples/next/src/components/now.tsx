@@ -8,7 +8,7 @@ gql`
   }
 `;
 
-export function Now({ info }: { info: FragmentType<typeof TestFragmentFragmentDoc> }) {
+export function Now({ info }: { info: FragmentType<TestFragmentFragmentDoc> }) {
   const { now } = getFragment(TestFragmentFragmentDoc, info);
 
   return <p>{now}</p>;

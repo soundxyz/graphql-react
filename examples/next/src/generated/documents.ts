@@ -5,6 +5,8 @@ import type { StringDocumentNode } from '@soundxyz/gql-string';
 
 
 export const TestFragmentFragmentDoc = '' as unknown as StringDocumentNode<Types.TestFragmentFragment, never>;
+export type TestFragmentFragmentDoc = typeof TestFragmentFragmentDoc;
+
 
 export const TestDocument = 'query Test{__typename now}' as unknown as StringDocumentNode<Types.TestQuery,Types.TestQueryVariables>;
 export type TestDocument = typeof TestDocument;

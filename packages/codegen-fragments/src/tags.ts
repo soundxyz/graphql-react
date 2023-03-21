@@ -113,7 +113,7 @@ export const plugin: PluginFunction<
     ...fragments.map(value => {
       const name = visitor.convertName(value.name.value);
 
-      return `\nexport const ${name}FragmentDoc = '' as unknown as StringDocumentNode<Types.${name}Fragment, never>;`;
+      return `\nexport const ${name}FragmentDoc = '' as unknown as StringDocumentNode<Types.${name}Fragment, never>;\nexport type ${name}FragmentDoc = typeof ${name}FragmentDoc;\n`;
     }),
     ...optimizedDocuments.reduce((acc: string[], value) => {
       const ast = getOperationAST(value);
