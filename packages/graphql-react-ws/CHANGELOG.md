@@ -1,5 +1,17 @@
 # @soundxyz/graphql-react-ws
 
+## 1.1.0
+
+### Minor Changes
+
+- [`a051c45`](https://github.com/soundxyz/graphql-react/commit/a051c450297a282e4b932a2b00c521fc95562bae)
+  Thanks [@PabloSzx](https://github.com/PabloSzx)! - New Subscription Effects
+
+### Patch Changes
+
+- [`0cfadbe`](https://github.com/soundxyz/graphql-react/commit/0cfadbe58b3d7ebf8d25ce5abada5c5edec1ead0)
+  Thanks [@PabloSzx](https://github.com/PabloSzx)! - EffectCallback optional variables
+
 ## 1.0.1
 
 ### Patch Changes
