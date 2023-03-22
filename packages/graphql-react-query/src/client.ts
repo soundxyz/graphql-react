@@ -395,6 +395,7 @@ export function GraphQLReactQueryClient<
             query,
             // Not able to map required variables generic conditional
             variables: variables as any,
+            filterQueryKey,
             options,
           },
           updater,
