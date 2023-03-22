@@ -1,5 +1,13 @@
 # @soundxyz/graphql-react-query
 
+## 3.5.6
+
+### Patch Changes
+
+- [`868b92f`](https://github.com/soundxyz/graphql-react/commit/868b92fb45cc626f929cfa8271d467f1c49dec9c)
+  Thanks [@PabloSzx](https://github.com/PabloSzx)! - Fix filterQueryKey within setQueryData of
+  useQuery return
+
 ## 3.5.5
 
 ### Patch Changes
