@@ -331,9 +331,11 @@ export function GraphQLReactQueryClient<
       query,
       options,
       variables,
+      filterQueryKey,
     }: {
       query: Doc;
       options?: SetDataOptions;
+      filterQueryKey?: unknown;
     } & (VariablesOf<Doc> extends Record<string, never>
       ? {
           variables?: undefined;
@@ -344,7 +346,11 @@ export function GraphQLReactQueryClient<
       ExecutionResultWithData<ResultOf<Doc>> | undefined
     >,
   ) {
-    client.setQueryData([query, variables], updater, options);
+    client.setQueryData(
+      filterQueryKey !== undefined ? [query, variables, filterQueryKey] : [query, variables],
+      updater,
+      options,
+    );
   }
 
   function useQuery<
@@ -439,17 +445,21 @@ export function GraphQLReactQueryClient<
     query: StringDocumentNode<Result, Variables>,
     {
       variables,
+      filterQueryKey,
       ...options
-    }: Variables extends Record<string, never>
-      ? Pick<Options, keyof FetchQueryOptions> & {
-          variables?: undefined;
-        }
-      : Pick<Options, keyof FetchQueryOptions> & {
-          variables: Variables;
-        },
+    }: Pick<Options, keyof FetchQueryOptions> & {
+      filterQueryKey?: unknown;
+    } & (Variables extends Record<string, never>
+        ? {
+            variables?: undefined;
+          }
+        : {
+            variables: Variables;
+          }),
   ) {
     return client.prefetchQuery<ExecutionResultWithData<Result>, Error, QueryData>({
-      queryKey: [query, variables],
+      queryKey:
+        filterQueryKey !== undefined ? [query, variables, filterQueryKey] : [query, variables],
       ...options,
     });
   }
