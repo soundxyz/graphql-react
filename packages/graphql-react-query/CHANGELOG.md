@@ -1,5 +1,12 @@
 # @soundxyz/graphql-react-query
 
+## 3.5.5
+
+### Patch Changes
+
+- [`b73e8ff`](https://github.com/soundxyz/graphql-react/commit/b73e8ffab82cd10de54c3b817077b22cd2498c9e)
+  Thanks [@PabloSzx](https://github.com/PabloSzx)! - Fix missing filterQueryKey on useQuery helpers
+
 ## 3.5.4
 
 ### Patch Changes
