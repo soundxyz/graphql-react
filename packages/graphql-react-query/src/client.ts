@@ -18,7 +18,6 @@ import {
 } from './reactQuery';
 import {
   filterUndefined,
-  NonEmptyList,
   RequireAtLeastOne,
   useLatestRef,
   useProxySnapshot,
@@ -98,7 +97,7 @@ export function GraphQLReactQueryClient<
 
   fetcher?: Fetcher;
 
-  skipAbort?: NonEmptyList<StringDocumentNode>;
+  skipAbort?: [StringDocumentNode, ...StringDocumentNode[]];
 }) {
   const skipAbortSet = skipAbort ? new Set<string>(skipAbort) : null;
 
