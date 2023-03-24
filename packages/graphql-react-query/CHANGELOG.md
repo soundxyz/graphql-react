@@ -1,5 +1,14 @@
 # @soundxyz/graphql-react-query
 
+## 3.6.1
+
+### Patch Changes
+
+- [#83](https://github.com/soundxyz/graphql-react/pull/83)
+  [`0be2164`](https://github.com/soundxyz/graphql-react/commit/0be2164bf5e848838b926a769e98f4d23c24c785)
+  Thanks [@PabloSzx](https://github.com/PabloSzx)! - Always use isInitialLoading instead of
+  isLoading to prevent undesired behavior
+
 ## 3.6.0
 
 ### Minor Changes
