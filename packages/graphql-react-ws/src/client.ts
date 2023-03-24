@@ -140,7 +140,7 @@ export function GraphQLReactWS<ConnectionInitPayload extends Record<string, unkn
      * It returns a callback that's going to stop the effect from being called
      *
      * @example
-     * addEffect(TestQuery, ({ operation, result: { data }, variables }) => {
+     * Effects.onCompleted(TestQuery, ({ operation, result: { data }, variables }) => {
      *  console.log({
      *    operation,
      *    data,
