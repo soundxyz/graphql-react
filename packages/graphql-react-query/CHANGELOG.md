@@ -1,5 +1,13 @@
 # @soundxyz/graphql-react-query
 
+## 3.6.0
+
+### Minor Changes
+
+- [`a32868a`](https://github.com/soundxyz/graphql-react/commit/a32868ade0beb6c3a8b28533d030415d49c50279)
+  Thanks [@PabloSzx](https://github.com/PabloSzx)! - New "skipAbort" configuration to not abort
+  specific queries
+
 ## 3.5.6
 
 ### Patch Changes
