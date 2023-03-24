@@ -413,6 +413,7 @@ export function GraphQLReactQueryClient<
 
     return {
       ...result,
+      isLoading: result.isInitialLoading,
       setQueryData: setQueryDataCallback,
     };
   }
@@ -748,7 +749,8 @@ export function GraphQLReactQueryClient<
     return {
       ...result,
       isLoadingNewPage:
-        result.isLoading || result.isFetchingNextPage || result.isFetchingPreviousPage,
+        result.isInitialLoading || result.isFetchingNextPage || result.isFetchingPreviousPage,
+      isLoading: result.isInitialLoading,
       firstPage,
       lastPage,
       orderedList,
