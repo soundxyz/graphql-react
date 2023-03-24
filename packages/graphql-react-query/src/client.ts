@@ -18,6 +18,7 @@ import {
 } from './reactQuery';
 import {
   filterUndefined,
+  NonEmptyList,
   RequireAtLeastOne,
   useLatestRef,
   useProxySnapshot,
@@ -87,6 +88,8 @@ export function GraphQLReactQueryClient<
   fetchOptions,
 
   fetcher: fetcherConfig,
+
+  skipAbort,
 }: {
   clientConfig?: QueryClientConfig;
   endpoint: string;
@@ -94,7 +97,11 @@ export function GraphQLReactQueryClient<
   fetchOptions?: Partial<RequestInit>;
 
   fetcher?: Fetcher;
+
+  skipAbort?: NonEmptyList<StringDocumentNode>;
 }) {
+  const skipAbortSet = skipAbort ? new Set<string>(skipAbort) : null;
+
   const effectsStore: Record<string, Set<EffectCallback<unknown, unknown>> | null> = {};
 
   const uniqueFetches: Record<string, Promise<unknown> | null> = {};
@@ -267,9 +274,11 @@ export function GraphQLReactQueryClient<
     return GQLFetcher({
       query,
       variables,
-      fetchOptions: {
-        signal,
-      },
+      fetchOptions: skipAbortSet?.has(query)
+        ? undefined
+        : {
+            signal,
+          },
     });
   };
 
@@ -286,7 +295,7 @@ export function GraphQLReactQueryClient<
         query,
         variables,
         fetchOptions: {
-          signal,
+          signal: skipAbortSet?.has(query) ? undefined : signal,
           ...fetchOptions,
         },
       });
@@ -514,9 +523,11 @@ export function GraphQLReactQueryClient<
     const response = await GQLFetcher({
       query,
       variables,
-      fetchOptions: {
-        signal,
-      },
+      fetchOptions: skipAbortSet?.has(query)
+        ? undefined
+        : {
+            signal,
+          },
     });
 
     try {
