@@ -462,7 +462,7 @@ export function GraphQLReactQueryClient<
       QueryKey
     >,
   >(
-    query: StringDocumentNode<ResultOf<Doc>, VariablesOf<Doc>>,
+    query: Doc,
     {
       variables,
       filterQueryKey,
