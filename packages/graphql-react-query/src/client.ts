@@ -53,12 +53,12 @@ export type EffectCallback<Result, Variables> = ({
   variables?: Variables;
 }) => void;
 
-export type Fetcher = <Result = unknown, Variables = unknown>(args: {
-  query: StringDocumentNode<Result, Variables> | string;
-  variables: Variables | undefined;
+export type Fetcher = <Doc extends StringDocumentNode>(args: {
+  query: Doc | string;
+  variables: VariablesOf<Doc> | undefined;
 
   fetchOptions: Partial<RequestInit> | undefined;
-}) => PromiseOrValue<ExecutionResult<Result>>;
+}) => PromiseOrValue<ExecutionResult<ResultOf<Doc>>>;
 
 export const GraphQLExecutionResultSchema = z
   .object({
@@ -144,20 +144,20 @@ export function GraphQLReactQueryClient<
       });
     };
 
-  async function GQLFetcher<Result = unknown, Variables = unknown>({
+  async function GQLFetcher<Doc extends StringDocumentNode>({
     query,
     variables,
     fetchOptions: extraFetchOptions,
   }: {
-    query: StringDocumentNode<Result, Variables> | string;
-    variables: Variables | undefined;
+    query: Doc | string;
+    variables: VariablesOf<Doc> | undefined;
     fetchOptions?: Partial<RequestInit>;
-  }): Promise<ExecutionResultWithData<Result>> {
+  }): Promise<ExecutionResultWithData<ResultOf<Doc>>> {
     const {
       data = null,
       errors,
       extensions,
-    } = await GraphQLReactQuery.fetcher<Result, Variables>({
+    } = await GraphQLReactQuery.fetcher<Doc>({
       query,
       variables,
       fetchOptions: {
@@ -224,7 +224,7 @@ export function GraphQLReactQueryClient<
       }
     }
 
-    const result: ExecutionResultWithData<Result> = {
+    const result: ExecutionResultWithData<ResultOf<Doc>> = {
       data,
     };
 
@@ -270,9 +270,11 @@ export function GraphQLReactQueryClient<
 
     if (typeof query !== 'string') throw Error(`Invalid GraphQL operation given`);
 
-    return GQLFetcher({
+    return GQLFetcher<StringDocumentNode>({
       query,
-      variables,
+      variables:
+        // Impossible to validate generic types dynamically
+        variables as Record<string, any> | undefined,
       fetchOptions: skipAbortSet?.has(query)
         ? undefined
         : {
@@ -292,7 +294,7 @@ export function GraphQLReactQueryClient<
 
       return GQLFetcher({
         query,
-        variables,
+        variables: variables as Record<string, any> | undefined,
         fetchOptions: {
           signal: skipAbortSet?.has(query) ? undefined : signal,
           ...fetchOptions,
@@ -317,15 +319,15 @@ export function GraphQLReactQueryClient<
     return createElement(QueryClientProvider, { client, children });
   }
 
-  function fetchGQL<Result, Variables>(
-    query: StringDocumentNode<Result, Variables>,
+  function fetchGQL<Doc extends StringDocumentNode>(
+    query: Doc,
     {
       variables,
       ...fetchOptions
     }: Partial<RequestInit> &
-      (Variables extends Record<string, never>
+      (VariablesOf<Doc> extends Record<string, never>
         ? { variables?: undefined }
-        : { variables: Variables }),
+        : { variables: VariablesOf<Doc> }),
   ) {
     return GQLFetcher({
       query,
@@ -419,26 +421,30 @@ export function GraphQLReactQueryClient<
   }
 
   function fetchQuery<
-    Result,
-    Variables,
-    QueryData extends ExecutionResultWithData<Result>,
-    Options extends FetchQueryOptions<ExecutionResultWithData<Result>, Error, QueryData, QueryKey>,
+    Doc extends StringDocumentNode,
+    QueryData extends ExecutionResultWithData<ResultOf<Doc>>,
+    Options extends FetchQueryOptions<
+      ExecutionResultWithData<ResultOf<Doc>>,
+      Error,
+      QueryData,
+      QueryKey
+    >,
   >(
-    query: StringDocumentNode<Result, Variables>,
+    query: Doc,
     {
       variables,
       fetchOptions,
       filterQueryKey,
       ...options
-    }: (Variables extends Record<string, never>
+    }: (VariablesOf<Doc> extends Record<string, never>
       ? Pick<Options, keyof FetchQueryOptions> & {
           variables?: undefined;
         }
       : Pick<Options, keyof FetchQueryOptions> & {
-          variables: Variables;
+          variables: VariablesOf<Doc>;
         }) & { fetchOptions?: Partial<RequestInit>; filterQueryKey?: unknown },
   ) {
-    return client.fetchQuery<ExecutionResultWithData<Result>, Error, QueryData>({
+    return client.fetchQuery<ExecutionResultWithData<ResultOf<Doc>>, Error, QueryData>({
       queryKey:
         filterQueryKey !== undefined ? [query, variables, filterQueryKey] : [query, variables],
       queryFn: fetchOptions ? queryFnWithFetchOptions(fetchOptions) : defaultQueryFn,
@@ -447,27 +453,31 @@ export function GraphQLReactQueryClient<
   }
 
   function prefetchQuery<
-    Result,
-    Variables,
-    QueryData extends ExecutionResultWithData<Result>,
-    Options extends FetchQueryOptions<ExecutionResultWithData<Result>, Error, QueryData, QueryKey>,
+    Doc extends StringDocumentNode,
+    QueryData extends ExecutionResultWithData<ResultOf<Doc>>,
+    Options extends FetchQueryOptions<
+      ExecutionResultWithData<ResultOf<Doc>>,
+      Error,
+      QueryData,
+      QueryKey
+    >,
   >(
-    query: StringDocumentNode<Result, Variables>,
+    query: StringDocumentNode<ResultOf<Doc>, VariablesOf<Doc>>,
     {
       variables,
       filterQueryKey,
       ...options
     }: Pick<Options, keyof FetchQueryOptions> & {
       filterQueryKey?: unknown;
-    } & (Variables extends Record<string, never>
+    } & (VariablesOf<Doc> extends Record<string, never>
         ? {
             variables?: undefined;
           }
         : {
-            variables: Variables;
+            variables: VariablesOf<Doc>;
           }),
   ) {
-    return client.prefetchQuery<ExecutionResultWithData<Result>, Error, QueryData>({
+    return client.prefetchQuery<ExecutionResultWithData<ResultOf<Doc>>, Error, QueryData>({
       queryKey:
         filterQueryKey !== undefined ? [query, variables, filterQueryKey] : [query, variables],
       ...options,
@@ -496,7 +506,7 @@ export function GraphQLReactQueryClient<
 
   const infiniteQueryStores: Record<string, InfiniteQueryStore<unknown>> = {};
 
-  async function infiniteQueryFn<Result, Variables, Entity>({
+  async function infiniteQueryFn<Doc extends StringDocumentNode, Entity>({
     query,
     variables,
 
@@ -509,12 +519,12 @@ export function GraphQLReactQueryClient<
 
     entityStoreNodes,
   }: {
-    query: StringDocumentNode<Result, Variables>;
-    variables: Variables;
-    list(result: Result): Entity[] | null | undefined | false | '' | 0;
+    query: Doc;
+    variables: VariablesOf<Doc>;
+    list(result: ResultOf<Doc>): Entity[] | null | undefined | false | '' | 0;
     uniq(entity: Entity): string;
 
-    onFetchCompleted: ((result: ExecutionResultWithData<Result>) => void) | undefined;
+    onFetchCompleted: ((result: ExecutionResultWithData<ResultOf<Doc>>) => void) | undefined;
 
     signal: AbortSignal | undefined;
 
@@ -762,8 +772,8 @@ export function GraphQLReactQueryClient<
     };
   }
 
-  function prefetchInfiniteQuery<Result, Variables, Entity extends {}>(
-    query: StringDocumentNode<Result, Variables>,
+  function prefetchInfiniteQuery<Doc extends StringDocumentNode, Entity extends {}>(
+    query: Doc,
     {
       filterQueryKey,
       variables,
@@ -774,17 +784,20 @@ export function GraphQLReactQueryClient<
       onFetchCompleted,
 
       ...options
-    }: Omit<FetchInfiniteQueryOptions<ExecutionResultWithData<Result>>, 'queryKey' | 'queryFn'> & {
-      getNextPageParam?: StrictGetPageParam<ExecutionResultWithData<Result>>;
-      getPreviousPageParam?: StrictGetPageParam<ExecutionResultWithData<Result>>;
+    }: Omit<
+      FetchInfiniteQueryOptions<ExecutionResultWithData<ResultOf<Doc>>>,
+      'queryKey' | 'queryFn'
+    > & {
+      getNextPageParam?: StrictGetPageParam<ExecutionResultWithData<ResultOf<Doc>>>;
+      getPreviousPageParam?: StrictGetPageParam<ExecutionResultWithData<ResultOf<Doc>>>;
     } & {
       filterQueryKey: unknown;
-      variables: Variables;
+      variables: VariablesOf<Doc>;
 
-      list(result: Result): Entity[] | null | undefined | false | '' | 0;
+      list(result: ResultOf<Doc>): Entity[] | null | undefined | false | '' | 0;
       uniq(entity: Entity): string;
 
-      onFetchCompleted?(result: ExecutionResultWithData<Result>): void;
+      onFetchCompleted?(result: ExecutionResultWithData<ResultOf<Doc>>): void;
     },
   ) {
     const { nodes: entityStoreNodes } = (infiniteQueryStores[
@@ -810,18 +823,18 @@ export function GraphQLReactQueryClient<
     });
   }
 
-  function useMutation<Result, Variables>(
-    mutation: StringDocumentNode<Result, Variables>,
+  function useMutation<Doc extends StringDocumentNode>(
+    mutation: Doc,
     options: UseMutationOptions<
-      ExecutionResultWithData<Result>,
+      ExecutionResultWithData<ResultOf<Doc>>,
       Error,
-      Variables,
-      { query: StringDocumentNode<Result, Variables> }
+      VariablesOf<Doc>,
+      { query: Doc }
     >,
   ) {
     return useMutationReactQuery({
       mutationFn(variables) {
-        return GQLFetcher<Result>({
+        return GQLFetcher<Doc>({
           query: mutation,
           variables,
         });
