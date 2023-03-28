@@ -1,5 +1,12 @@
 # @soundxyz/graphql-react-query
 
+## 4.0.0
+
+### Major Changes
+
+- [`82e89e4`](https://github.com/soundxyz/graphql-react/commit/82e89e491856bc7a2c1861d488feb4b03bbb82c6)
+  Thanks [@PabloSzx](https://github.com/PabloSzx)! - Stricter types based on string document node
+
 ## 3.6.1
 
 ### Patch Changes
