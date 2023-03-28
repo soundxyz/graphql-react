@@ -1,5 +1,12 @@
 # @soundxyz/graphql-react-query
 
+## 4.0.1
+
+### Patch Changes
+
+- [`6b7189a`](https://github.com/soundxyz/graphql-react/commit/6b7189a501995745617fbd6c7935850ce234e890)
+  Thanks [@PabloSzx](https://github.com/PabloSzx)! - Fix prefetchQuery doc type
+
 ## 4.0.0
 
 ### Major Changes
