@@ -97,9 +97,9 @@ export function GraphQLReactQueryClient<
 
   fetcher?: Fetcher;
 
-  skipAbort?: [StringDocumentNode, ...StringDocumentNode[]];
+  skipAbort?: [StringDocumentNode, ...StringDocumentNode[]] | boolean;
 }) {
-  const skipAbortSet = skipAbort ? new Set<string>(skipAbort) : null;
+  const skipAbortSet = skipAbort ? (skipAbort === true ? true : new Set<string>(skipAbort)) : null;
 
   const effectsStore: Record<string, Set<EffectCallback<unknown, unknown>> | null> = {};
 
@@ -275,11 +275,12 @@ export function GraphQLReactQueryClient<
       variables:
         // Impossible to validate generic types dynamically
         variables as Record<string, any> | undefined,
-      fetchOptions: skipAbortSet?.has(query)
-        ? undefined
-        : {
-            signal,
-          },
+      fetchOptions:
+        skipAbortSet === true || skipAbortSet?.has(query)
+          ? undefined
+          : {
+              signal,
+            },
     });
   };
 
@@ -296,7 +297,7 @@ export function GraphQLReactQueryClient<
         query,
         variables: variables as Record<string, any> | undefined,
         fetchOptions: {
-          signal: skipAbortSet?.has(query) ? undefined : signal,
+          signal: skipAbortSet === true || skipAbortSet?.has(query) ? undefined : signal,
           ...fetchOptions,
         },
       });
@@ -533,11 +534,12 @@ export function GraphQLReactQueryClient<
     const response = await GQLFetcher({
       query,
       variables,
-      fetchOptions: skipAbortSet?.has(query)
-        ? undefined
-        : {
-            signal,
-          },
+      fetchOptions:
+        skipAbortSet === true || skipAbortSet?.has(query)
+          ? undefined
+          : {
+              signal,
+            },
     });
 
     try {
