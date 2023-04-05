@@ -1,5 +1,13 @@
 # @soundxyz/graphql-react-query
 
+## 4.1.0
+
+### Minor Changes
+
+- [`d83ccb1`](https://github.com/soundxyz/graphql-react/commit/d83ccb164ca0d4d76e13069f8716b5ce35a3742c)
+  Thanks [@PabloSzx](https://github.com/PabloSzx)! - skipAbort accepts boolean, if "true" abort
+  signal is never added by default
+
 ## 4.0.1
 
 ### Patch Changes
