@@ -1,5 +1,13 @@
 # @soundxyz/graphql-react-query
 
+## 4.1.1
+
+### Patch Changes
+
+- [#92](https://github.com/soundxyz/graphql-react/pull/92)
+  [`2935be8`](https://github.com/soundxyz/graphql-react/commit/2935be8e21354af8c6bca4f19c2ce37f42893907)
+  Thanks [@PabloSzx](https://github.com/PabloSzx)! - Separate fetch error from json body error
+
 ## 4.1.0
 
 ### Minor Changes
