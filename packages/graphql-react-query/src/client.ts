@@ -148,7 +148,7 @@ export function GraphQLReactQueryClient<
       }))
         .catch(cause => {
           console.error(cause);
-          throw Error(`Network error, fetch failed`, {
+          throw Error('Network error, fetch failed', {
             cause,
           });
         })
