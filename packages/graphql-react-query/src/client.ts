@@ -105,6 +105,19 @@ export function GraphQLReactQueryClient<
 
   const uniqueFetches: Record<string, Promise<unknown> | null> = {};
 
+  type FetchResult = {
+    response: Response;
+    json:
+      | {
+          ok: true;
+          value: unknown;
+        }
+      | {
+          ok: false;
+          error: unknown;
+        };
+  };
+
   const fetcher: Fetcher =
     fetcherConfig ||
     async function Fetcher({ query, variables, fetchOptions }) {
@@ -119,15 +132,23 @@ export function GraphQLReactQueryClient<
         headersFetch: headers,
       });
 
-      const res = await (uniqueFetches[fetchKey] ||= fetch(endpoint, {
-        method: 'POST',
-        body,
-        ...fetchOptions,
-        headers,
-      }).then(response => response.json()))
+      const res = await ((uniqueFetches[fetchKey] as Promise<FetchResult> | undefined) ||= fetch(
+        endpoint,
+        {
+          method: 'POST',
+          body,
+          ...fetchOptions,
+          headers,
+        },
+      ).then((response): Promise<FetchResult> => {
+        return response
+          .json()
+          .then(value => ({ response, json: { ok: true, value } } as const))
+          .catch(error => ({ response, json: { ok: false, error } } as const));
+      }))
         .catch(cause => {
           console.error(cause);
-          throw Error('Network error, unexpected payload', {
+          throw Error('Network error, fetch failed', {
             cause,
           });
         })
@@ -135,7 +156,18 @@ export function GraphQLReactQueryClient<
           uniqueFetches[fetchKey] = null;
         });
 
-      const responseJson = GraphQLExecutionResultSchema.safeParse(res);
+      if (!res.json.ok) {
+        console.error(res.response);
+        console.error(res.json.error);
+        throw Error(
+          `Network error, unexpected payload. Response status code ${res.response.status}`,
+          {
+            cause: res.json.error,
+          },
+        );
+      }
+
+      const responseJson = GraphQLExecutionResultSchema.safeParse(res.json.value);
 
       if (responseJson.success) return responseJson.data as ExecutionResult<any>;
 
