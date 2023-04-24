@@ -211,6 +211,7 @@ export function GraphQLReactWS<ConnectionInitPayload extends Record<string, unkn
         })!,
         subscriptionsControllers,
       };
+      storeChannels.set(payloadKey, channel);
     }
 
     const {
