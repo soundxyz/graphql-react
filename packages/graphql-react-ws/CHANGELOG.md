@@ -1,5 +1,12 @@
 # @soundxyz/graphql-react-ws
 
+## 1.1.1
+
+### Patch Changes
+
+- [`281a59c`](https://github.com/soundxyz/graphql-react/commit/281a59caa7b9ef79fbe5ca220d020a2f59cf8d36)
+  Thanks [@PabloSzx](https://github.com/PabloSzx)! - Fix subscribe channel re-use
+
 ## 1.1.0
 
 ### Minor Changes
