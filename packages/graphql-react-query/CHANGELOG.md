@@ -1,5 +1,25 @@
 # @soundxyz/graphql-react-query
 
+## 5.0.0
+
+### Major Changes
+
+- [#105](https://github.com/soundxyz/graphql-react/pull/105)
+  [`b829779`](https://github.com/soundxyz/graphql-react/commit/b829779889b4a84e18ea0a8c65c7a17a0e186c0f)
+  Thanks [@PabloSzx](https://github.com/PabloSzx)! - Make staleTime required option
+
+- [#105](https://github.com/soundxyz/graphql-react/pull/105)
+  [`b829779`](https://github.com/soundxyz/graphql-react/commit/b829779889b4a84e18ea0a8c65c7a17a0e186c0f)
+  Thanks [@PabloSzx](https://github.com/PabloSzx)! - Make ms, lodash-es, valtio and zod peer
+  dependencies to prevent duplicate dependencies
+
+### Minor Changes
+
+- [#105](https://github.com/soundxyz/graphql-react/pull/105)
+  [`b829779`](https://github.com/soundxyz/graphql-react/commit/b829779889b4a84e18ea0a8c65c7a17a0e186c0f)
+  Thanks [@PabloSzx](https://github.com/PabloSzx)! - staleTime and cacheTime accepts "ms" library
+  string syntax
+
 ## 4.1.1
 
 ### Patch Changes
