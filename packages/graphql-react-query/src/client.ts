@@ -1,7 +1,9 @@
 import orderBy from 'lodash-es/orderBy.js';
+import ms, { StringValue } from 'ms';
 import { createElement, ReactNode, useMemo, useState } from 'react';
-import { z } from 'zod';
 import { proxy } from 'valtio';
+import { z } from 'zod';
+
 import { gql, ResultOf, StringDocumentNode, VariablesOf } from '@soundxyz/gql-string';
 
 import {
@@ -396,6 +398,12 @@ export function GraphQLReactQueryClient<
     );
   }
 
+  type DynamicTimeProp = number | StringValue;
+
+  function getTimeProp(time: DynamicTimeProp) {
+    return typeof time === 'number' ? time : ms(time);
+  }
+
   function useQuery<
     Doc extends StringDocumentNode<any, any>,
     QueryData = ExecutionResultWithData<ResultOf<Doc>>,
@@ -406,14 +414,32 @@ export function GraphQLReactQueryClient<
       enabled = true,
       fetchOptions,
       filterQueryKey,
+      staleTime,
+      cacheTime,
       ...options
     }: (VariablesOf<Doc> extends Record<string, never>
-      ? UseQueryOptions<ExecutionResultWithData<ResultOf<Doc>>, Error, QueryData, QueryKey> & {
+      ? Omit<
+          UseQueryOptions<ExecutionResultWithData<ResultOf<Doc>>, Error, QueryData, QueryKey>,
+          'staleTime' | 'cacheTime'
+        > & {
           variables?: undefined;
         }
-      : UseQueryOptions<ExecutionResultWithData<ResultOf<Doc>>, Error, QueryData, QueryKey> & {
+      : Omit<
+          UseQueryOptions<ExecutionResultWithData<ResultOf<Doc>>, Error, QueryData, QueryKey>,
+          'staleTime' | 'cacheTime'
+        > & {
           variables: VariablesOf<Doc> | false;
-        }) & { fetchOptions?: Partial<RequestInit>; filterQueryKey?: unknown },
+        }) & {
+      fetchOptions?: Partial<RequestInit>;
+      filterQueryKey?: unknown;
+
+      /**
+       * The time in milliseconds after data is considered stale. If set to Infinity, the data will never be considered stale.
+       */
+      staleTime: DynamicTimeProp;
+
+      cacheTime?: DynamicTimeProp;
+    },
   ) {
     const result = useQueryReactQuery<ExecutionResultWithData<ResultOf<Doc>>, Error, QueryData>({
       queryFn: fetchOptions ? queryFnWithFetchOptions(fetchOptions) : defaultQueryFn,
@@ -421,6 +447,8 @@ export function GraphQLReactQueryClient<
         filterQueryKey !== undefined ? [query, variables, filterQueryKey] : [query, variables],
       ...options,
       enabled: enabled && variables !== false,
+      staleTime: getTimeProp(staleTime),
+      cacheTime: cacheTime != null ? getTimeProp(cacheTime) : undefined,
     });
 
     const setQueryDataCallback = useStableCallback(
@@ -644,17 +672,28 @@ export function GraphQLReactQueryClient<
 
       onFetchCompleted,
 
+      staleTime,
+
+      cacheTime,
+
       enabled = true,
 
       ...options
     }: Omit<
       UseInfiniteQueryOptions<ExecutionResultWithData<ResultOf<Doc>>, Error>,
-      'queryKey' | 'queryFn'
+      'queryKey' | 'queryFn' | 'staleTime' | 'cacheTime'
     > &
       RequireAtLeastOne<{
         getNextPageParam?: StrictGetPageParam<ExecutionResultWithData<ResultOf<Doc>>>;
         getPreviousPageParam?: StrictGetPageParam<ExecutionResultWithData<ResultOf<Doc>>>;
       }> & {
+        /**
+         * The time in milliseconds after data is considered stale. If set to Infinity, the data will never be considered stale.
+         */
+        staleTime: DynamicTimeProp;
+
+        cacheTime?: DynamicTimeProp;
+
         variables:
           | false
           | (({ pageParam }: { pageParam: CursorPageParam | null }) => VariablesOf<Doc>);
@@ -704,6 +743,8 @@ export function GraphQLReactQueryClient<
     );
 
     const result = useInfiniteReactQuery({
+      staleTime: getTimeProp(staleTime),
+      cacheTime: cacheTime != null ? getTimeProp(cacheTime) : undefined,
       queryKey,
       queryFn: variables
         ? async ({ pageParam, signal }) => {
