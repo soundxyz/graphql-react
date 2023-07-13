@@ -22,15 +22,15 @@
   "dependencies": {
     "@graphql-codegen/add": "^4.0.1",
     "@graphql-codegen/gql-tag-operations": "^2.0.2",
-    "@graphql-codegen/typescript": "^3.0.2",
-    "@graphql-codegen/typescript-operations": "^3.0.2",
-    "@graphql-codegen/visitor-plugin-common": "^3.0.2",
+    "@graphql-codegen/typescript": "^3.0.4",
+    "@graphql-codegen/typescript-operations": "^3.0.4",
+    "@graphql-codegen/visitor-plugin-common": "^3.1.1",
     "@graphql-tools/relay-operation-optimizer": "^6.5.17",
     "@graphql-tools/utils": "^9.2.1"
   },
   "devDependencies": {
     "@graphql-codegen/core": "^3.1.0",
-    "@graphql-codegen/plugin-helpers": "^4.0.0",
+    "@graphql-codegen/plugin-helpers": "^4.2.0",
     "@soundxyz/gql-string": "workspace:*",
     "@types/node": "^18.14.6",
     "bob-ts": "^4.1.1",
