@@ -37,7 +37,7 @@ importers:
         version: 18.14.6
       bob-esbuild:
         specifier: ^4.0.3
-        version: 4.0.3(typescript@4.9.5)
+        version: 4.0.3(typescript@5.2.2)
       execa:
         specifier: ^7.0.0
         version: 7.0.0
@@ -48,8 +48,8 @@ importers:
         specifier: ^7.3.8
         version: 7.3.8
       typescript:
-        specifier: ^4.9.5
-        version: 4.9.5
+        specifier: ^5.2.2
+        version: 5.2.2
 
   examples/next:
     dependencies:
@@ -141,10 +141,10 @@ importers:
         version: 18.14.6
       bob-ts:
         specifier: ^4.1.1
-        version: 4.1.1(@types/node@18.14.6)(esbuild@0.17.11)(typescript@4.9.5)
+        version: 4.1.1(@types/node@18.14.6)(esbuild@0.17.11)(typescript@5.2.2)
       bob-tsm:
         specifier: ^1.1.2
-        version: 1.1.2(esbuild@0.17.11)(typescript@4.9.5)
+        version: 1.1.2(esbuild@0.17.11)(typescript@5.2.2)
       esbuild:
         specifier: ^0.17.11
         version: 0.17.11
@@ -152,8 +152,8 @@ importers:
         specifier: ^16.6.0
         version: 16.6.0
       typescript:
-        specifier: ^4.9.5
-        version: 4.9.5
+        specifier: ^5.2.2
+        version: 5.2.2
     publishDirectory: dist
 
   packages/gql-string:
@@ -163,16 +163,16 @@ importers:
         version: 18.14.6
       bob-ts:
         specifier: ^4.1.1
-        version: 4.1.1(@types/node@18.14.6)(esbuild@0.17.11)(typescript@4.9.5)
+        version: 4.1.1(@types/node@18.14.6)(esbuild@0.17.11)(typescript@5.2.2)
       bob-tsm:
         specifier: ^1.1.2
-        version: 1.1.2(esbuild@0.17.11)(typescript@4.9.5)
+        version: 1.1.2(esbuild@0.17.11)(typescript@5.2.2)
       esbuild:
         specifier: ^0.17.11
         version: 0.17.11
       typescript:
-        specifier: ^4.9.5
-        version: 4.9.5
+        specifier: ^5.2.2
+        version: 5.2.2
     publishDirectory: dist
 
   packages/graphql-react-query:
@@ -198,10 +198,10 @@ importers:
         version: 18.0.28
       bob-ts:
         specifier: ^4.1.1
-        version: 4.1.1(@types/node@18.14.6)(esbuild@0.17.11)(typescript@4.9.5)
+        version: 4.1.1(@types/node@18.14.6)(esbuild@0.17.11)(typescript@5.2.2)
       bob-tsm:
         specifier: ^1.1.2
-        version: 1.1.2(esbuild@0.17.11)(typescript@4.9.5)
+        version: 1.1.2(esbuild@0.17.11)(typescript@5.2.2)
       esbuild:
         specifier: ^0.17.11
         version: 0.17.11
@@ -218,8 +218,8 @@ importers:
         specifier: ^18.2.0
         version: 18.2.0
       typescript:
-        specifier: ^4.9.5
-        version: 4.9.5
+        specifier: ^5.2.2
+        version: 5.2.2
       valtio:
         specifier: ^1.10.3
         version: 1.10.3(react@18.2.0)
@@ -251,10 +251,10 @@ importers:
         version: 18.0.28
       bob-ts:
         specifier: ^4.1.1
-        version: 4.1.1(@types/node@18.14.6)(esbuild@0.17.11)(typescript@4.9.5)
+        version: 4.1.1(@types/node@18.14.6)(esbuild@0.17.11)(typescript@5.2.2)
       bob-tsm:
         specifier: ^1.1.2
-        version: 1.1.2(esbuild@0.17.11)(typescript@4.9.5)
+        version: 1.1.2(esbuild@0.17.11)(typescript@5.2.2)
       esbuild:
         specifier: ^0.17.11
         version: 0.17.11
@@ -265,8 +265,8 @@ importers:
         specifier: ^18.2.0
         version: 18.2.0
       typescript:
-        specifier: ^4.9.5
-        version: 4.9.5
+        specifier: ^5.2.2
+        version: 5.2.2
     publishDirectory: dist
 
 packages:
@@ -2470,7 +2470,7 @@ packages:
       rollup: 2.79.1
     dev: true
 
-  /bob-esbuild@4.0.3(typescript@4.9.5):
+  /bob-esbuild@4.0.3(typescript@5.2.2):
     resolution: {integrity: sha512-9AGuh6V5Whsditj5n2oJjWAvHwgadgD2HD0qZ4rEBwY9tpj8YbfYeiaXQQV9qJxwT9oUYOsQE53wPNYBFDIfJA==}
     peerDependencies:
       esbuild: '>=0.14.39'
@@ -2484,10 +2484,10 @@ packages:
       '@pnpm/types': 8.10.0
       bob-esbuild-plugin: 4.0.0(esbuild@0.17.11)(rollup@2.79.1)
       rollup: 2.79.1
-      typescript: 4.9.5
+      typescript: 5.2.2
     dev: true
 
-  /bob-ts@4.1.1(@types/node@18.14.6)(esbuild@0.17.11)(typescript@4.9.5):
+  /bob-ts@4.1.1(@types/node@18.14.6)(esbuild@0.17.11)(typescript@5.2.2):
     resolution: {integrity: sha512-lXvGGP46GSU10LMHB27Kq2PZl+DaK1L5geHxxzLw/QklEWnvfzLPJsH9YGvV9F4AdIGJp85FTC1xIfanwd3NbQ==}
     engines: {node: '>=14.13.1'}
     hasBin: true
@@ -2505,10 +2505,10 @@ packages:
       bob-esbuild-plugin: 4.0.0(esbuild@0.17.11)(rollup@2.79.1)
       esbuild: 0.17.11
       rollup: 2.79.1
-      typescript: 4.9.5
+      typescript: 5.2.2
     dev: true
 
-  /bob-tsm@1.1.2(esbuild@0.17.11)(typescript@4.9.5):
+  /bob-tsm@1.1.2(esbuild@0.17.11)(typescript@5.2.2):
     resolution: {integrity: sha512-5H6wIDpQTop5rt/5JRvtssmpiTkIqi1EBkpSy19GfReOed6QoeD+iJIRjNgyiI7ZsX1ogETxgN7KiW5Wx6pUEQ==}
     engines: {node: '>=14.13.1'}
     hasBin: true
@@ -2520,7 +2520,7 @@ packages:
         optional: true
     dependencies:
       esbuild: 0.17.11
-      typescript: 4.9.5
+      typescript: 5.2.2
     optionalDependencies:
       fsevents: 2.3.2
     dev: true
@@ -5115,6 +5115,12 @@ packages:
   /typescript@4.9.5:
     resolution: {integrity: sha512-1FXk9E2Hm+QzZQ7z+McJiHL4NW1F2EzMu9Nq9i3zAaGqibafqYwCVU6WyWAuyQRRzOlxou8xZSyXLEN8oKj24g==}
     engines: {node: '>=4.2.0'}
+    hasBin: true
+    dev: true
+
+  /typescript@5.2.2:
+    resolution: {integrity: sha512-mI4WrpHsbCIcwT9cF4FZvr80QUeKvsUsUvKDoR+X/7XHQH98xYD8YHZg7ANtz2GtZt/CBq2QJ0thkGJMHfqc1w==}
+    engines: {node: '>=14.17'}
     hasBin: true
     dev: true
 
