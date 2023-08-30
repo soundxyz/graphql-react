@@ -188,8 +188,8 @@ importers:
         specifier: ^4.26.1
         version: 4.26.1(react@18.2.0)
       '@types/lodash-es':
-        specifier: ^4.17.6
-        version: 4.17.6
+        specifier: ^4.17.9
+        version: 4.17.9
       '@types/node':
         specifier: ^18.14.6
         version: 18.14.6
@@ -2190,8 +2190,8 @@ packages:
     resolution: {integrity: sha512-s2cfwagOQAS8o06TcwKfr9Wx11dNGbH2E9vJz1cqV+a/LOyhWNLUNd6JSRYNzvB4d29UuJX2M0Dj9vE1T8fRXw==}
     dev: true
 
-  /@types/lodash-es@4.17.6:
-    resolution: {integrity: sha512-R+zTeVUKDdfoRxpAryaQNRKk3105Rrgx2CFRClIgRGaqDTdjsm8h6IYA8ir584W3ePzkZfst5xIgDwYrlh9HLg==}
+  /@types/lodash-es@4.17.9:
+    resolution: {integrity: sha512-ZTcmhiI3NNU7dEvWLZJkzG6ao49zOIjEgIE0RgV7wbPxU0f2xT3VSAHw2gmst8swH6V0YkLRGp4qPlX/6I90MQ==}
     dependencies:
       '@types/lodash': 4.14.191
     dev: true
