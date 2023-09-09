@@ -1,5 +1,13 @@
 # @soundxyz/graphql-react-ws
 
+## 1.1.2
+
+### Patch Changes
+
+- [#111](https://github.com/soundxyz/graphql-react/pull/111)
+  [`492118a`](https://github.com/soundxyz/graphql-react/commit/492118ab62b66bf1d7fdc5a1e15a51518d423c92)
+  Thanks [@PabloSzx](https://github.com/PabloSzx)! - useSubscribe on use effect
+
 ## 1.1.1
 
 ### Patch Changes
