@@ -1,5 +1,5 @@
 import { ClientOptions, createClient, ExecutionResult, SubscribePayload } from 'graphql-ws';
-import { useEffect, useMemo } from 'react';
+import { useEffect } from 'react';
 import { proxy, ref } from 'valtio';
 
 import { useProxySnapshot, useStableCallback, useStableValue } from './utils';
@@ -335,11 +335,10 @@ export function GraphQLReactWS<ConnectionInitPayload extends Record<string, unkn
 
     const stableVariables = useStableValue(variables);
 
-    const subscription = useMemo(() => {
-      if (typeof window === 'undefined' || stableVariables === false || enabled === false)
-        return null;
+    useEffect(() => {
+      if (typeof window === 'undefined' || stableVariables === false || enabled === false) return;
 
-      return subscribe(
+      const subscription = subscribe(
         {
           query,
           // Can't verify the conditional types around optional variables
@@ -379,18 +378,15 @@ export function GraphQLReactWS<ConnectionInitPayload extends Record<string, unkn
           }
         },
       );
-    }, [stableVariables, enabled, query]);
 
-    useEffect(() => {
       if (!subscription) return;
 
       return () => {
         subscription.abortController.abort();
       };
-    }, [subscription]);
+    }, [stableVariables, enabled, query]);
 
     return {
-      subscription,
       data,
       error,
       store,
