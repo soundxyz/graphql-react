@@ -23,14 +23,14 @@
     "bob-ts": "^4.1.1",
     "bob-tsm": "^1.1.2",
     "esbuild": "^0.17.11",
-    "graphql": "^16.6.0",
+    "graphql": "^16.8.1",
     "react": "^18.2.0",
     "typescript": "^4.9.5"
   },
   "peerDependencies": {
     "@soundxyz/gql-string": "workspace:^0.1.0",
     "@types/react": "^18.0.28",
-    "graphql": "^16.6.0",
+    "graphql": "^16.8.1",
     "react": "^18.2.0"
   },
   "publishConfig": {
