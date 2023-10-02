@@ -13,25 +13,26 @@
   "keywords": [],
   "dependencies": {
     "fast-deep-equal": "^3.1.3",
-    "graphql-ws": "^5.12.0",
-    "valtio": "^1.10.3"
+    "graphql-ws": "^5.14.1"
   },
   "devDependencies": {
     "@soundxyz/gql-string": "workspace:^0.1.0",
-    "@types/node": "^18.14.6",
-    "@types/react": "^18.0.28",
+    "@types/node": "^20.8.0",
+    "@types/react": "^18.2.24",
     "bob-ts": "^4.1.1",
     "bob-tsm": "^1.1.2",
-    "esbuild": "^0.17.11",
-    "graphql": "^16.6.0",
+    "esbuild": "^0.19.4",
+    "graphql": "^16.8.1",
     "react": "^18.2.0",
-    "typescript": "^4.9.5"
+    "typescript": "^5.2.2",
+    "valtio": "^1.11.2"
   },
   "peerDependencies": {
     "@soundxyz/gql-string": "workspace:^0.1.0",
     "@types/react": "^18.0.28",
     "graphql": "^16.6.0",
-    "react": "^18.2.0"
+    "react": "^18.2.0",
+    "valtio": "^1.11.2"
   },
   "publishConfig": {
     "directory": "dist"
