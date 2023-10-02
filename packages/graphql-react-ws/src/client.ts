@@ -57,21 +57,29 @@ export function GraphQLReactWS<ConnectionInitPayload extends Record<string, unkn
     }
 
     dispose() {
+      if (this.done) return;
+
       this.done = true;
       this.cleanup?.();
       this.cleanup = null;
     }
 
     resolveNext(result: ExecutionResult<ResultOf<Doc>, unknown>) {
+      if (this.done) return;
+
       this.pending.push(result);
       this.deferred?.resolve(false);
     }
     resolveCompleted() {
+      if (this.done) return;
+
       this.done = true;
       this.deferred?.resolve(true);
       this.dispose();
     }
     reject(error: unknown) {
+      if (this.done) return;
+
       this.throwMe = error;
       this.deferred?.reject(error);
       this.dispose();
@@ -156,6 +164,7 @@ export function GraphQLReactWS<ConnectionInitPayload extends Record<string, unkn
       if (this.disposed) throw Error('Generator has already been disposed!');
 
       const cleanupListener = () => {
+        listener.resolveCompleted();
         this.removeListener(listener);
         params.abortController.abort();
       };
