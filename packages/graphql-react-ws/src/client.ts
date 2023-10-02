@@ -112,11 +112,21 @@ export function GraphQLReactWS<ConnectionInitPayload extends Record<string, unkn
 
   class BroadcastAsyncGenerator<Doc extends StringDocumentNode> {
     private generator: AsyncGenerator<ExecutionResult<ResultOf<Doc>, unknown>>;
-    private listeners: ListenerGenerator<Doc>[] = [];
+    private listeners: Set<ListenerGenerator<Doc>> = new Set();
+    private cleanupBroadcaster: () => void;
+    private disposed = false;
 
-    constructor(generator: AsyncGenerator<ExecutionResult<ResultOf<Doc>, unknown>>) {
+    constructor({
+      generator,
+      cleanupBroadcaster,
+    }: {
+      generator: AsyncGenerator<ExecutionResult<ResultOf<Doc>, unknown>>;
+      cleanupBroadcaster: () => void;
+    }) {
       this.generator = generator;
-      this.broadcast();
+      this.cleanupBroadcaster = cleanupBroadcaster;
+
+      this.broadcast().catch(console.error);
     }
 
     private async broadcast() {
@@ -127,13 +137,26 @@ export function GraphQLReactWS<ConnectionInitPayload extends Record<string, unkn
       }
     }
 
+    removeListener(listener: ListenerGenerator<Doc>) {
+      this.listeners.delete(listener);
+      if (this.listeners.size === 0) this.cleanupBroadcaster();
+    }
+
     subscribe(params: SubscriptionParams): ListenerGenerator<Doc> {
+      if (this.disposed) throw Error('Generator has already been disposed!');
+
+      const cleanupListener = () => {
+        this.removeListener(listener);
+        params.abortController.abort();
+      };
+
       const listener = new ListenerGenerator<Doc>({
-        cleanup() {
-          params.abortController.abort();
-        },
+        cleanup: cleanupListener,
       });
-      this.listeners.push(listener);
+
+      params.abortSignal.addEventListener('abort', cleanupListener);
+      this.listeners.add(listener);
+
       return listener;
     }
   }
@@ -179,30 +202,32 @@ export function GraphQLReactWS<ConnectionInitPayload extends Record<string, unkn
       error: err => {
         generator.reject(err);
 
-        cleanup();
+        cleanupGenerator();
       },
       complete: () => {
         generator.resolveCompleted();
 
-        cleanup();
+        cleanupGenerator();
       },
     });
 
-    function cleanup() {
+    function cleanupGenerator() {
       dispose();
       onDispose();
 
       generator.resolveCompleted();
     }
 
-    const broadcaster = new BroadcastAsyncGenerator(generator);
+    const broadcaster = new BroadcastAsyncGenerator({
+      generator,
+      cleanupBroadcaster: cleanupGenerator,
+    });
 
     return {
       subscribe(params) {
         return broadcaster.subscribe(params);
       },
-
-      cleanup,
+      cleanup: cleanupGenerator,
     };
   }
 
