@@ -1,5 +1,20 @@
 # @soundxyz/graphql-react-ws
 
+## 2.0.0
+
+### Major Changes
+
+- [#114](https://github.com/soundxyz/graphql-react/pull/114)
+  [`630de3a`](https://github.com/soundxyz/graphql-react/commit/630de3a89d8c17c133081d25e15bdc92908a5046)
+  Thanks [@PabloSzx](https://github.com/PabloSzx)! - Make Valtio a peer dependency
+
+### Patch Changes
+
+- [#114](https://github.com/soundxyz/graphql-react/pull/114)
+  [`630de3a`](https://github.com/soundxyz/graphql-react/commit/630de3a89d8c17c133081d25e15bdc92908a5046)
+  Thanks [@PabloSzx](https://github.com/PabloSzx)! - Subscriptions re-use underlying connections
+  while also keeping separate listening instances and callbacks
+
 ## 1.1.2
 
 ### Patch Changes
