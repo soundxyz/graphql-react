@@ -12,25 +12,25 @@ export type Scalars = {
   Int: number;
   Float: number;
   /** Ethereum address */
-  Address: any;
+  Address: string;
   /** A string that cannot be passed as an empty value */
-  CountryCode: any;
+  CountryCode: string;
   /** A date-time string at UTC, such as 2007-12-03T10:15:30Z, compliant with the `date-time` format outlined in section 5.6 of the RFC 3339 profile of the ISO 8601 standard for representation of dates and times using the Gregorian calendar. */
-  DateTime: any;
+  DateTime: string;
   /** Ethereum name service value with `.eth` suffix */
-  ENS: any;
+  ENS: string;
   /** A string that cannot be passed as an empty value */
-  NonEmptyString: any;
+  NonEmptyString: string;
   /** Integers that will have a value of 0 or more. */
-  NonNegativeInt: any;
+  NonNegativeInt: number;
   /** Integers that will have a value greater than 0. */
-  PositiveInt: any;
+  PositiveInt: number;
   /** The javascript `Date` as integer. Type represents date and time as number of milliseconds from start of UNIX epoch. */
-  Timestamp: any;
+  Timestamp: number;
   /** UUID v4 */
-  UUID: any;
+  UUID: string;
   /** Represents NULL values */
-  Void: any;
+  Void: null;
 };
 
 /** Activity Feed entity */

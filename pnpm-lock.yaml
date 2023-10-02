@@ -65,6 +65,9 @@ importers:
       '@soundxyz/graphql-react-query':
         specifier: workspace:*
         version: link:../../packages/graphql-react-query/dist
+      '@soundxyz/graphql-react-ws':
+        specifier: workspace:^
+        version: link:../../packages/graphql-react-ws/dist
     devDependencies:
       '@graphql-codegen/cli':
         specifier: ^3.2.2

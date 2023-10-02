@@ -12,6 +12,7 @@ export const {
   gql,
   invalidateOperations,
   resetOperations,
+  Effects: QueryEffects,
 } = GraphQLReactQueryClient<Operations, OperationNames>({
   endpoint: 'https://api.sound.xyz/graphql',
   headers: {

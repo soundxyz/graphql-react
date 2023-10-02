@@ -41,6 +41,7 @@ export default function Releases() {
     lastPage,
     orderedList: flatList,
   } = useInfiniteQuery(ReleasesTestDocument, {
+    staleTime: 0,
     getNextPageParam(lastPage) {
       return {
         after: lastPage.data.releases.pageInfo.endCursor,
@@ -75,6 +76,7 @@ export default function Releases() {
     uniq(entity) {
       return entity.id;
     },
+    filterQueryKey: {},
   });
 
   const [autoFetch, setAutoFetch] = useState(false);
