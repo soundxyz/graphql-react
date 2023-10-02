@@ -130,9 +130,19 @@ export function GraphQLReactWS<ConnectionInitPayload extends Record<string, unkn
     }
 
     private async broadcast() {
-      for await (const value of this.generator) {
+      try {
+        for await (const value of this.generator) {
+          for (const listener of this.listeners) {
+            listener.resolveNext(value);
+          }
+        }
+
         for (const listener of this.listeners) {
-          listener.resolveNext(value);
+          listener.resolveCompleted();
+        }
+      } catch (err) {
+        for (const listener of this.listeners) {
+          listener.reject(err);
         }
       }
     }
@@ -172,8 +182,13 @@ export function GraphQLReactWS<ConnectionInitPayload extends Record<string, unkn
 
     const { query, variables } = payload;
 
+    function handleDispose() {
+      dispose();
+      onDispose();
+    }
+
     const generator = new ListenerGenerator({
-      cleanup() {},
+      cleanup: handleDispose,
     });
 
     const dispose = client.subscribe<ResultOf<Doc>>(payload, {
@@ -212,8 +227,7 @@ export function GraphQLReactWS<ConnectionInitPayload extends Record<string, unkn
     });
 
     function cleanupGenerator() {
-      dispose();
-      onDispose();
+      handleDispose();
 
       generator.resolveCompleted();
     }
