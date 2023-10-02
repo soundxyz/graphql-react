@@ -98,11 +98,11 @@ export function GraphQLReactWS<ConnectionInitPayload extends Record<string, unkn
 
       if (this.pending.length) return { value: this.pending.shift()!, done: false };
 
-      const deferredResult = await new Promise<boolean>(
+      const isDone = await new Promise<boolean>(
         (resolve, reject) => (this.deferred = { resolve, reject }),
       );
 
-      if (deferredResult) return { done: true, value: undefined };
+      if (isDone) return { done: true, value: undefined };
 
       return { value: this.pending.shift()!, done: false };
     }
