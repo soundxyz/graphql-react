@@ -35,6 +35,63 @@ export function GraphQLReactWS<ConnectionInitPayload extends Record<string, unkn
     cleanup(): void;
   };
 
+  class Listener<T> implements AsyncGenerator<T> {
+    private queue: T[] = [];
+    private resolvers: Array<() => void> = [];
+
+    async next(): Promise<IteratorResult<T>> {
+      while (this.queue.length === 0) {
+        await new Promise<void>(res => this.resolvers.push(res));
+      }
+      const value = this.queue.shift();
+      return { value: value as T, done: false };
+    }
+
+    async throw(error: any): Promise<IteratorResult<T>> {
+      return Promise.reject(error);
+    }
+
+    async return(): Promise<IteratorResult<T>> {
+      return { value: undefined, done: true };
+    }
+
+    [Symbol.asyncIterator]() {
+      return this;
+    }
+
+    enqueue(value: T) {
+      this.queue.push(value);
+      while (this.resolvers.length) {
+        const resolve = this.resolvers.shift();
+        if (resolve) resolve();
+      }
+    }
+  }
+
+  class BroadcastAsyncGenerator<T> {
+    private generator: AsyncGenerator<T>;
+    private listeners: Listener<T>[] = [];
+
+    constructor(generator: AsyncGenerator<T>) {
+      this.generator = generator;
+      this.broadcast();
+    }
+
+    private async broadcast() {
+      for await (const value of this.generator) {
+        for (const listener of this.listeners) {
+          listener.enqueue(value);
+        }
+      }
+    }
+
+    subscribe(): Listener<T> {
+      const listener = new Listener<T>();
+      this.listeners.push(listener);
+      return listener;
+    }
+  }
+
   function graphqlWsSubscribe<Doc extends StringDocumentNode>({
     payload,
     onDispose,
@@ -99,7 +156,7 @@ export function GraphQLReactWS<ConnectionInitPayload extends Record<string, unkn
       deferred?.resolve(true);
     }
 
-    const iterator: AsyncGenerator<ExecutionResult<ResultOf<Doc>, unknown>, unknown, unknown> = {
+    const generator: AsyncGenerator<ExecutionResult<ResultOf<Doc>, unknown>, unknown, unknown> = {
       [Symbol.asyncIterator]() {
         return this;
       },
@@ -120,8 +177,12 @@ export function GraphQLReactWS<ConnectionInitPayload extends Record<string, unkn
       },
     };
 
+    const broadcaster = new BroadcastAsyncGenerator(generator);
+
     return {
-      iterator,
+      get iterator() {
+        return broadcaster.subscribe();
+      },
       cleanup,
     };
   }

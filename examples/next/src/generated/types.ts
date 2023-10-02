@@ -5526,3 +5526,8 @@ export type ReleasesTestQueryVariables = Exact<{
 
 
 export type ReleasesTestQuery = { releases: { edges: Array<{ cursor: string, node: { id: string, title: string, artist: { id: string, name: string } } }>, pageInfo: { hasPreviousPage: boolean, hasNextPage: boolean, startCursor?: string | null, endCursor?: string | null } } };
+
+export type CountSubscriptionVariables = Exact<{ [key: string]: never; }>;
+
+
+export type CountSubscription = { count: number };
