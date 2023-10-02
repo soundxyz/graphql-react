@@ -36,9 +36,7 @@ export function GraphQLReactWS<ConnectionInitPayload extends Record<string, unkn
   };
 
   type SubscribeInfo<Doc extends StringDocumentNode> = {
-    subscribe(
-      params: SubscriptionParams,
-    ): AsyncGenerator<ExecutionResult<ResultOf<Doc>, unknown>, unknown, unknown>;
+    subscribe(params: SubscriptionParams): ListenerGenerator<Doc>;
     cleanup(): void;
   };
 
@@ -85,7 +83,7 @@ export function GraphQLReactWS<ConnectionInitPayload extends Record<string, unkn
       return this;
     }
 
-    async next(): Promise<IteratorResult<NonNullable<(typeof this.pending)[number]>>> {
+    async next(): Promise<IteratorResult<ExecutionResult<ResultOf<Doc>, unknown>>> {
       if (this.done) return { done: true, value: undefined };
 
       if (this.throwMe) throw this.throwMe;
@@ -105,7 +103,7 @@ export function GraphQLReactWS<ConnectionInitPayload extends Record<string, unkn
       throw error;
     }
 
-    async return() {
+    async return(): Promise<IteratorResult<ExecutionResult<ResultOf<Doc>>, unknown>> {
       this.dispose();
 
       return { value: undefined, done: true } as const;
@@ -131,7 +129,9 @@ export function GraphQLReactWS<ConnectionInitPayload extends Record<string, unkn
 
     subscribe(params: SubscriptionParams): ListenerGenerator<Doc> {
       const listener = new ListenerGenerator<Doc>({
-        cleanup() {},
+        cleanup() {
+          params.abortController.abort();
+        },
       });
       this.listeners.push(listener);
       return listener;
@@ -145,23 +145,17 @@ export function GraphQLReactWS<ConnectionInitPayload extends Record<string, unkn
     payload: SubscribePayload;
     onDispose(): void;
   }): SubscribeInfo<Doc> {
-    let deferred: {
-      resolve: (done: boolean) => void;
-      reject: (err: unknown) => void;
-    } | null = null;
-
     if (!client) throw Error('graphql-ws client not available');
-
-    const pending: ExecutionResult<ResultOf<Doc>, unknown>[] = [];
-    let throwMe: unknown = null,
-      done = false;
 
     const { query, variables } = payload;
 
+    const generator = new ListenerGenerator({
+      cleanup() {},
+    });
+
     const dispose = client.subscribe<ResultOf<Doc>>(payload, {
       next: result => {
-        pending.push(result);
-        deferred?.resolve(false);
+        generator.resolveNext(result);
 
         const effects = effectsStore[query];
 
@@ -183,13 +177,13 @@ export function GraphQLReactWS<ConnectionInitPayload extends Record<string, unkn
         }
       },
       error: err => {
-        throwMe = err;
-        deferred?.reject(throwMe);
+        generator.reject(err);
+
         cleanup();
       },
       complete: () => {
-        done = true;
-        deferred?.resolve(true);
+        generator.resolveCompleted();
+
         cleanup();
       },
     });
@@ -198,30 +192,8 @@ export function GraphQLReactWS<ConnectionInitPayload extends Record<string, unkn
       dispose();
       onDispose();
 
-      done = true;
-      deferred?.resolve(true);
+      generator.resolveCompleted();
     }
-
-    const generator: AsyncGenerator<ExecutionResult<ResultOf<Doc>, unknown>, unknown, unknown> = {
-      [Symbol.asyncIterator]() {
-        return this;
-      },
-      async next() {
-        if (done) return { done: true, value: undefined };
-        if (throwMe) throw throwMe;
-        if (pending.length) return { value: pending.shift()!, done: false };
-        return (await new Promise<boolean>((resolve, reject) => (deferred = { resolve, reject })))
-          ? { done: true, value: undefined }
-          : { value: pending.shift()!, done: false };
-      },
-      async throw(err: unknown) {
-        throw err;
-      },
-      async return() {
-        cleanup();
-        return { done: true, value: undefined };
-      },
-    };
 
     const broadcaster = new BroadcastAsyncGenerator(generator);
 
@@ -229,9 +201,7 @@ export function GraphQLReactWS<ConnectionInitPayload extends Record<string, unkn
       subscribe(params) {
         return broadcaster.subscribe(params);
       },
-      // get iterator() {
-      //   return broadcaster.subscribe();
-      // },
+
       cleanup,
     };
   }
