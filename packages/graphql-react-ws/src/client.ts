@@ -30,10 +30,155 @@ export function GraphQLReactWS<ConnectionInitPayload extends Record<string, unkn
 }) {
   const client = typeof window === 'undefined' ? null : createClient(graphqlWsOptions);
 
+  type SubscriptionParams = {
+    abortSignal: AbortSignal;
+    abortController: AbortController;
+  };
+
   type SubscribeInfo<Doc extends StringDocumentNode> = {
-    iterator: AsyncGenerator<ExecutionResult<ResultOf<Doc>, unknown>, unknown, unknown>;
+    subscribe(params: SubscriptionParams): ListenerGenerator<Doc>;
     cleanup(): void;
   };
+
+  class ListenerGenerator<Doc extends StringDocumentNode>
+    implements AsyncGenerator<ExecutionResult<ResultOf<Doc>, unknown>, unknown, unknown>
+  {
+    private done = false;
+    private throwMe: unknown = null;
+    private pending: ExecutionResult<ResultOf<Doc>, unknown>[] = [];
+    private cleanup: (() => void) | null;
+    private deferred: {
+      resolve: (done: boolean) => void;
+      reject: (err: unknown) => void;
+    } | null = null;
+
+    constructor({ cleanup }: { cleanup: () => void }) {
+      this.cleanup = cleanup;
+    }
+
+    dispose() {
+      if (this.done) return;
+
+      this.done = true;
+      this.cleanup?.();
+      this.cleanup = null;
+    }
+
+    resolveNext(result: ExecutionResult<ResultOf<Doc>, unknown>) {
+      if (this.done) return;
+
+      this.pending.push(result);
+      this.deferred?.resolve(false);
+    }
+    resolveCompleted() {
+      if (this.done) return;
+
+      this.done = true;
+      this.deferred?.resolve(true);
+      this.dispose();
+    }
+    reject(error: unknown) {
+      if (this.done) return;
+
+      this.throwMe = error;
+      this.deferred?.reject(error);
+      this.dispose();
+    }
+
+    // To make the listener a valid async generator
+
+    [Symbol.asyncIterator]() {
+      return this;
+    }
+
+    async next(): Promise<IteratorResult<ExecutionResult<ResultOf<Doc>, unknown>>> {
+      if (this.done) return { done: true, value: undefined };
+
+      if (this.throwMe) throw this.throwMe;
+
+      if (this.pending.length) return { value: this.pending.shift()!, done: false };
+
+      const isDone = await new Promise<boolean>(
+        (resolve, reject) => (this.deferred = { resolve, reject }),
+      );
+
+      if (isDone) return { done: true, value: undefined };
+
+      return { value: this.pending.shift()!, done: false };
+    }
+
+    async throw(error: unknown): Promise<never> {
+      throw error;
+    }
+
+    async return(): Promise<IteratorResult<ExecutionResult<ResultOf<Doc>>, unknown>> {
+      this.dispose();
+
+      return { value: undefined, done: true } as const;
+    }
+  }
+
+  class BroadcastAsyncGenerator<Doc extends StringDocumentNode> {
+    private generator: AsyncGenerator<ExecutionResult<ResultOf<Doc>, unknown>>;
+    private listeners: Set<ListenerGenerator<Doc>> = new Set();
+    private cleanupBroadcaster: () => void;
+    private disposed = false;
+
+    constructor({
+      generator,
+      cleanupBroadcaster,
+    }: {
+      generator: AsyncGenerator<ExecutionResult<ResultOf<Doc>, unknown>>;
+      cleanupBroadcaster: () => void;
+    }) {
+      this.generator = generator;
+      this.cleanupBroadcaster = cleanupBroadcaster;
+
+      this.broadcast().catch(console.error);
+    }
+
+    private async broadcast() {
+      try {
+        for await (const value of this.generator) {
+          for (const listener of this.listeners) {
+            listener.resolveNext(value);
+          }
+        }
+
+        for (const listener of this.listeners) {
+          listener.resolveCompleted();
+        }
+      } catch (err) {
+        for (const listener of this.listeners) {
+          listener.reject(err);
+        }
+      }
+    }
+
+    removeListener(listener: ListenerGenerator<Doc>) {
+      this.listeners.delete(listener);
+      if (this.listeners.size === 0) this.cleanupBroadcaster();
+    }
+
+    subscribe(params: SubscriptionParams): ListenerGenerator<Doc> {
+      if (this.disposed) throw Error('Generator has already been disposed!');
+
+      const cleanupListener = () => {
+        listener.resolveCompleted();
+        this.removeListener(listener);
+        params.abortController.abort();
+      };
+
+      const listener = new ListenerGenerator<Doc>({
+        cleanup: cleanupListener,
+      });
+
+      params.abortSignal.addEventListener('abort', cleanupListener);
+      this.listeners.add(listener);
+
+      return listener;
+    }
+  }
 
   function graphqlWsSubscribe<Doc extends StringDocumentNode>({
     payload,
@@ -42,23 +187,22 @@ export function GraphQLReactWS<ConnectionInitPayload extends Record<string, unkn
     payload: SubscribePayload;
     onDispose(): void;
   }): SubscribeInfo<Doc> {
-    let deferred: {
-      resolve: (done: boolean) => void;
-      reject: (err: unknown) => void;
-    } | null = null;
-
     if (!client) throw Error('graphql-ws client not available');
-
-    const pending: ExecutionResult<ResultOf<Doc>, unknown>[] = [];
-    let throwMe: unknown = null,
-      done = false;
 
     const { query, variables } = payload;
 
+    function handleDispose() {
+      dispose();
+      onDispose();
+    }
+
+    const generator = new ListenerGenerator({
+      cleanup: handleDispose,
+    });
+
     const dispose = client.subscribe<ResultOf<Doc>>(payload, {
       next: result => {
-        pending.push(result);
-        deferred?.resolve(false);
+        generator.resolveNext(result);
 
         const effects = effectsStore[query];
 
@@ -80,49 +224,33 @@ export function GraphQLReactWS<ConnectionInitPayload extends Record<string, unkn
         }
       },
       error: err => {
-        throwMe = err;
-        deferred?.reject(throwMe);
-        cleanup();
+        generator.reject(err);
+
+        cleanupGenerator();
       },
       complete: () => {
-        done = true;
-        deferred?.resolve(true);
-        cleanup();
+        generator.resolveCompleted();
+
+        cleanupGenerator();
       },
     });
 
-    function cleanup() {
-      dispose();
-      onDispose();
+    function cleanupGenerator() {
+      handleDispose();
 
-      done = true;
-      deferred?.resolve(true);
+      generator.resolveCompleted();
     }
 
-    const iterator: AsyncGenerator<ExecutionResult<ResultOf<Doc>, unknown>, unknown, unknown> = {
-      [Symbol.asyncIterator]() {
-        return this;
-      },
-      async next() {
-        if (done) return { done: true, value: undefined as any };
-        if (throwMe) throw throwMe;
-        if (pending.length) return { value: pending.shift()!, done: false };
-        return (await new Promise<boolean>((resolve, reject) => (deferred = { resolve, reject })))
-          ? { done: true, value: undefined }
-          : { value: pending.shift()!, done: false };
-      },
-      async throw(err: unknown) {
-        throw err;
-      },
-      async return() {
-        cleanup();
-        return { done: true, value: undefined };
-      },
-    };
+    const broadcaster = new BroadcastAsyncGenerator({
+      generator,
+      cleanupBroadcaster: cleanupGenerator,
+    });
 
     return {
-      iterator,
-      cleanup,
+      subscribe(params) {
+        return broadcaster.subscribe(params);
+      },
+      cleanup: cleanupGenerator,
     };
   }
 
@@ -216,7 +344,7 @@ export function GraphQLReactWS<ConnectionInitPayload extends Record<string, unkn
 
     const {
       subscriptionsControllers: channelSubscriptionsControllers,
-      subscription: { cleanup: channelCleanup, iterator: channelIterator },
+      subscription: { cleanup: channelCleanup, subscribe },
     } = channel;
 
     const abortController = new AbortController();
@@ -235,7 +363,10 @@ export function GraphQLReactWS<ConnectionInitPayload extends Record<string, unkn
     channelSubscriptionsControllers.add(abortController);
 
     const subscriptionValue = subscription({
-      iterator: channelIterator,
+      iterator: subscribe({
+        abortSignal,
+        abortController,
+      }),
       abortController,
       abortSignal,
     }).catch(err => {

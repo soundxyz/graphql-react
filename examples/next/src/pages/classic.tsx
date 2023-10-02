@@ -24,6 +24,7 @@ export const getStaticProps = async () => {
 export default function Classic({ test }: InferGetStaticPropsType<typeof getStaticProps>) {
   const { data: { data } = test } = useQuery(TestTwoDocument, {
     initialData: test,
+    staleTime: 0,
   });
 
   return (

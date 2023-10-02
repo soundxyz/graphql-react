@@ -145,8 +145,8 @@ export function GraphQLReactQueryClient<
       ).then((response): Promise<FetchResult> => {
         return response
           .json()
-          .then(value => ({ response, json: { ok: true, value } } as const))
-          .catch(error => ({ response, json: { ok: false, error } } as const));
+          .then(value => ({ response, json: { ok: true, value } }) as const)
+          .catch(error => ({ response, json: { ok: false, error } }) as const);
       }))
         .catch(cause => {
           console.error(cause);

@@ -10,3 +10,21 @@ extensions:
         preset: '@soundxyz/codegen-fragments'
         config:
           enumsAsConst: true
+          scalars:
+            DateTime: 'string'
+            NonNegativeInt: 'number'
+            PositiveInt: 'number'
+            JSON: 'unknown'
+            Timestamp: 'number'
+            Void: 'null'
+            UUID: 'string'
+            Address: 'string'
+            CountryCode: 'string'
+            EmailAddress: 'string'
+            NonEmptyString: 'string'
+            URL: 'string'
+            ENS: 'string'
+            NonNegativeFloat: 'number'
+            JWT: 'string'
+            SemanticVersion: 'string'
+            TransactionHash: 'string'
