@@ -24,12 +24,12 @@ export const ReleasesTestDocument = 'query releasesTest($filter:ReleasesCursorFi
 export type ReleasesTestDocument = typeof ReleasesTestDocument;
 
 
-export const CountDocument = 'subscription Count{count(n:50)}' as unknown as StringDocumentNode<Types.CountSubscription,Types.CountSubscriptionVariables>;
+export const CountDocument = 'subscription Count{count(n:500)}' as unknown as StringDocumentNode<Types.CountSubscription,Types.CountSubscriptionVariables>;
 export type CountDocument = typeof CountDocument;
 
 
 export type OperationNames = `Test` | `TestMutate` | `TestTwo` | `releasesTest` | `Count`;
 
-export type Operations = `query Test{__typename now}` | `mutation TestMutate($publicAddress:String!){generateAuthChallenge(publicAddress:$publicAddress)}` | `query TestTwo{__typename now}` | `query releasesTest($filter:ReleasesCursorFilterArgs!$pagination:ReleasesCursorConnectionArgs!){releases(filter:$filter pagination:$pagination){edges{node{id title artist{id name}}cursor}pageInfo{hasPreviousPage hasNextPage startCursor endCursor}}}` | `subscription Count{count(n:50)}`;
+export type Operations = `query Test{__typename now}` | `mutation TestMutate($publicAddress:String!){generateAuthChallenge(publicAddress:$publicAddress)}` | `query TestTwo{__typename now}` | `query releasesTest($filter:ReleasesCursorFilterArgs!$pagination:ReleasesCursorConnectionArgs!){releases(filter:$filter pagination:$pagination){edges{node{id title artist{id name}}cursor}pageInfo{hasPreviousPage hasNextPage startCursor endCursor}}}` | `subscription Count{count(n:500)}`;
 
 
