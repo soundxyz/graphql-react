@@ -441,10 +441,11 @@ export function GraphQLReactQueryClient<
       cacheTime?: DynamicTimeProp;
     },
   ) {
+    const queryKey =
+      filterQueryKey !== undefined ? [query, variables, filterQueryKey] : [query, variables];
     const result = useQueryReactQuery<ExecutionResultWithData<ResultOf<Doc>>, Error, QueryData>({
       queryFn: fetchOptions ? queryFnWithFetchOptions(fetchOptions) : defaultQueryFn,
-      queryKey:
-        filterQueryKey !== undefined ? [query, variables, filterQueryKey] : [query, variables],
+      queryKey,
       ...options,
       enabled: enabled && variables !== false,
       staleTime: getTimeProp(staleTime),
@@ -478,6 +479,7 @@ export function GraphQLReactQueryClient<
       ...result,
       isLoading: result.isInitialLoading,
       setQueryData: setQueryDataCallback,
+      queryKey,
     };
   }
 
