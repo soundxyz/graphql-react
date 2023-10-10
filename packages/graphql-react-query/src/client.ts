@@ -844,6 +844,7 @@ export function GraphQLReactQueryClient<
       entityStore,
       setInfiniteQueryData: setInfiniteQueryDataCallback,
       latestData,
+      queryKey,
     };
   }
 
@@ -881,21 +882,26 @@ export function GraphQLReactQueryClient<
       nodes: {},
     })) as InfiniteQueryStore<Entity>;
 
-    return client.prefetchInfiniteQuery({
-      queryKey: [query, filterQueryKey, variables, 'Infinite'] as readonly unknown[],
-      queryFn({ signal }) {
-        return infiniteQueryFn({
-          query,
-          variables,
-          list,
-          uniq,
-          signal,
-          entityStoreNodes,
-          onFetchCompleted,
-        });
-      },
-      ...options,
-    });
+    const queryKey = [query, filterQueryKey, variables, 'Infinite'];
+
+    return {
+      ...client.prefetchInfiniteQuery({
+        queryKey,
+        queryFn({ signal }) {
+          return infiniteQueryFn({
+            query,
+            variables,
+            list,
+            uniq,
+            signal,
+            entityStoreNodes,
+            onFetchCompleted,
+          });
+        },
+        ...options,
+      }),
+      queryKey,
+    };
   }
 
   function useMutation<Doc extends StringDocumentNode>(
