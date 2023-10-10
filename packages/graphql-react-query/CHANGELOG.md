@@ -1,5 +1,14 @@
 # @soundxyz/graphql-react-query
 
+## 5.1.0
+
+### Minor Changes
+
+- [#118](https://github.com/soundxyz/graphql-react/pull/118)
+  [`5fe8b4c`](https://github.com/soundxyz/graphql-react/commit/5fe8b4c1cffd5e881c2cc05f43152ecd4998514c)
+  Thanks [@PabloSzx](https://github.com/PabloSzx)! - Expose queryKey on useQuery and
+  useInfiniteQuery
+
 ## 5.0.1
 
 ### Patch Changes
