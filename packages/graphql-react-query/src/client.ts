@@ -886,24 +886,21 @@ export function GraphQLReactQueryClient<
 
     const queryKey = [query, filterQueryKey, variables, 'Infinite'];
 
-    return {
-      ...client.prefetchInfiniteQuery({
-        queryKey,
-        queryFn({ signal }) {
-          return infiniteQueryFn({
-            query,
-            variables,
-            list,
-            uniq,
-            signal,
-            entityStoreNodes,
-            onFetchCompleted,
-          });
-        },
-        ...options,
-      }),
+    return client.prefetchInfiniteQuery({
       queryKey,
-    };
+      queryFn({ signal }) {
+        return infiniteQueryFn({
+          query,
+          variables,
+          list,
+          uniq,
+          signal,
+          entityStoreNodes,
+          onFetchCompleted,
+        });
+      },
+      ...options,
+    });
   }
 
   function useMutation<Doc extends StringDocumentNode>(
