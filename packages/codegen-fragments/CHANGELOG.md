@@ -1,5 +1,13 @@
 # @soundxyz/codegen-fragments
 
+## 2.0.1
+
+### Patch Changes
+
+- [`7140944`](https://github.com/soundxyz/graphql-react/commit/714094420b78cfe1fd846ca9dc2b1bbf0c48fea2)
+  Thanks [@PabloSzx](https://github.com/PabloSzx)! - Fix graphql-codegen/core peer dependency
+  version
+
 ## 2.0.0
 
 ### Major Changes
