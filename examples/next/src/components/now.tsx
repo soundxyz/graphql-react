@@ -1,6 +1,6 @@
 import { gql } from '../client/query';
 import { TestFragmentFragmentDoc } from '../generated/documents';
-import { FragmentType, getFragment } from '../generated/fragment-masking';
+import { type FragmentType, getFragment } from '../generated/fragment-masking';
 
 gql`
   fragment TestFragment on Query {
