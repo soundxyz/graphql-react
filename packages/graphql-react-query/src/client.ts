@@ -983,6 +983,7 @@ export function GraphQLReactQueryClient<
     invalidateOperations,
     resetOperations,
     Effects,
+    infiniteQueryKey,
   };
 
   return GraphQLReactQuery;
