@@ -1,5 +1,12 @@
 # @soundxyz/graphql-react-query
 
+## 5.1.1
+
+### Patch Changes
+
+- [`97ef843`](https://github.com/soundxyz/graphql-react/commit/97ef8431f389d7cd337ae24deef9ad05251bb317)
+  Thanks [@PabloSzx](https://github.com/PabloSzx)! - Export infiniteQueryKey helper
+
 ## 5.1.0
 
 ### Minor Changes
