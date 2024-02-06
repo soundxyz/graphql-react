@@ -1,5 +1,11 @@
 # @soundxyz/graphql-react-query
 
+## 5.1.2
+
+### Patch Changes
+
+- [#142](https://github.com/soundxyz/graphql-react/pull/142) [`708750fc83ed8ed220d97342ff8a930963b942a5`](https://github.com/soundxyz/graphql-react/commit/708750fc83ed8ed220d97342ff8a930963b942a5) Thanks [@PabloSzx](https://github.com/PabloSzx)! - Wipe entity store nodes when setting infinite query data
+
 ## 5.1.1
 
 ### Patch Changes
