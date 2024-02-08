@@ -103,7 +103,7 @@ export function GraphQLReactQueryClient<
 
   skipAbort?: [StringDocumentNode, ...StringDocumentNode[]] | boolean;
 
-  getPartialHeaders?(): Promise<Partial<Record<string, string>>>;
+  getPartialHeaders?(): Promise<Partial<Record<string, string>>> | Partial<Record<string, string>>;
 }) {
   const skipAbortSet = skipAbort ? (skipAbort === true ? true : new Set<string>(skipAbort)) : null;
 
