@@ -91,6 +91,8 @@ export function GraphQLReactQueryClient<
   fetcher: fetcherConfig,
 
   skipAbort,
+
+  getPartialHeaders,
 }: {
   clientConfig?: QueryClientConfig;
   endpoint: string;
@@ -100,6 +102,8 @@ export function GraphQLReactQueryClient<
   fetcher?: Fetcher;
 
   skipAbort?: [StringDocumentNode, ...StringDocumentNode[]] | boolean;
+
+  getPartialHeaders?(): Promise<Partial<Record<string, string>>> | Partial<Record<string, string>>;
 }) {
   const skipAbortSet = skipAbort ? (skipAbort === true ? true : new Set<string>(skipAbort)) : null;
 
@@ -201,6 +205,7 @@ export function GraphQLReactQueryClient<
           ...headersGlobal,
           ...fetchOptions?.headers,
           ...extraFetchOptions?.headers,
+          ...(getPartialHeaders ? await getPartialHeaders() : {}),
         }),
       },
     });
