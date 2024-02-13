@@ -685,6 +685,8 @@ export function GraphQLReactQueryClient<
 
       enabled = true,
 
+      customPages,
+
       ...options
     }: Omit<
       UseInfiniteQueryOptions<ExecutionResultWithData<ResultOf<Doc>>, Error>,
@@ -712,6 +714,8 @@ export function GraphQLReactQueryClient<
         list(result: ResultOf<Doc>): Entity[] | null | undefined | false | '' | 0;
         uniq(entity: Entity): string;
         order?: readonly [AtLeastOne<(entity: Entity) => unknown>, AtLeastOne<'asc' | 'desc'>];
+
+        customPages?: Array<ExecutionResultWithData<ResultOf<Doc>>>;
       },
   ) {
     const entityStore = (infiniteQueryStores[query + JSON.stringify(filterQueryKey)] ||= proxy({
@@ -822,7 +826,10 @@ export function GraphQLReactQueryClient<
       const currentUniq = latestUniq.current;
       const currentOrder = latestOrder.current;
 
-      const values = data.pages.reduce((acc: Record<string, Entity>, page) => {
+      function reduceAccumulatedPages(
+        acc: Record<string, Entity>,
+        page: ExecutionResultWithData<ResultOf<Doc>>,
+      ) {
         const listValues = page.data ? currentListFn(page.data) || [] : [];
 
         for (const entity of listValues) {
@@ -833,12 +840,16 @@ export function GraphQLReactQueryClient<
         }
 
         return acc;
-      }, {});
+      }
+
+      const initialValues = customPages ? customPages.reduce(reduceAccumulatedPages, {}) : {};
+
+      const values = data.pages.reduce(reduceAccumulatedPages, initialValues);
 
       if (currentOrder) return orderBy(values, currentOrder, stableOrderType);
 
       return Object.values(values);
-    }, [stableOrderType, data, entityStoreNodesSnapshot]);
+    }, [stableOrderType, data, entityStoreNodesSnapshot, customPages]);
 
     return {
       ...result,
