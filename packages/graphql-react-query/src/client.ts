@@ -738,8 +738,6 @@ export function GraphQLReactQueryClient<
         >,
         options?: SetDataOptions,
       ) => {
-        entityStore.nodes = {};
-
         setInfiniteQueryData(
           {
             query,
