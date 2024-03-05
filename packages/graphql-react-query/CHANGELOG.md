@@ -1,5 +1,22 @@
 # @soundxyz/graphql-react-query
 
+## 5.2.0
+
+### Minor Changes
+
+- [#149](https://github.com/soundxyz/graphql-react/pull/149) [`c0098cb80491432026a3a2a6bc42d9624f281c86`](https://github.com/soundxyz/graphql-react/commit/c0098cb80491432026a3a2a6bc42d9624f281c86) Thanks [@PabloSzx](https://github.com/PabloSzx)! - New "graphqlFetcherConfig.onErrorWithoutData" configuration to be able to intercept error handling
+
+- [#147](https://github.com/soundxyz/graphql-react/pull/147) [`7f9c00644cf2449b87944647f23a92e7d21e50b4`](https://github.com/soundxyz/graphql-react/commit/7f9c00644cf2449b87944647f23a92e7d21e50b4) Thanks [@PabloSzx](https://github.com/PabloSzx)! - New "customPages" option on useInfiniteQuery
+
+  This option can be used to be able to add a list of arbitrary pages of data into the resulting "orderedList" data.
+  One use-case is for optimistic operations to be able to have temporary pages that are going to be in the pagination ordered results.
+
+  This list is recommended to be memoized or live outside of the React life-cycle using solutions like Valtio.
+
+### Patch Changes
+
+- [#145](https://github.com/soundxyz/graphql-react/pull/145) [`58c7ef4d50bdf0709a0b69d9beeef3d8beeef882`](https://github.com/soundxyz/graphql-react/commit/58c7ef4d50bdf0709a0b69d9beeef3d8beeef882) Thanks [@PabloSzx](https://github.com/PabloSzx)! - Get partial headers new option
+
 ## 5.1.2
 
 ### Patch Changes
