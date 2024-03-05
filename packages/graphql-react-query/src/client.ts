@@ -60,7 +60,7 @@ export type EffectCallback<Result, Variables> = ({
  */
 export type GraphQLFetcherConfig = {
   /**
-   * Called when one or more GraphQL error occur and there's no extra-data to given by the server alongside the errors
+   * Called when one or more GraphQL errors occur and there's no extra-data to given by the server alongside the errors
    */
   onErrorWithoutData?(info: {
     error: Error;
