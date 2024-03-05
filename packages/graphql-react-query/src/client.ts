@@ -39,7 +39,7 @@ import type {
   SetDataOptions,
   Updater,
 } from '@tanstack/react-query';
-import type { ExecutionResult } from 'graphql';
+import type { ExecutionResult, GraphQLError } from 'graphql';
 
 export type ExecutionResultWithData<Data> = Omit<ExecutionResult, 'data'> & { data: Data };
 
@@ -54,6 +54,15 @@ export type EffectCallback<Result, Variables> = ({
   result: ExecutionResultWithData<Result>;
   variables?: Variables;
 }) => void;
+
+type GraphQLFetcherConfig = {
+  onErrorWithoutData(info: {
+    error: Error;
+    query: string;
+    variables: Record<string, unknown> | undefined;
+    graphqlErrors?: ReadonlyArray<GraphQLError>;
+  }): never;
+};
 
 export type Fetcher = <Doc extends StringDocumentNode>(args: {
   query: Doc | string;
@@ -93,11 +102,15 @@ export function GraphQLReactQueryClient<
   skipAbort,
 
   getPartialHeaders,
+
+  graphqlFetcherConfig,
 }: {
   clientConfig?: QueryClientConfig;
   endpoint: string;
   headers: Readonly<Partial<Record<string, string>>>;
   fetchOptions?: Partial<RequestInit>;
+
+  graphqlFetcherConfig?: GraphQLFetcherConfig;
 
   fetcher?: Fetcher;
 
@@ -213,38 +226,64 @@ export function GraphQLReactQueryClient<
     if (!data) {
       if (errors?.length) {
         if (errors.length > 1) {
-          const err = Error('Multiple Errors', {
+          const error = Error('Multiple GraphQL Errors', {
             cause: {
               errors,
+              query,
+              variables,
             },
           });
 
           for (const err of errors) {
             console.error(err);
           }
-          Object.assign(err, {
+          Object.assign(error, {
             graphqlErrors: errors,
           });
 
-          throw err;
+          graphqlFetcherConfig?.onErrorWithoutData({
+            error,
+            query,
+            variables,
+            graphqlErrors: errors,
+          });
+
+          throw error;
         }
 
         const { message } = errors[0]!;
 
-        throw new Error(message, {
+        const error = new Error(message, {
           cause: {
             query,
             variables,
           },
         });
+
+        graphqlFetcherConfig?.onErrorWithoutData({
+          error,
+          query,
+          variables,
+          graphqlErrors: errors,
+        });
+
+        throw error;
       }
 
-      throw Error('Unexpected missing data', {
+      const error = Error('Unexpected missing data', {
         cause: {
           query,
           variables,
         },
       });
+
+      graphqlFetcherConfig?.onErrorWithoutData({
+        error,
+        query,
+        variables,
+      });
+
+      throw error;
     }
 
     const effects = effectsStore[query];
