@@ -55,13 +55,19 @@ export type EffectCallback<Result, Variables> = ({
   variables?: Variables;
 }) => void;
 
-type GraphQLFetcherConfig = {
-  onErrorWithoutData(info: {
+/**
+ * Customize behavior of the internal GraphQL-specific fetcher
+ */
+export type GraphQLFetcherConfig = {
+  /**
+   * Called when one or more GraphQL error occur and there's no extra-data to given by the server alongside the errors
+   */
+  onErrorWithoutData?(info: {
     error: Error;
     query: string;
     variables: Record<string, unknown> | undefined;
     graphqlErrors?: ReadonlyArray<GraphQLError>;
-  }): never;
+  }): unknown;
 };
 
 export type Fetcher = <Doc extends StringDocumentNode>(args: {
@@ -241,7 +247,7 @@ export function GraphQLReactQueryClient<
             graphqlErrors: errors,
           });
 
-          graphqlFetcherConfig?.onErrorWithoutData({
+          graphqlFetcherConfig?.onErrorWithoutData?.({
             error,
             query,
             variables,
@@ -260,7 +266,7 @@ export function GraphQLReactQueryClient<
           },
         });
 
-        graphqlFetcherConfig?.onErrorWithoutData({
+        graphqlFetcherConfig?.onErrorWithoutData?.({
           error,
           query,
           variables,
@@ -277,7 +283,7 @@ export function GraphQLReactQueryClient<
         },
       });
 
-      graphqlFetcherConfig?.onErrorWithoutData({
+      graphqlFetcherConfig?.onErrorWithoutData?.({
         error,
         query,
         variables,
