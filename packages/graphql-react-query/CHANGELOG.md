@@ -1,5 +1,11 @@
 # @soundxyz/graphql-react-query
 
+## 5.3.0
+
+### Minor Changes
+
+- [`af401b23901b92719c32b7cc4392cc08c33993ba`](https://github.com/soundxyz/graphql-react/commit/af401b23901b92719c32b7cc4392cc08c33993ba) Thanks [@PabloSzx](https://github.com/PabloSzx)! - New "filter" option is useInfiniteQuery
+
 ## 5.2.0
 
 ### Minor Changes
