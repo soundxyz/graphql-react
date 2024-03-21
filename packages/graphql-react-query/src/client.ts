@@ -731,6 +731,7 @@ export function GraphQLReactQueryClient<
       enabled = true,
 
       customPages,
+      filter,
 
       ...options
     }: Omit<
@@ -759,6 +760,8 @@ export function GraphQLReactQueryClient<
         list(result: ResultOf<Doc>): Entity[] | null | undefined | false | '' | 0;
         uniq(entity: Entity): string;
         order?: readonly [AtLeastOne<(entity: Entity) => unknown>, AtLeastOne<'asc' | 'desc'>];
+
+        filter?(v: Entity): unknown;
 
         customPages?: Array<ExecutionResultWithData<ResultOf<Doc>>>;
       },
@@ -875,11 +878,22 @@ export function GraphQLReactQueryClient<
       ) {
         const listValues = page.data ? currentListFn(page.data) || [] : [];
 
-        for (const entity of listValues) {
-          const key = currentUniq(entity);
+        if (filter) {
+          for (const entity of listValues) {
+            if (!filter(entity)) continue;
 
-          // "entityStoreNodes" makes sure that whatever the order the data is, we always use the latest version available of the entity from the api
-          acc[key] = entityStoreNodesSnapshot[key] || entity;
+            const key = currentUniq(entity);
+
+            // "entityStoreNodes" makes sure that whatever the order the data is, we always use the latest version available of the entity from the api
+            acc[key] = entityStoreNodesSnapshot[key] || entity;
+          }
+        } else {
+          for (const entity of listValues) {
+            const key = currentUniq(entity);
+
+            // "entityStoreNodes" makes sure that whatever the order the data is, we always use the latest version available of the entity from the api
+            acc[key] = entityStoreNodesSnapshot[key] || entity;
+          }
         }
 
         return acc;
@@ -892,7 +906,7 @@ export function GraphQLReactQueryClient<
       if (currentOrder) return orderBy(values, currentOrder, stableOrderType);
 
       return Object.values(values);
-    }, [stableOrderType, data, entityStoreNodesSnapshot, customPages]);
+    }, [stableOrderType, data, entityStoreNodesSnapshot, customPages, filter]);
 
     return {
       ...result,
