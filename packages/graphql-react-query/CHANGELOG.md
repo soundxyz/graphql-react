@@ -1,5 +1,11 @@
 # @soundxyz/graphql-react-query
 
+## 5.4.1
+
+### Patch Changes
+
+- [`de16ba771164c0b1da3a2e72925d7659fb4a18ac`](https://github.com/soundxyz/graphql-react/commit/de16ba771164c0b1da3a2e72925d7659fb4a18ac) Thanks [@PabloSzx](https://github.com/PabloSzx)! - Include query and variables on fetch errors
+
 ## 5.4.0
 
 ### Minor Changes
