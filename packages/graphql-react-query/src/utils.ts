@@ -54,3 +54,11 @@ export type RequireAtLeastOne<T, Keys extends keyof T = keyof T> = Pick<T, Exclu
   {
     [K in Keys]-?: Required<Pick<T, K>> & Partial<Pick<T, Exclude<Keys, K>>>;
   }[Keys];
+
+export function getErrorInstance(error: unknown): Error {
+  return error instanceof Error
+    ? error
+    : new Error('Unexpected error', {
+        cause: error,
+      });
+}
