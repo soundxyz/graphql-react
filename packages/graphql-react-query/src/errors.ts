@@ -3,9 +3,21 @@ import type { GraphQLError } from 'graphql';
 export class FetchNetworkError extends Error {
   public name = 'FetchNetworkError' as const;
   public originalError: Error;
-  constructor(message: string, { originalError }: { originalError: Error }) {
+  public query: string;
+  public variables: Record<string, unknown> | undefined;
+
+  constructor(
+    message: string,
+    {
+      originalError,
+      query,
+      variables,
+    }: { originalError: Error; query: string; variables: Record<string, unknown> | undefined },
+  ) {
     super(message, { cause: originalError });
     this.originalError = originalError;
+    this.query = query;
+    this.variables = variables;
   }
 }
 
@@ -14,22 +26,31 @@ export class FetchNetworkUnexpectedNonJsonPayload extends Error {
   public originalError: Error;
   public textBody: string | null;
   public response: Response;
+  public query: string;
+  public variables: Record<string, unknown> | undefined;
+
   constructor(
     message: string,
     {
       originalError,
       textBody,
       response,
+      query,
+      variables,
     }: {
       originalError: Error;
       textBody: string | null;
       response: Response;
+      query: string;
+      variables: Record<string, unknown> | undefined;
     },
   ) {
     super(message, { cause: originalError });
     this.originalError = originalError;
     this.textBody = textBody;
     this.response = response;
+    this.query = query;
+    this.variables = variables;
   }
 }
 
@@ -38,22 +59,31 @@ export class FetchNetworkUnexpectedPayloadShape extends Error {
   public originalError: Error;
   public body: unknown;
   public response: Response;
+  public query: string;
+  public variables: Record<string, unknown> | undefined;
+
   constructor(
     message: string,
     {
       originalError,
       body,
       response,
+      query,
+      variables,
     }: {
       originalError: Error;
       body: unknown;
       response: Response;
+      query: string;
+      variables: Record<string, unknown> | undefined;
     },
   ) {
     super(message, { cause: originalError });
     this.originalError = originalError;
     this.body = body;
     this.response = response;
+    this.query = query;
+    this.variables = variables;
   }
 }
 

@@ -237,6 +237,8 @@ export function GraphQLReactQueryClient<
           const originalError = getErrorInstance(originalErrorUnknown);
           const error = new FetchNetworkError('Network error, fetch failed', {
             originalError,
+            query,
+            variables,
           });
           graphqlFetcherConfig?.onFetchNetworkError?.(error);
 
@@ -256,6 +258,8 @@ export function GraphQLReactQueryClient<
             originalError,
             textBody: res.json.text,
             response: res.response,
+            query,
+            variables,
           },
         );
 
@@ -276,6 +280,8 @@ export function GraphQLReactQueryClient<
           originalError: responseJson.error,
           response: res.response,
           body: res.json.value,
+          query,
+          variables,
         },
       );
 
