@@ -1,5 +1,11 @@
 # @soundxyz/graphql-react-query
 
+## 5.4.2
+
+### Patch Changes
+
+- [`fd5738bf1c2d89217236dce4b0e24f9a6ce5c1a8`](https://github.com/soundxyz/graphql-react/commit/fd5738bf1c2d89217236dce4b0e24f9a6ce5c1a8) Thanks [@PabloSzx](https://github.com/PabloSzx)! - Fix Single graphql error message
+
 ## 5.4.1
 
 ### Patch Changes
