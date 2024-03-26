@@ -11,15 +11,16 @@ import {
   QueryClientConfig,
   QueryClientProvider,
   QueryKey,
-  useInfiniteQuery as useInfiniteReactQuery,
   UseInfiniteQueryOptions,
-  useMutation as useMutationReactQuery,
+  useInfiniteQuery as useInfiniteReactQuery,
   UseMutationOptions,
-  useQuery as useQueryReactQuery,
+  useMutation as useMutationReactQuery,
   UseQueryOptions,
+  useQuery as useQueryReactQuery,
 } from './reactQuery';
 import {
   filterUndefined,
+  getErrorInstance,
   RequireAtLeastOne,
   useLatestRef,
   useProxySnapshot,
@@ -40,6 +41,14 @@ import type {
   Updater,
 } from '@tanstack/react-query';
 import type { ExecutionResult, GraphQLError } from 'graphql';
+import {
+  FetchNetworkError,
+  FetchNetworkUnexpectedNonJsonPayload,
+  FetchNetworkUnexpectedPayloadShape,
+  MultipleGraphQLErrors,
+  SingleGraphQLError,
+  UnexpectedMissingGraphQLData,
+} from './errors';
 
 export type ExecutionResultWithData<Data> = Omit<ExecutionResult, 'data'> & { data: Data };
 
@@ -63,11 +72,31 @@ export type GraphQLFetcherConfig = {
    * Called when one or more GraphQL errors occur and there's no extra-data to given by the server alongside the errors
    */
   onErrorWithoutData?(info: {
-    error: Error;
+    error: MultipleGraphQLErrors | SingleGraphQLError | UnexpectedMissingGraphQLData;
     query: string;
     variables: Record<string, unknown> | undefined;
     graphqlErrors?: ReadonlyArray<GraphQLError>;
   }): unknown;
+
+  /**
+   * Called when a network error occurs when calling fetch.
+   *
+   * This is called before the error is thrown, so you can handle it in a custom way.
+   *
+   * This function is not called with custom fetchers.
+   */
+  onFetchNetworkError?(error: FetchNetworkError): never;
+
+  /**
+   * Called when the fetcher receives a non-json or unexpected shape payload
+   *
+   * This is called before the error is thrown, so you can handle it in a custom way.
+   *
+   * This function is not called with custom fetchers.
+   */
+  onUnexpectedPayload?(
+    error: FetchNetworkUnexpectedNonJsonPayload | FetchNetworkUnexpectedPayloadShape,
+  ): never;
 };
 
 export type Fetcher = <Doc extends StringDocumentNode>(args: {
@@ -140,6 +169,7 @@ export function GraphQLReactQueryClient<
       | {
           ok: false;
           error: unknown;
+          text: string | null;
         };
   };
 
@@ -166,39 +196,92 @@ export function GraphQLReactQueryClient<
           headers,
         },
       ).then((response): Promise<FetchResult> => {
-        return response
-          .json()
-          .then(value => ({ response, json: { ok: true, value } }) as const)
-          .catch(error => ({ response, json: { ok: false, error } }) as const);
-      }))
-        .catch(cause => {
-          console.error(cause);
-          throw Error('Network error, fetch failed', {
-            cause,
+        const cloneResponse = response.clone();
+
+        const jsonPromise: Promise<unknown> = cloneResponse.json();
+
+        return jsonPromise
+          .then(value => {
+            return {
+              response,
+              json: { ok: true, value },
+            } as const;
+          })
+          .catch(error => {
+            const textPromise = cloneResponse.text();
+
+            return textPromise
+              .then(text => {
+                return {
+                  response,
+                  json: {
+                    ok: false,
+                    error,
+                    text,
+                  },
+                } as const;
+              })
+              .catch(() => {
+                return {
+                  response,
+                  json: {
+                    ok: false,
+                    error,
+                    text: null,
+                  },
+                } as const;
+              });
           });
+      }))
+        .catch((originalErrorUnknown: unknown) => {
+          const originalError = getErrorInstance(originalErrorUnknown);
+          const error = new FetchNetworkError('Network error, fetch failed', {
+            originalError,
+          });
+          graphqlFetcherConfig?.onFetchNetworkError?.(error);
+
+          console.error(originalError);
+          console.error(error);
+          throw error;
         })
         .finally(() => {
           uniqueFetches[fetchKey] = null;
         });
 
       if (!res.json.ok) {
-        console.error(res.response);
-        console.error(res.json.error);
-        throw Error(
-          `Network error, unexpected payload. Response status code ${res.response.status}`,
+        const originalError = getErrorInstance(res.json.error);
+        const error = new FetchNetworkUnexpectedNonJsonPayload(
+          'Network error, unexpected non-json payload',
           {
-            cause: res.json.error,
+            originalError,
+            textBody: res.json.text,
+            response: res.response,
           },
         );
+
+        graphqlFetcherConfig?.onUnexpectedPayload?.(error);
+
+        console.error(res.response);
+        console.error(originalError);
+        throw error;
       }
 
       const responseJson = GraphQLExecutionResultSchema.safeParse(res.json.value);
 
       if (responseJson.success) return responseJson.data as ExecutionResult<any>;
 
-      throw Error(`Unexpected API payload`, {
-        cause: responseJson.error,
-      });
+      const error = new FetchNetworkUnexpectedPayloadShape(
+        'Network error, unexpected json payload shape',
+        {
+          originalError: responseJson.error,
+          response: res.response,
+          body: res.json.value,
+        },
+      );
+
+      graphqlFetcherConfig?.onUnexpectedPayload?.(error);
+
+      throw error;
     };
 
   async function GQLFetcher<Doc extends StringDocumentNode>({
@@ -232,19 +315,10 @@ export function GraphQLReactQueryClient<
     if (!data) {
       if (errors?.length) {
         if (errors.length > 1) {
-          const error = Error('Multiple GraphQL Errors', {
-            cause: {
-              errors,
-              query,
-              variables,
-            },
-          });
-
-          for (const err of errors) {
-            console.error(err);
-          }
-          Object.assign(error, {
-            graphqlErrors: errors,
+          const error = new MultipleGraphQLErrors({
+            errors,
+            query,
+            variables,
           });
 
           graphqlFetcherConfig?.onErrorWithoutData?.({
@@ -254,16 +328,17 @@ export function GraphQLReactQueryClient<
             graphqlErrors: errors,
           });
 
+          for (const err of errors) {
+            console.error(err);
+          }
+
           throw error;
         }
 
-        const { message } = errors[0]!;
-
-        const error = new Error(message, {
-          cause: {
-            query,
-            variables,
-          },
+        const error = new SingleGraphQLError({
+          error: errors[0]!,
+          query,
+          variables,
         });
 
         graphqlFetcherConfig?.onErrorWithoutData?.({
@@ -276,11 +351,9 @@ export function GraphQLReactQueryClient<
         throw error;
       }
 
-      const error = Error('Unexpected missing data', {
-        cause: {
-          query,
-          variables,
-        },
+      const error = new UnexpectedMissingGraphQLData({
+        query,
+        variables,
       });
 
       graphqlFetcherConfig?.onErrorWithoutData?.({
@@ -654,16 +727,10 @@ export function GraphQLReactQueryClient<
             },
     });
 
-    try {
-      for (const node of list(response.data) || []) {
-        const key = uniq(node);
+    for (const node of list(response.data) || []) {
+      const key = uniq(node);
 
-        entityStoreNodes[key] = node;
-      }
-    } catch (cause) {
-      throw Error('Internal server error. Unexpected payload', {
-        cause,
-      });
+      entityStoreNodes[key] = node;
     }
 
     if (onFetchCompleted) {
