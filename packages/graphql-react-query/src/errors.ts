@@ -122,7 +122,7 @@ export class SingleGraphQLError extends Error {
     query: string;
     variables: typeof SingleGraphQLError.prototype.variables;
   }) {
-    super('Single GraphQL error', { cause: error.message });
+    super(error.message, { cause: error.message });
     this.error = error;
     this.query = query;
     this.variables = variables;
