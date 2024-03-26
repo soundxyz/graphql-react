@@ -1,5 +1,12 @@
 # @soundxyz/graphql-react-query
 
+## 5.4.0
+
+### Minor Changes
+
+- [#151](https://github.com/soundxyz/graphql-react/pull/151) [`9f21f0b012bc17b8a2dd6536df835caf1a896ec4`](https://github.com/soundxyz/graphql-react/commit/9f21f0b012bc17b8a2dd6536df835caf1a896ec4) Thanks [@PabloSzx](https://github.com/PabloSzx)! - Improve error handling, with custom graphqlFetcherConfig.onFetchNetworkError and
+  graphqlFetcherConfig.onUnexpectedPayload options, and custom error class instances
+
 ## 5.3.0
 
 ### Minor Changes
