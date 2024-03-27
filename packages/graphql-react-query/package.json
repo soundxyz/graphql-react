@@ -31,10 +31,10 @@
   "peerDependencies": {
     "@soundxyz/gql-string": "workspace:^",
     "@tanstack/react-query": "^4.35.7",
-    "@types/react": ">=17",
+    "@types/react": ">=18.2.73",
     "lodash-es": "^4.17.21",
     "ms": "3.0.0-canary.1",
-    "react": ">=17",
+    "react": ">=18.2.0",
     "valtio": "^1.11.2",
     "zod": "^3.22.2"
   },
