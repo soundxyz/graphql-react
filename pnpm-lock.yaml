@@ -240,8 +240,8 @@ importers:
         specifier: ^3.1.3
         version: 3.1.3
       graphql-ws:
-        specifier: ^5.14.1
-        version: 5.14.1(graphql@16.8.1)
+        specifier: ^5.16.0
+        version: 5.16.0(graphql@16.8.1)
     devDependencies:
       '@soundxyz/gql-string':
         specifier: workspace:^0.1.0
@@ -1586,7 +1586,7 @@ packages:
       '@graphql-tools/utils': 10.0.7(graphql@16.8.1)
       '@types/ws': 8.5.6
       graphql: 16.8.1
-      graphql-ws: 5.14.1(graphql@16.8.1)
+      graphql-ws: 5.16.0(graphql@16.8.1)
       isomorphic-ws: 5.0.0(ws@8.14.2)
       tslib: 2.6.2
       ws: 8.14.2
@@ -3514,8 +3514,8 @@ packages:
       tslib: 2.6.2
     dev: false
 
-  /graphql-ws@5.14.1(graphql@16.8.1):
-    resolution: {integrity: sha512-aqkls1espsygP1PfkAuuLIV96IbztQ6EaADse97pw8wRIMT3+AL/OYfS8V2iCRkc0gzckitoDRGCQEdnySggiA==}
+  /graphql-ws@5.16.0(graphql@16.8.1):
+    resolution: {integrity: sha512-Ju2RCU2dQMgSKtArPbEtsK5gNLnsQyTNIo/T7cZNp96niC1x0KdJNZV0TIoilceBPQwfb5itrGl8pkFeOUMl4A==}
     engines: {node: '>=10'}
     peerDependencies:
       graphql: '>=0.11 <=16'
