@@ -14,7 +14,7 @@
   "devDependencies": {
     "@soundxyz/gql-string": "workspace:*",
     "@tanstack/react-query": "^4.35.7",
-    "@types/lodash-es": "^4.17.9",
+    "@types/lodash-es": "^4.17.12",
     "@types/node": "^20.8.6",
     "@types/react": "^18.2.28",
     "bob-ts": "^4.1.1",
