@@ -1,5 +1,5 @@
 import orderBy from 'lodash-es/orderBy.js';
-import ms, { StringValue } from 'ms';
+import ms, { StringValue } from '@soundxyz/ms';
 import { createElement, ReactNode, useMemo, useState } from 'react';
 import { proxy } from 'valtio';
 import { z } from 'zod';

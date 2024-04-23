@@ -22,7 +22,6 @@
     "esbuild": "^0.19.5",
     "graphql": "^16.8.1",
     "lodash-es": "^4.17.21",
-    "ms": "3.0.0-canary.1",
     "react": "^18.2.0",
     "typescript": "^5.2.2",
     "valtio": "^1.11.2",
@@ -33,7 +32,6 @@
     "@tanstack/react-query": "^4.35.7",
     "@types/react": ">=17",
     "lodash-es": "^4.17.21",
-    "ms": "3.0.0-canary.1",
     "react": ">=17",
     "valtio": "^1.11.2",
     "zod": "^3.22.2"
@@ -42,6 +40,7 @@
     "directory": "dist"
   },
   "dependencies": {
+    "@soundxyz/ms": "3.0.0-canary.2",
     "fast-deep-equal": "^3.1.3"
   }
 }
