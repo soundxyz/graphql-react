@@ -1,5 +1,11 @@
 # @soundxyz/graphql-react-query
 
+## 5.4.3
+
+### Patch Changes
+
+- [`57e2547a81e15f32fc944b59a818e233ca657c67`](https://github.com/soundxyz/graphql-react/commit/57e2547a81e15f32fc944b59a818e233ca657c67) Thanks [@PabloSzx](https://github.com/PabloSzx)! - Use @soundxyz/ms instead of ms
+
 ## 5.4.2
 
 ### Patch Changes
