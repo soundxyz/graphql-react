@@ -572,11 +572,14 @@ export function GraphQLReactQueryClient<
   ) {
     const queryKey =
       filterQueryKey !== undefined ? [query, variables, filterQueryKey] : [query, variables];
+
+    const isEnabled = enabled && variables !== false;
+
     const result = useQueryReactQuery<ExecutionResultWithData<ResultOf<Doc>>, Error, QueryData>({
       queryFn: fetchOptions ? queryFnWithFetchOptions(fetchOptions) : defaultQueryFn,
       queryKey,
       ...options,
-      enabled: enabled && variables !== false,
+      enabled: isEnabled,
       staleTime: getTimeProp(staleTime),
       cacheTime: cacheTime != null ? getTimeProp(cacheTime) : undefined,
     });
@@ -604,11 +607,18 @@ export function GraphQLReactQueryClient<
       },
     );
 
+    const refetch = useStableCallback((...params: Parameters<typeof result.refetch>) => {
+      if (!isEnabled) return;
+
+      return result.refetch(...params);
+    });
+
     return {
       ...result,
       isLoading: result.isInitialLoading,
       setQueryData: setQueryDataCallback,
       queryKey,
+      refetch,
     };
   }
 
@@ -874,6 +884,8 @@ export function GraphQLReactQueryClient<
       null,
     );
 
+    const isEnabled = enabled && !!variables;
+
     const result = useInfiniteReactQuery({
       staleTime: getTimeProp(staleTime),
       cacheTime: cacheTime != null ? getTimeProp(cacheTime) : undefined,
@@ -902,7 +914,7 @@ export function GraphQLReactQueryClient<
             throw Error(`Missing variables required to execute query!`);
           },
       ...options,
-      enabled: enabled && !!variables,
+      enabled: isEnabled,
     });
 
     const {
@@ -916,12 +928,16 @@ export function GraphQLReactQueryClient<
     } = result;
 
     const loadMoreNextPage = useStableCallback(() => {
+      if (!isEnabled) return;
+
       if (hasNextPage && !isFetchingNextPage) return fetchNextPage();
 
       return null;
     });
 
     const loadMorePreviousPage = useStableCallback(() => {
+      if (!isEnabled) return;
+
       if (hasPreviousPage && !isFetchingPreviousPage) return fetchPreviousPage();
 
       return null;
@@ -981,6 +997,12 @@ export function GraphQLReactQueryClient<
       return Object.values(values);
     }, [stableOrderType, data, entityStoreNodesSnapshot, customPages, filter]);
 
+    const refetch = useStableCallback((...params: Parameters<typeof result.refetch>) => {
+      if (!isEnabled) return;
+
+      return result.refetch(...params);
+    });
+
     return {
       ...result,
       isLoadingNewPage:
@@ -995,6 +1017,7 @@ export function GraphQLReactQueryClient<
       setInfiniteQueryData: setInfiniteQueryDataCallback,
       latestData,
       queryKey,
+      refetch,
     };
   }
 
