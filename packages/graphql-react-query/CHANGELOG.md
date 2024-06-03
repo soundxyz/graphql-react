@@ -1,58 +1,86 @@
 # @soundxyz/graphql-react-query
 
+## 5.5.0
+
+### Minor Changes
+
+- [#158](https://github.com/soundxyz/graphql-react/pull/158)
+  [`56813ee0430d3309c38de3885068e8258e8a8279`](https://github.com/soundxyz/graphql-react/commit/56813ee0430d3309c38de3885068e8258e8a8279)
+  Thanks [@PabloSzx](https://github.com/PabloSzx)! - Underlying refetch is not called if query is
+  not enabled or variables is false
+
 ## 5.4.3
 
 ### Patch Changes
 
-- [`57e2547a81e15f32fc944b59a818e233ca657c67`](https://github.com/soundxyz/graphql-react/commit/57e2547a81e15f32fc944b59a818e233ca657c67) Thanks [@PabloSzx](https://github.com/PabloSzx)! - Use @soundxyz/ms instead of ms
+- [`57e2547a81e15f32fc944b59a818e233ca657c67`](https://github.com/soundxyz/graphql-react/commit/57e2547a81e15f32fc944b59a818e233ca657c67)
+  Thanks [@PabloSzx](https://github.com/PabloSzx)! - Use @soundxyz/ms instead of ms
 
 ## 5.4.2
 
 ### Patch Changes
 
-- [`fd5738bf1c2d89217236dce4b0e24f9a6ce5c1a8`](https://github.com/soundxyz/graphql-react/commit/fd5738bf1c2d89217236dce4b0e24f9a6ce5c1a8) Thanks [@PabloSzx](https://github.com/PabloSzx)! - Fix Single graphql error message
+- [`fd5738bf1c2d89217236dce4b0e24f9a6ce5c1a8`](https://github.com/soundxyz/graphql-react/commit/fd5738bf1c2d89217236dce4b0e24f9a6ce5c1a8)
+  Thanks [@PabloSzx](https://github.com/PabloSzx)! - Fix Single graphql error message
 
 ## 5.4.1
 
 ### Patch Changes
 
-- [`de16ba771164c0b1da3a2e72925d7659fb4a18ac`](https://github.com/soundxyz/graphql-react/commit/de16ba771164c0b1da3a2e72925d7659fb4a18ac) Thanks [@PabloSzx](https://github.com/PabloSzx)! - Include query and variables on fetch errors
+- [`de16ba771164c0b1da3a2e72925d7659fb4a18ac`](https://github.com/soundxyz/graphql-react/commit/de16ba771164c0b1da3a2e72925d7659fb4a18ac)
+  Thanks [@PabloSzx](https://github.com/PabloSzx)! - Include query and variables on fetch errors
 
 ## 5.4.0
 
 ### Minor Changes
 
-- [#151](https://github.com/soundxyz/graphql-react/pull/151) [`9f21f0b012bc17b8a2dd6536df835caf1a896ec4`](https://github.com/soundxyz/graphql-react/commit/9f21f0b012bc17b8a2dd6536df835caf1a896ec4) Thanks [@PabloSzx](https://github.com/PabloSzx)! - Improve error handling, with custom graphqlFetcherConfig.onFetchNetworkError and
-  graphqlFetcherConfig.onUnexpectedPayload options, and custom error class instances
+- [#151](https://github.com/soundxyz/graphql-react/pull/151)
+  [`9f21f0b012bc17b8a2dd6536df835caf1a896ec4`](https://github.com/soundxyz/graphql-react/commit/9f21f0b012bc17b8a2dd6536df835caf1a896ec4)
+  Thanks [@PabloSzx](https://github.com/PabloSzx)! - Improve error handling, with custom
+  graphqlFetcherConfig.onFetchNetworkError and graphqlFetcherConfig.onUnexpectedPayload options, and
+  custom error class instances
 
 ## 5.3.0
 
 ### Minor Changes
 
-- [`af401b23901b92719c32b7cc4392cc08c33993ba`](https://github.com/soundxyz/graphql-react/commit/af401b23901b92719c32b7cc4392cc08c33993ba) Thanks [@PabloSzx](https://github.com/PabloSzx)! - New "filter" option is useInfiniteQuery
+- [`af401b23901b92719c32b7cc4392cc08c33993ba`](https://github.com/soundxyz/graphql-react/commit/af401b23901b92719c32b7cc4392cc08c33993ba)
+  Thanks [@PabloSzx](https://github.com/PabloSzx)! - New "filter" option is useInfiniteQuery
 
 ## 5.2.0
 
 ### Minor Changes
 
-- [#149](https://github.com/soundxyz/graphql-react/pull/149) [`c0098cb80491432026a3a2a6bc42d9624f281c86`](https://github.com/soundxyz/graphql-react/commit/c0098cb80491432026a3a2a6bc42d9624f281c86) Thanks [@PabloSzx](https://github.com/PabloSzx)! - New "graphqlFetcherConfig.onErrorWithoutData" configuration to be able to intercept error handling
+- [#149](https://github.com/soundxyz/graphql-react/pull/149)
+  [`c0098cb80491432026a3a2a6bc42d9624f281c86`](https://github.com/soundxyz/graphql-react/commit/c0098cb80491432026a3a2a6bc42d9624f281c86)
+  Thanks [@PabloSzx](https://github.com/PabloSzx)! - New "graphqlFetcherConfig.onErrorWithoutData"
+  configuration to be able to intercept error handling
 
-- [#147](https://github.com/soundxyz/graphql-react/pull/147) [`7f9c00644cf2449b87944647f23a92e7d21e50b4`](https://github.com/soundxyz/graphql-react/commit/7f9c00644cf2449b87944647f23a92e7d21e50b4) Thanks [@PabloSzx](https://github.com/PabloSzx)! - New "customPages" option on useInfiniteQuery
+- [#147](https://github.com/soundxyz/graphql-react/pull/147)
+  [`7f9c00644cf2449b87944647f23a92e7d21e50b4`](https://github.com/soundxyz/graphql-react/commit/7f9c00644cf2449b87944647f23a92e7d21e50b4)
+  Thanks [@PabloSzx](https://github.com/PabloSzx)! - New "customPages" option on useInfiniteQuery
 
-  This option can be used to be able to add a list of arbitrary pages of data into the resulting "orderedList" data.
-  One use-case is for optimistic operations to be able to have temporary pages that are going to be in the pagination ordered results.
+  This option can be used to be able to add a list of arbitrary pages of data into the resulting
+  "orderedList" data. One use-case is for optimistic operations to be able to have temporary pages
+  that are going to be in the pagination ordered results.
 
-  This list is recommended to be memoized or live outside of the React life-cycle using solutions like Valtio.
+  This list is recommended to be memoized or live outside of the React life-cycle using solutions
+  like Valtio.
 
 ### Patch Changes
 
-- [#145](https://github.com/soundxyz/graphql-react/pull/145) [`58c7ef4d50bdf0709a0b69d9beeef3d8beeef882`](https://github.com/soundxyz/graphql-react/commit/58c7ef4d50bdf0709a0b69d9beeef3d8beeef882) Thanks [@PabloSzx](https://github.com/PabloSzx)! - Get partial headers new option
+- [#145](https://github.com/soundxyz/graphql-react/pull/145)
+  [`58c7ef4d50bdf0709a0b69d9beeef3d8beeef882`](https://github.com/soundxyz/graphql-react/commit/58c7ef4d50bdf0709a0b69d9beeef3d8beeef882)
+  Thanks [@PabloSzx](https://github.com/PabloSzx)! - Get partial headers new option
 
 ## 5.1.2
 
 ### Patch Changes
 
-- [#142](https://github.com/soundxyz/graphql-react/pull/142) [`708750fc83ed8ed220d97342ff8a930963b942a5`](https://github.com/soundxyz/graphql-react/commit/708750fc83ed8ed220d97342ff8a930963b942a5) Thanks [@PabloSzx](https://github.com/PabloSzx)! - Wipe entity store nodes when setting infinite query data
+- [#142](https://github.com/soundxyz/graphql-react/pull/142)
+  [`708750fc83ed8ed220d97342ff8a930963b942a5`](https://github.com/soundxyz/graphql-react/commit/708750fc83ed8ed220d97342ff8a930963b942a5)
+  Thanks [@PabloSzx](https://github.com/PabloSzx)! - Wipe entity store nodes when setting infinite
+  query data
 
 ## 5.1.1
 
