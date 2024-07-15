@@ -955,8 +955,7 @@ export function GraphQLReactQueryClient<
     const { nodes: entityStoreNodesSnapshot } = useProxySnapshot(entityStore);
 
     const orderedList = useMemo<Entity[]>(() => {
-      if (!data) return [];
-
+ 
       const currentListFn = latestListFn.current;
       const currentUniq = latestUniq.current;
       const currentOrder = latestOrder.current;
@@ -990,7 +989,7 @@ export function GraphQLReactQueryClient<
 
       const initialValues = customPages ? customPages.reduce(reduceAccumulatedPages, {}) : {};
 
-      const values = data.pages.reduce(reduceAccumulatedPages, initialValues);
+      const values = data?.pages.reduce(reduceAccumulatedPages, initialValues) ?? initialValues;
 
       if (currentOrder) return orderBy(values, currentOrder, stableOrderType);
 
