@@ -76,6 +76,7 @@ export type GraphQLFetcherConfig = {
     query: string;
     variables: Record<string, unknown> | undefined;
     graphqlErrors?: ReadonlyArray<GraphQLError>;
+    response: Response;
   }): unknown;
 
   /**
@@ -99,12 +100,19 @@ export type GraphQLFetcherConfig = {
   ): never;
 };
 
-export type Fetcher = <Doc extends StringDocumentNode>(args: {
+type FetcherReturn<Doc extends StringDocumentNode> = ExecutionResult<ResultOf<Doc>> & {
+  response: Response;
+};
+
+type FetcherParams<Doc extends StringDocumentNode> = {
   query: Doc | string;
   variables: VariablesOf<Doc> | undefined;
-
   fetchOptions: Partial<RequestInit> | undefined;
-}) => PromiseOrValue<ExecutionResult<ResultOf<Doc>>>;
+};
+
+export type Fetcher = <Doc extends StringDocumentNode>(
+  args: FetcherParams<Doc>,
+) => PromiseOrValue<FetcherReturn<Doc>>;
 
 export const GraphQLExecutionResultSchema = z
   .object({
@@ -175,7 +183,11 @@ export function GraphQLReactQueryClient<
 
   const fetcher: Fetcher =
     fetcherConfig ||
-    async function Fetcher({ query, variables, fetchOptions }) {
+    async function Fetcher<Doc extends StringDocumentNode>({
+      query,
+      variables,
+      fetchOptions,
+    }: FetcherParams<Doc>): Promise<FetcherReturn<Doc>> {
       const body = JSON.stringify({ query, variables });
       const headers = {
         'content-type': 'application/json',
@@ -272,7 +284,12 @@ export function GraphQLReactQueryClient<
 
       const responseJson = GraphQLExecutionResultSchema.safeParse(res.json.value);
 
-      if (responseJson.success) return responseJson.data as ExecutionResult<any>;
+      if (responseJson.success) {
+        return {
+          ...(responseJson.data as ExecutionResult<any>),
+          response: res.response,
+        };
+      }
 
       const error = new FetchNetworkUnexpectedPayloadShape(
         'Network error, unexpected json payload shape',
@@ -303,6 +320,7 @@ export function GraphQLReactQueryClient<
       data = null,
       errors,
       extensions,
+      response,
     } = await GraphQLReactQuery.fetcher<Doc>({
       query,
       variables,
@@ -332,6 +350,7 @@ export function GraphQLReactQueryClient<
             query,
             variables,
             graphqlErrors: errors,
+            response,
           });
 
           for (const err of errors) {
@@ -352,6 +371,7 @@ export function GraphQLReactQueryClient<
           query,
           variables,
           graphqlErrors: errors,
+          response,
         });
 
         throw error;
@@ -360,12 +380,14 @@ export function GraphQLReactQueryClient<
       const error = new UnexpectedMissingGraphQLData({
         query,
         variables,
+        response,
       });
 
       graphqlFetcherConfig?.onErrorWithoutData?.({
         error,
         query,
         variables,
+        response,
       });
 
       throw error;
@@ -955,7 +977,6 @@ export function GraphQLReactQueryClient<
     const { nodes: entityStoreNodesSnapshot } = useProxySnapshot(entityStore);
 
     const orderedList = useMemo<Entity[]>(() => {
- 
       const currentListFn = latestListFn.current;
       const currentUniq = latestUniq.current;
       const currentOrder = latestOrder.current;

@@ -133,15 +133,19 @@ export class UnexpectedMissingGraphQLData extends Error {
   public name = 'UnexpectedMissingGraphQLData' as const;
   public query: string;
   public variables: Record<string, unknown> | undefined;
+  public response: Response;
   constructor({
     query,
     variables,
+    response,
   }: {
     query: string;
     variables: typeof UnexpectedMissingGraphQLData.prototype.variables;
+    response: typeof UnexpectedMissingGraphQLData.prototype.response;
   }) {
     super('Unexpected missing GraphQL data');
     this.query = query;
     this.variables = variables;
+    this.response = response;
   }
 }
