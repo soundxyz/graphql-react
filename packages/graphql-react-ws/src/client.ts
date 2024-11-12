@@ -13,13 +13,21 @@ export type ExecutionResultWithErrors<Data> = Omit<ExecutionResult<Data, unknown
   errors: ExecutionResult['errors'];
 };
 
-export type EffectCallback<Result, Variables> = ({
+export type OnDataEffectCallback<Result, Variables> = ({
   operation,
   result,
   variables,
 }: {
   operation: StringDocumentNode<Result, Variables>;
   result: ExecutionResultWithData<Result>;
+  variables?: Variables;
+}) => void;
+
+export type OnCompleteEffectCallback<Result, Variables> = ({
+  operation,
+  variables,
+}: {
+  operation: StringDocumentNode<Result, Variables>;
   variables?: Variables;
 }) => void;
 
@@ -204,12 +212,12 @@ export function GraphQLReactWS<ConnectionInitPayload extends Record<string, unkn
       next: result => {
         generator.resolveNext(result);
 
-        const effects = effectsStore[query];
+        const effects = effectsOnDataStore[query];
 
         if (effects && result.data) {
           for (const effect of effects) {
             try {
-              Promise.all([
+              Promise.resolve(
                 effect({
                   operation: query as StringDocumentNode<unknown, unknown>,
                   result: {
@@ -218,7 +226,7 @@ export function GraphQLReactWS<ConnectionInitPayload extends Record<string, unkn
                   },
                   variables,
                 }),
-              ]).catch(() => null);
+              ).catch(() => null);
             } catch (err) {}
           }
         }
@@ -230,6 +238,21 @@ export function GraphQLReactWS<ConnectionInitPayload extends Record<string, unkn
       },
       complete: () => {
         generator.resolveCompleted();
+
+        const effects = effectsOnCompleteStore[query];
+
+        if (effects) {
+          for (const effect of effects) {
+            try {
+              Promise.resolve(
+                effect({
+                  operation: query as StringDocumentNode<unknown, unknown>,
+                  variables,
+                }),
+              ).catch(() => null);
+            } catch (err) {}
+          }
+        }
 
         cleanupGenerator();
       },
@@ -259,7 +282,12 @@ export function GraphQLReactWS<ConnectionInitPayload extends Record<string, unkn
     subscriptionsControllers: Set<AbortController>;
   };
 
-  const effectsStore: Record<string, Set<EffectCallback<unknown, unknown>> | null> = {};
+  const effectsOnDataStore: Record<string, Set<OnDataEffectCallback<unknown, unknown>> | null> = {};
+
+  const effectsOnCompleteStore: Record<
+    string,
+    Set<OnCompleteEffectCallback<unknown, unknown>> | null
+  > = {};
 
   const Effects = {
     /**
@@ -268,7 +296,7 @@ export function GraphQLReactWS<ConnectionInitPayload extends Record<string, unkn
      * It returns a callback that's going to stop the effect from being called
      *
      * @example
-     * Effects.onCompleted(TestQuery, ({ operation, result: { data }, variables }) => {
+     * Effects.onData(TestQuery, ({ operation, result: { data }, variables }) => {
      *  console.log({
      *    operation,
      *    data,
@@ -276,18 +304,46 @@ export function GraphQLReactWS<ConnectionInitPayload extends Record<string, unkn
      *  });
      * });
      */
-    onCompleted<Result, Variables>(
+    onData<Result, Variables>(
       operation: StringDocumentNode<Result, Variables>,
-      callback: EffectCallback<Result, Variables>,
+      callback: OnDataEffectCallback<Result, Variables>,
     ) {
-      const effects = (effectsStore[operation] ||= new Set());
+      const effects = (effectsOnDataStore[operation] ||= new Set());
 
-      effects.add(callback as EffectCallback<unknown, unknown>);
+      effects.add(callback as OnDataEffectCallback<unknown, unknown>);
 
       return function removeEffect() {
-        effects.delete(callback as EffectCallback<unknown, unknown>);
+        effects.delete(callback as OnDataEffectCallback<unknown, unknown>);
 
-        if (effects.size === 0) effectsStore[operation] = null;
+        if (effects.size === 0) effectsOnDataStore[operation] = null;
+      };
+    },
+
+    /**
+     * Add an effect callback to be called every time the specified operation was flagged as complete or stopped
+     *
+     * It returns a callback that's going to stop the effect from being called
+     *
+     * @example
+     * Effects.onComplete(TestQuery, ({ operation, variables }) => {
+     *  console.log({
+     *    operation,
+     *    variables
+     *  });
+     * });
+     */
+    onComplete<Result, Variables>(
+      operation: StringDocumentNode<Result, Variables>,
+      callback: OnCompleteEffectCallback<Result, Variables>,
+    ) {
+      const effects = (effectsOnCompleteStore[operation] ||= new Set());
+
+      effects.add(callback as OnCompleteEffectCallback<unknown, unknown>);
+
+      return function removeEffect() {
+        effects.delete(callback as OnCompleteEffectCallback<unknown, unknown>);
+
+        if (effects.size === 0) effectsOnCompleteStore[operation] = null;
       };
     },
   } as const;
