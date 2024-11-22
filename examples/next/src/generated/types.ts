@@ -945,7 +945,7 @@ export type CollectorUpdateInfo = {
   userArtistName?: Maybe<Scalars['String']['output']>;
   /** If user is an artist, the artist sound handle */
   userArtistSoundHandle?: Maybe<Scalars['String']['output']>;
-  /** Avatar URL of collecotr */
+  /** Avatar URL of collector */
   userAvatarUrl?: Maybe<Scalars['String']['output']>;
   /** Unique user identifier of collector */
   userId: Scalars['ID']['output'];
@@ -5105,7 +5105,7 @@ export type TrendingCollectorInfo = {
   userAddress: Scalars['String']['output'];
 };
 
-/** Type of sort paratemer used for trending collectors */
+/** Type of sort parameter used for trending collectors */
 export const TrendingCollectorsSortEnum = {
   CreatorsSupported: 'CREATORS_SUPPORTED',
   NftsBought: 'NFTS_BOUGHT',
@@ -5130,7 +5130,7 @@ export type TrendingPlaylistInfo = {
   playlist: Shelf;
 };
 
-/** Type of sort paratemer used for trending playlists */
+/** Type of sort parameter used for trending playlists */
 export const TrendingPlaylistsSortEnum = {
   Likes: 'LIKES'
 } as const;
@@ -5158,7 +5158,7 @@ export type TrendingReleaseInfo = {
   uniqueCollectors: Scalars['Int']['output'];
 };
 
-/** Type of sort paratemer used for trending releases */
+/** Type of sort parameter used for trending releases */
 export const TrendingReleasesSortEnum = {
   NftsSold: 'NFTS_SOLD',
   PrimarySales: 'PRIMARY_SALES',
