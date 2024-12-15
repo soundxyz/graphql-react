@@ -1998,7 +1998,7 @@ export type NotSupportedVersion = VersionStatusResponseInterface & {
   recommendedVersion: Scalars['String']['output'];
 };
 
-/** Returned when the user attempts to claim an email for notifications that is already claimed by another user */
+/** Returned when the user attempts to claim an email for notifications that are already claimed by another user */
 export type NotificationEmailAlreadyClaimedError = Error & {
   /** Descriptive message of error */
   message: Scalars['String']['output'];
