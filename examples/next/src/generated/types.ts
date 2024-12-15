@@ -1491,7 +1491,7 @@ export type FeatureFlag = {
   name: Scalars['String']['output'];
   /** Last update of feature flag value */
   updatedAt: Scalars['DateTime']['output'];
-  /** Arbitrary string value, it could be need to be parsed stringified json */
+  /** Arbitrary string value, it could need to be parsed stringified json */
   value: Scalars['String']['output'];
 };
 
