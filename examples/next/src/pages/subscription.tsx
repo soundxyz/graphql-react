@@ -68,7 +68,7 @@ function ComponentD() {
       <p>
         D: <CountSubscription onCount={setCount} />
       </p>
-      <span>This count should should have appeared after 2 seconds</span>
+      <span>This count should have appeared after 2 seconds</span>
       <p>D Count: {count}</p>
     </>
   );
