@@ -36,13 +36,13 @@
     "bob-ts": "^4.1.1",
     "bob-tsm": "^1.1.2",
     "esbuild": "^0.19.5",
-    "graphql": "^16.8.1",
+    "graphql": "^16.10.0",
     "typescript": "^5.2.2"
   },
   "peerDependencies": {
     "@graphql-codegen/core": "^3.1.0 || ^4.0.0",
     "@soundxyz/gql-string": "workspace:^",
-    "graphql": ">=16.6.0"
+    "graphql": ">=16.10.0"
   },
   "publishConfig": {
     "directory": "dist"
