@@ -7,7 +7,7 @@
 - [#158](https://github.com/soundxyz/graphql-react/pull/158)
   [`56813ee0430d3309c38de3885068e8258e8a8279`](https://github.com/soundxyz/graphql-react/commit/56813ee0430d3309c38de3885068e8258e8a8279)
   Thanks [@PabloSzx](https://github.com/PabloSzx)! - Underlying refetch is not called if query is
-  not enabled or variables is false
+  not enabled or variables are false
 
 ## 5.4.3
 
