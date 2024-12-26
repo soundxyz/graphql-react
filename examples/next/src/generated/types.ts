@@ -383,7 +383,7 @@ export const ArtistActivityFeedTypeFilterOption = {
 } as const;
 
 export type ArtistActivityFeedTypeFilterOption = typeof ArtistActivityFeedTypeFilterOption[keyof typeof ArtistActivityFeedTypeFilterOption];
-/** User appliction to be an artist */
+/** User application to be an artist */
 export type ArtistApplication = Node & {
   /** Creation date of entity */
   createdAt: Scalars['DateTime']['output'];
