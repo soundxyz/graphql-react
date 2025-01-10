@@ -13,7 +13,7 @@
   "keywords": [],
   "dependencies": {
     "fast-deep-equal": "^3.1.3",
-    "graphql-ws": "^5.14.1"
+    "graphql-ws": "^5.16.2"
   },
   "devDependencies": {
     "@soundxyz/gql-string": "workspace:^0.1.0",
