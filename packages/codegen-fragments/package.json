@@ -35,7 +35,7 @@
     "@types/node": "^20.8.6",
     "bob-ts": "^4.1.1",
     "bob-tsm": "^1.1.2",
-    "esbuild": "^0.19.5",
+    "esbuild": "^0.25.0",
     "graphql": "^16.8.1",
     "typescript": "^5.2.2"
   },
