@@ -25,14 +25,14 @@
     "graphql": "^16.8.1",
     "react": "^18.2.0",
     "typescript": "^5.2.2",
-    "valtio": "^1.11.2"
+    "valtio": "^2.1.4"
   },
   "peerDependencies": {
     "@soundxyz/gql-string": "workspace:^0.1.0",
     "@types/react": "^18.0.28",
     "graphql": "^16.6.0",
     "react": "^18.2.0",
-    "valtio": "^1.11.2"
+    "valtio": "^2.1.4"
   },
   "publishConfig": {
     "directory": "dist"
