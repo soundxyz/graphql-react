@@ -24,7 +24,7 @@
     "@graphql-codegen/gql-tag-operations": "^4.0.1",
     "@graphql-codegen/typescript": "^4.0.1",
     "@graphql-codegen/typescript-operations": "^4.0.1",
-    "@graphql-codegen/visitor-plugin-common": "^4.0.1",
+    "@graphql-codegen/visitor-plugin-common": "^5.8.0",
     "@graphql-tools/relay-operation-optimizer": "^7.0.0",
     "@graphql-tools/utils": "^10.0.7"
   },
