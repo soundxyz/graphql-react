@@ -20,17 +20,17 @@
     "watch": "bob-tsm --watch=src build.ts"
   },
   "dependencies": {
-    "@graphql-codegen/add": "^5.0.0",
-    "@graphql-codegen/gql-tag-operations": "^4.0.1",
-    "@graphql-codegen/typescript": "^4.0.1",
-    "@graphql-codegen/typescript-operations": "^4.0.1",
-    "@graphql-codegen/visitor-plugin-common": "^4.0.1",
+    "@graphql-codegen/add": "^5.0.3",
+    "@graphql-codegen/gql-tag-operations": "^4.0.17",
+    "@graphql-codegen/typescript": "^4.1.6",
+    "@graphql-codegen/typescript-operations": "^4.6.0",
+    "@graphql-codegen/visitor-plugin-common": "^4.1.2",
     "@graphql-tools/relay-operation-optimizer": "^7.0.0",
     "@graphql-tools/utils": "^10.0.7"
   },
   "devDependencies": {
-    "@graphql-codegen/core": "^4.0.0",
-    "@graphql-codegen/plugin-helpers": "^5.0.1",
+    "@graphql-codegen/core": "^4.0.2",
+    "@graphql-codegen/plugin-helpers": "^5.1.0",
     "@soundxyz/gql-string": "workspace:*",
     "@types/node": "^20.8.6",
     "bob-ts": "^4.1.1",
