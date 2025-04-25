@@ -18,7 +18,9 @@ gql`
 `;
 
 export default function Page() {
-  const { data } = useQuery(TestDocument, {});
+  const { data } = useQuery(TestDocument, {
+    staleTime: 0,
+  });
 
   return (
     <div className={styles.container}>
