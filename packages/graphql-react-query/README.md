@@ -1,4 +1,6 @@
-# GraphQLReactQueryClient
+# GraphQL React Query
+
+[![NPM Version](https://img.shields.io/npm/v/%40soundxyz%2Fgraphql-react-query)](https://www.npmjs.com/package/@soundxyz/graphql-react-query)
 
 A flexible, type-safe GraphQL client for React, built on top of React Query, with support for
 infinite queries, mutations, custom fetchers, and effect hooks.

@@ -1,5 +1,7 @@
 # `GraphQLReactWS` – React GraphQL Subscriptions with `graphql-ws` and Valtio
 
+[![NPM Version](https://img.shields.io/npm/v/%40soundxyz%2Fgraphql-react-ws)](https://www.npmjs.com/package/@soundxyz/graphql-react-ws)
+
 A React utility for managing GraphQL subscriptions over WebSockets, with Valtio-powered state and
 effect hooks.
 
