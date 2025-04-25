@@ -1,5 +1,22 @@
 # @soundxyz/graphql-react-ws
 
+## 3.0.0
+
+### Major Changes
+
+- [#164](https://github.com/soundxyz/graphql-react/pull/164)
+  [`76c4213`](https://github.com/soundxyz/graphql-react/commit/76c42130c5999ec76b7f11f76398c95c248652f0)
+  Thanks [@PabloSzx](https://github.com/PabloSzx)! - Better websocket effects onData + onComplete
+
+  - Rename onCompleted to onData
+  - Add onComplete, when a subscription completes or is stopped
+
+### Patch Changes
+
+- [#174](https://github.com/soundxyz/graphql-react/pull/174)
+  [`b1ea6b0`](https://github.com/soundxyz/graphql-react/commit/b1ea6b0601d3843520aa971ccb3b09cadf429e9c)
+  Thanks [@PabloSzx](https://github.com/PabloSzx)! - Documentation
+
 ## 2.0.0
 
 ### Major Changes
