@@ -21,7 +21,7 @@
     "@changesets/config": "^2.3.1",
     "@changesets/read": "^0.5.9",
     "@manypkg/get-packages": "^2.2.0",
-    "@types/node": "^20.8.6",
+    "@types/node": "^22.15.2",
     "bob-esbuild": "^4.0.3",
     "execa": "^8.0.1",
     "prettier": "^3.0.3",
