@@ -78,7 +78,6 @@ const { data, error, store } = graphql.useSubscription({
   onError: error => {
     /* handle errors */
   },
-  initialData: null, // optional
   enabled: true, // optional, default true
 });
 ```
