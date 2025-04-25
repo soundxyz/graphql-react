@@ -2,4 +2,4 @@
 '@soundxyz/graphql-react-ws': major
 ---
 
-Better websocket effects onData + onCompleted, no onCompleted renamed to onData
+Better websocket effects onData + onComplete, no onCompleted renamed to onData
