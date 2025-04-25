@@ -125,12 +125,9 @@ Register global effects for when data arrives or a subscription completes.
 Register a callback to be called every time the specified operation receives data.
 
 ```typescript
-const remove = graphql.Effects.onData(
-  MySubscriptionDocument,
-  ({ operation, result, variables }) => {
-    // Do something with result.data
-  },
-);
+const remove = Effects.onData(MySubscriptionDocument, ({ operation, result, variables }) => {
+  // Do something with result.data
+});
 ```
 
 - **Returns:** A function to remove the effect.
@@ -140,7 +137,7 @@ const remove = graphql.Effects.onData(
 Register a callback to be called when the specified operation completes or is stopped.
 
 ```typescript
-const remove = graphql.Effects.onComplete(MySubscriptionDocument, ({ operation, variables }) => {
+const remove = Effects.onComplete(MySubscriptionDocument, ({ operation, variables }) => {
   // Do something on completion
 });
 ```
@@ -154,7 +151,7 @@ const remove = graphql.Effects.onComplete(MySubscriptionDocument, ({ operation, 
 ### Basic Usage
 
 ```typescript
-const { data, error } = graphql.useSubscription({
+const { data, error } = useSubscription({
   query: MySubscriptionDocument,
   variables: { id: 'abc' },
   onData: result => {
@@ -169,7 +166,7 @@ const { data, error } = graphql.useSubscription({
 ### Global Effects
 
 ```typescript
-const removeEffect = graphql.Effects.onData(MySubscriptionDocument, ({ result }) => {
+const removeEffect = Effects.onData(MySubscriptionDocument, ({ result }) => {
   console.log('Received data:', result.data);
 });
 
