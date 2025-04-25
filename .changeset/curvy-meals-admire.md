@@ -3,4 +3,4 @@
 '@soundxyz/graphql-react-ws': patch
 ---
 
-Fix include README.md
+Fix NPM publish include README.md
