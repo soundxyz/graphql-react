@@ -156,9 +156,9 @@ useQuery(query, {
 
 Returns React Query's result object, plus:
 
-- `setQueryData(updater, options)`
-- `queryKey`
-- `refetch`
+- `setQueryData(updater, options)` Manually set the cache for a query
+- `queryKey` The unique query key used to query and cache the data
+- `refetch` Refetch the query, If `enabled` is false, the query will not be refetched
 
 ---
 

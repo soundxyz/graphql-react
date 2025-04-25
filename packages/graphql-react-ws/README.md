@@ -54,13 +54,13 @@ const graphql = GraphQLReactWS({ graphqlWsOptions });
 - **Parameters:**
   - `graphqlWsOptions`: Options for the `graphql-ws` client.
 - **Returns:** An object with the following properties:
-  - `client`
-  - `subscribe`
-  - `useSubscription`
-  - `subscriptionStores`
-  - `setSubscriptionData`
-  - `getSubscriptionStore`
-  - `Effects`
+  - `client` `graphql-ws` client
+  - `subscribe` subscribe to a GraphQL subscription
+  - `useSubscription` React hook to subscribe to a GraphQL subscription
+  - `subscriptionStores` Map of subscription stores
+  - `setSubscriptionData` Manually set the data for a subscription store
+  - `getSubscriptionStore` Get a subscription store
+  - `Effects` Register global effects for when data arrives or a subscription completes
 
 ---
 
