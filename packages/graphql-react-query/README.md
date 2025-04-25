@@ -6,11 +6,11 @@ managing GraphQL data within a React application using the power of `@tanstack/r
 
 ## Installation
 
-This library depends on `@tanstack/react-query`, `react`, `zod`, `valtio` and
+This library depends on `@tanstack/react-query` v4, `react`, `zod`, `valtio` and
 `@soundxyz/gql-string`.
 
 ```bash
-pnpm add @soundxyz/graphql-react-query @tanstack/react-query zod valtio @soundxyz/gql-string
+pnpm add @soundxyz/graphql-react-query @tanstack/react-query@^4.35.7 zod valtio @soundxyz/gql-string
 ```
 
 ## Usage
