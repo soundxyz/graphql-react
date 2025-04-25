@@ -1,6 +1,6 @@
 {
   "name": "@soundxyz/graphql-react-ws",
-  "version": "3.0.0",
+  "version": "3.0.1",
   "license": "MIT",
   "author": "PabloSzx <pablosaez1995@gmail.com>",
   "sideEffects": false,

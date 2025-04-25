@@ -1,5 +1,13 @@
 # @soundxyz/graphql-react-ws
 
+## 3.0.1
+
+### Patch Changes
+
+- [#175](https://github.com/soundxyz/graphql-react/pull/175)
+  [`8da86e4`](https://github.com/soundxyz/graphql-react/commit/8da86e460abbe524fdf0216e041cb25951444d38)
+  Thanks [@PabloSzx](https://github.com/PabloSzx)! - Fix NPM publish include README.md
+
 ## 3.0.0
 
 ### Major Changes
