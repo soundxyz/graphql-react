@@ -21,56 +21,23 @@ hooks/functions for interacting with your GraphQL API.
 
 ```typescript
 import { GraphQLReactQueryClient } from '@soundxyz/graphql-react-query';
-import { gql } from '@soundxyz/gql-string';
 
-const { GraphQLReactQueryProvider, useQuery, useMutation, fetchGQL, Effects, client } =
+export const { GraphQLReactQueryProvider, useQuery, useMutation, fetchGQL, Effects, client } =
   GraphQLReactQueryClient({
     endpoint: 'YOUR_GRAPHQL_ENDPOINT',
     headers: {
       // Global headers
-      Authorization: 'Bearer YOUR_AUTH_TOKEN',
+      // ...
+    },
+    async getPartialHeaders() {
+      return {
+        Authorization: '...',
+      };
     },
     clientConfig: {
       // Optional React Query client configuration
     },
-    // Other options...
   });
-
-// In your React application:
-function App() {
-  return (
-    <GraphQLReactQueryProvider>
-      {/* Your application components */}
-      <MyComponent />
-    </GraphQLReactQueryProvider>
-  );
-}
-
-function MyComponent() {
-  const { data, isLoading, error } = useQuery(
-    gql`
-      query GetUser($id: ID!) {
-        user(id: $id) {
-          id
-          name
-        }
-      }
-    `,
-    {
-      variables: { id: '123' },
-      staleTime: 60_000, // Data is considered stale after 60 seconds
-    },
-  );
-
-  if (isLoading) return <p>Loading...</p>;
-  if (error) return <p>Error: {error.message}</p>;
-
-  return (
-    <div>
-      <h1>User: {data?.data.user.name}</h1>
-    </div>
-  );
-}
 ```
 
 ## API
