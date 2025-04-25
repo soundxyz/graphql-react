@@ -34,4 +34,5 @@ await Promise.all([
     },
   }),
   execaCommand(`tsc -p tsconfig.build.json`),
+  execaCommand(`cp README.md dist/README.md`),
 ]);
