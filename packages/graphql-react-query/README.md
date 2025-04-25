@@ -7,6 +7,7 @@ infinite queries, mutations, custom fetchers, and effect hooks.
 
 ## Table of Contents
 
+- [Example Usage](#example-usage)
 - [Overview](#overview)
 - [Types](#types)
 - [Configuration](#configuration)
@@ -20,7 +21,12 @@ infinite queries, mutations, custom fetchers, and effect hooks.
   - [Effects](#effects)
   - [Other Utilities](#other-utilities)
 - [Error Handling](#error-handling)
-- [Example Usage](#example-usage)
+
+---
+
+## Example Usage
+
+Feel free to check out full end-to-end example in [examples/next/src](/examples/next/src)
 
 ---
 
@@ -78,18 +84,6 @@ type GraphQLFetcherConfig = {
 ```
 
 Customize fetcher error handling.
-
----
-
-### `Fetcher`
-
-```ts
-type Fetcher = <Doc extends StringDocumentNode>(
-  args: FetcherParams<Doc>,
-) => PromiseOrValue<FetcherReturn<Doc>>;
-```
-
-A function that performs a GraphQL fetch.
 
 ---
 
@@ -217,14 +211,17 @@ useInfiniteQuery(query, {
 
 Returns React Query's infinite query result, plus:
 
-- `orderedList`
-- `loadMoreNextPage`
-- `loadMorePreviousPage`
-- `entityStore`
-- `setInfiniteQueryData`
-- `latestData`
-- `queryKey`
-- `refetch`
+- `orderedList` List of entities in the order of the query, if `order` is not provided, by the order
+  of the results + cursor pagination
+- `loadMoreNextPage` Function to load the next page of results
+- `loadMorePreviousPage` Function to load the previous page of results
+- `entityStore` Store of mutable entities, keyed by the `uniq` function. If entities are mutated
+  through this store, the entity will be updated in the store and the cache will be updated with the
+  new entity.
+- `setInfiniteQueryData` Manually set the cache for an infinite query
+- `latestData` Latest fetched page of data from the query
+- `queryKey` The unique query key used to query and cache the data
+- `refetch` Refetch the query, If `enabled` is false, the query will not be refetched
 
 ---
 
@@ -274,45 +271,3 @@ You can provide custom error handlers via `graphqlFetcherConfig`:
 - `onErrorWithoutData`: Called when GraphQL errors occur without data
 - `onFetchNetworkError`: Called on network errors
 - `onUnexpectedPayload`: Called on unexpected payloads
-
----
-
-## Example Usage
-
-```tsx
-import { GraphQLReactQueryClient } from './your-client-file';
-import { MyQuery } from './queries';
-
-const client = GraphQLReactQueryClient({
-  endpoint: '/graphql',
-  headers: { Authorization: 'Bearer token' },
-});
-
-function MyComponent() {
-  const { data, isLoading, error } = client.useQuery(MyQuery, {
-    variables: { id: '123' },
-    staleTime: 1000 * 60,
-  });
-
-  if (isLoading) return <div>Loading...</div>;
-  if (error) return <div>Error!</div>;
-
-  return <div>{JSON.stringify(data)}</div>;
-}
-```
-
----
-
-## Notes
-
-- All hooks and methods are fully type-safe.
-- Infinite queries require `list` and `uniq` functions for entity extraction and deduplication.
-- Use `Effects.onCompleted` for side effects after queries/mutations.
-
----
-
-**For more details, see the inline TypeScript types and JSDoc comments in the source code.**
-
----
-
-Let me know if you want more detailed examples or documentation for a specific function!
