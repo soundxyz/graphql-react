@@ -1,5 +1,20 @@
 # @soundxyz/graphql-react-query
 
+## 5.5.1
+
+### Patch Changes
+
+- [#174](https://github.com/soundxyz/graphql-react/pull/174)
+  [`b1ea6b0`](https://github.com/soundxyz/graphql-react/commit/b1ea6b0601d3843520aa971ccb3b09cadf429e9c)
+  Thanks [@PabloSzx](https://github.com/PabloSzx)! - Documentation
+
+- [#160](https://github.com/soundxyz/graphql-react/pull/160)
+  [`b9b13f3`](https://github.com/soundxyz/graphql-react/commit/b9b13f322de92e3b899f31e22d64711053fa11ff)
+  Thanks [@PabloSzx](https://github.com/PabloSzx)! - Fix custom pages without network data
+
+- [`118cfd5`](https://github.com/soundxyz/graphql-react/commit/118cfd503f47c00e1d64766c135a384eef861f1b)
+  Thanks [@PabloSzx](https://github.com/PabloSzx)! - Unexpected missing graphql data gives response
+
 ## 5.5.0
 
 ### Minor Changes
