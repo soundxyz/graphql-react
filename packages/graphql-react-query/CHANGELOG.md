@@ -1,5 +1,17 @@
 # @soundxyz/graphql-react-query
 
+## 5.5.2
+
+### Patch Changes
+
+- [#175](https://github.com/soundxyz/graphql-react/pull/175)
+  [`8da86e4`](https://github.com/soundxyz/graphql-react/commit/8da86e460abbe524fdf0216e041cb25951444d38)
+  Thanks [@PabloSzx](https://github.com/PabloSzx)! - Fix NPM publish include README.md
+
+- [#177](https://github.com/soundxyz/graphql-react/pull/177)
+  [`8cd7045`](https://github.com/soundxyz/graphql-react/commit/8cd7045f7debcd15f078b60ce29692e945e8009c)
+  Thanks [@eurbs](https://github.com/eurbs)! - Fix prefetchInfiniteQuery to use correct querykey
+
 ## 5.5.1
 
 ### Patch Changes
