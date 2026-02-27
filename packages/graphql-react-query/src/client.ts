@@ -1076,7 +1076,7 @@ export function GraphQLReactQueryClient<
     })) as InfiniteQueryStore<Entity>;
 
     return client.prefetchInfiniteQuery({
-      queryKey: [query, filterQueryKey, variables, 'Infinite'],
+      queryKey: [query, filterQueryKey, !!variables, 'Infinite'],
       queryFn({ signal }) {
         return infiniteQueryFn({
           query,
