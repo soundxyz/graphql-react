@@ -1,5 +1,20 @@
 # @soundxyz/graphql-react-ws
 
+## 3.0.2
+
+### Patch Changes
+
+- [#178](https://github.com/soundxyz/graphql-react/pull/178)
+  [`c9d349b`](https://github.com/soundxyz/graphql-react/commit/c9d349b7c604daee45c107b39a4c630e142c155f)
+  Thanks [@jswirbs](https://github.com/jswirbs)! - Fix fatal per-operation transport errors being
+  silently swallowed instead of reaching `onError`/`useSubscription`'s `error` state. Previously, a
+  server-terminated operation (as opposed to a full socket close) resolved every consumer of that
+  subscription as gracefully complete rather than errored, because the fatal-error cleanup path
+  aborted each listener's `AbortController` before the async rejection could propagate through
+  `BroadcastAsyncGenerator`'s `for await` loop — and even when it did propagate, `useSubscription`'s
+  effect had no `try/catch` around its own `for await`, so the rejection was swallowed by
+  `subscribe()`'s generic `.catch(console.error)`.
+
 ## 3.0.1
 
 ### Patch Changes
