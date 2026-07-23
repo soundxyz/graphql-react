@@ -168,6 +168,24 @@ export function GraphQLReactWS<ConnectionInitPayload extends Record<string, unkn
       if (this.listeners.size === 0) this.cleanupBroadcaster();
     }
 
+    /**
+     * Synchronously rejects every current listener with `error`. Needed
+     * because a fatal per-operation error is handled by immediately
+     * aborting every listener's `AbortController` (see
+     * `graphqlWsSubscribe`'s `error` callback below) — abort resolves a
+     * listener as gracefully *complete* (see `subscribe()`'s
+     * `cleanupListener`), which would otherwise race the async rejection
+     * normally propagated through `broadcast()`'s `for await` and mask the
+     * error as a silent, successful completion. Calling this first makes
+     * each listener's `done` flag already `true` by the time that abort
+     * cascade runs, so `resolveCompleted()` on it becomes a no-op.
+     */
+    rejectAll(error: unknown) {
+      for (const listener of this.listeners) {
+        listener.reject(error);
+      }
+    }
+
     subscribe(params: SubscriptionParams): ListenerGenerator<Doc> {
       if (this.disposed) throw Error('Generator has already been disposed!');
 
@@ -232,6 +250,10 @@ export function GraphQLReactWS<ConnectionInitPayload extends Record<string, unkn
         }
       },
       error: err => {
+        // Must run before `cleanupGenerator()` below — see `rejectAll`'s doc
+        // comment for why ordering here matters.
+        broadcaster.rejectAll(err);
+
         generator.reject(err);
 
         cleanupGenerator();
@@ -532,36 +554,53 @@ export function GraphQLReactWS<ConnectionInitPayload extends Record<string, unkn
           variables: stableVariables as any,
         },
         async function ({ iterator }) {
-          for await (const result of iterator) {
-            if (result.data) {
-              const resultWithData = {
-                ...result,
-                data: result.data,
-              };
+          try {
+            for await (const result of iterator) {
+              if (result.data) {
+                const resultWithData = {
+                  ...result,
+                  data: result.data,
+                };
 
-              if (store.ref.current !== result) {
-                store.data = resultWithData;
+                if (store.ref.current !== result) {
+                  store.data = resultWithData;
 
-                if (!result.errors && store.error) {
-                  store.error = null;
+                  if (!result.errors && store.error) {
+                    store.error = null;
+                  }
                 }
+
+                onDataCallback(resultWithData);
               }
 
-              onDataCallback(resultWithData);
+              if (result.errors) {
+                const resultWithError = {
+                  ...result,
+                  errors: result.errors,
+                };
+
+                if (store.ref.current !== result) store.error = resultWithError;
+
+                onErrorCallback(resultWithError);
+              }
+
+              store.ref.current = result;
             }
+          } catch (err) {
+            // A fatal per-operation error (the server terminates just this
+            // operation, e.g. a duplicate-id conflict) rejects the iterator
+            // instead of yielding a result with `errors`. Without this catch
+            // that rejection propagates out of this callback and is silently
+            // swallowed by `subscribe()`'s own `.catch(console.error)` below —
+            // `onError` would never fire and the caller has no signal that the
+            // subscription is now permanently dead.
+            const resultWithError = {
+              errors: Array.isArray(err) ? err : [err],
+            } as ExecutionResultWithErrors<ResultOf<Doc>>;
 
-            if (result.errors) {
-              const resultWithError = {
-                ...result,
-                errors: result.errors,
-              };
+            store.error = resultWithError;
 
-              if (store.ref.current !== result) store.error = resultWithError;
-
-              onErrorCallback(resultWithError);
-            }
-
-            store.ref.current = result;
+            onErrorCallback(resultWithError);
           }
         },
       );

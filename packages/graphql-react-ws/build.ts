@@ -1,7 +1,7 @@
 import { writePackageJson } from 'bob-esbuild/config/packageJson';
 import { buildCode } from 'bob-ts';
 import { execaCommand } from 'execa';
-import { mkdir, rm } from 'fs/promises';
+import { mkdir, readdir, rm } from 'fs/promises';
 
 import pkg from './package.json';
 
@@ -36,3 +36,13 @@ await Promise.all([
   execaCommand(`tsc -p tsconfig.build.json`),
   execaCommand(`cp README.md dist/README.md`),
 ]);
+
+// `buildCode`'s `entryPoints: ['src']` bundles every file under `src`,
+// including `*.test.ts` — strip those back out so tests aren't shipped
+// to consumers via `publishConfig.directory`.
+const distFiles = await readdir('dist');
+await Promise.all(
+  distFiles
+    .filter(file => file.includes('.test.'))
+    .map(file => rm(`dist/${file}`, { force: true })),
+);
