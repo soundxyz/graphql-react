@@ -497,6 +497,19 @@ export function GraphQLReactWS<ConnectionInitPayload extends Record<string, unkn
     initialData = null,
 
     enabled = true,
+
+    /**
+     * When `true` (default), each result is mirrored into the valtio
+     * subscription store so `data`/`error` from this hook stay reactive via
+     * `useSnapshot`.
+     *
+     * Set to `false` when you only consume events through `onData`/`onError`
+     * (e.g. writing into an external cache). Skipping the store write avoids a
+     * React re-render of the calling component on every subscription frame —
+     * important for high-frequency fan-out. Returned `data`/`error` will not
+     * update while `syncStore` is `false`.
+     */
+    syncStore = true,
   }: {
     query: Doc;
     onData?: OnData<Doc>;
@@ -505,6 +518,8 @@ export function GraphQLReactWS<ConnectionInitPayload extends Record<string, unkn
     initialData?: ExecutionResultWithData<ResultOf<Doc>> | null;
 
     enabled?: boolean;
+
+    syncStore?: boolean;
   } & (VariablesOf<Doc> extends Record<string, never>
     ? { variables?: undefined }
     : { variables: VariablesOf<Doc> | false })) {
@@ -562,7 +577,7 @@ export function GraphQLReactWS<ConnectionInitPayload extends Record<string, unkn
                   data: result.data,
                 };
 
-                if (store.ref.current !== result) {
+                if (syncStore && store.ref.current !== result) {
                   store.data = resultWithData;
 
                   if (!result.errors && store.error) {
@@ -579,7 +594,7 @@ export function GraphQLReactWS<ConnectionInitPayload extends Record<string, unkn
                   errors: result.errors,
                 };
 
-                if (store.ref.current !== result) store.error = resultWithError;
+                if (syncStore && store.ref.current !== result) store.error = resultWithError;
 
                 onErrorCallback(resultWithError);
               }
@@ -598,7 +613,9 @@ export function GraphQLReactWS<ConnectionInitPayload extends Record<string, unkn
               errors: Array.isArray(err) ? err : [err],
             } as ExecutionResultWithErrors<ResultOf<Doc>>;
 
-            store.error = resultWithError;
+            if (syncStore) {
+              store.error = resultWithError;
+            }
 
             onErrorCallback(resultWithError);
           }
@@ -610,7 +627,7 @@ export function GraphQLReactWS<ConnectionInitPayload extends Record<string, unkn
       return () => {
         subscription.abortController.abort();
       };
-    }, [stableVariables, enabled, query]);
+    }, [stableVariables, enabled, query, syncStore]);
 
     return {
       data,

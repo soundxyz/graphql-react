@@ -79,6 +79,9 @@ const { data, error, store } = graphql.useSubscription({
     /* handle errors */
   },
   enabled: true, // optional, default true
+  // Optional. Default true. Set false when you only use onData/onError and
+  // don't want each frame to re-render this component via the valtio store.
+  syncStore: true,
 });
 ```
 
@@ -90,6 +93,11 @@ const { data, error, store } = graphql.useSubscription({
   - `onError`: (optional) Callback for errors.
   - `initialData`: (optional) Initial data for the store.
   - `enabled`: (optional) Whether the subscription is active.
+  - `syncStore`: (optional, default `true`) When `true`, mirrors each result
+    into the valtio store so returned `data`/`error` stay reactive. Set to
+    `false` for callback-only consumers (e.g. writing into an external cache)
+    to avoid re-rendering the calling component on every subscription frame.
+    Returned `data`/`error` do not update while `syncStore` is `false`.
 
 - **Returns:**
   - `data`: Latest subscription data.
