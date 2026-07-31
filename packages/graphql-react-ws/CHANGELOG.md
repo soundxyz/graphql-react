@@ -1,5 +1,17 @@
 # @soundxyz/graphql-react-ws
 
+## 3.0.3
+
+### Patch Changes
+
+- [#180](https://github.com/soundxyz/graphql-react/pull/180)
+  [`5fe13f6`](https://github.com/soundxyz/graphql-react/commit/5fe13f60372c125a3145e7c62773bcaa0590019f)
+  Thanks [@jswirbs](https://github.com/jswirbs)! - Add `syncStore` option to `useSubscription`
+  (default `true`). Set `syncStore: false` when consuming events only via `onData`/`onError` to skip
+  mirroring each result into the valtio store — avoiding a React re-render of the calling component
+  on every subscription frame. Important for high-frequency fan-out (e.g. chat reactions). Returned
+  `data`/`error` do not update while `syncStore` is `false`.
+
 ## 3.0.2
 
 ### Patch Changes
