@@ -157,4 +157,38 @@ describe('syncStore', () => {
 
     await waitFor(() => expect(onError).toHaveBeenCalledTimes(1));
   });
+
+  it('does not let a syncStore:false peer starve a syncStore:true peer of store writes', async () => {
+    sinks = [];
+
+    const { useSubscription } = GraphQLReactWS({
+      graphqlWsOptions: { url: 'wss://example.test' } as any,
+    });
+
+    const onDataFalse = vi.fn();
+
+    // Mount the callback-only listener first so it is first in the broadcast
+    // Set and processes the shared result object before the reactive peer.
+    renderHook(() =>
+      useSubscription({
+        query: TestSubscription,
+        onData: onDataFalse,
+        syncStore: false,
+      }),
+    );
+
+    const { result: reactive } = renderHook(() =>
+      useSubscription({
+        query: TestSubscription,
+        syncStore: true,
+      }),
+    );
+
+    await waitFor(() => expect(sinks).toHaveLength(1));
+
+    sinks[0]!.next({ data: { foo: 'shared' } });
+
+    await waitFor(() => expect(onDataFalse).toHaveBeenCalledTimes(1));
+    await waitFor(() => expect(reactive.current.data?.data).toEqual({ foo: 'shared' }));
+  });
 });

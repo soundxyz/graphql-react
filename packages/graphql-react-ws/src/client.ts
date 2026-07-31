@@ -577,6 +577,11 @@ export function GraphQLReactWS<ConnectionInitPayload extends Record<string, unkn
                   data: result.data,
                 };
 
+                // Only syncStore consumers participate in the shared-store
+                // dedup (`store.ref`). A syncStore:false peer must not advance
+                // the ref — otherwise it can mark this broadcast result as
+                // "already applied" before a syncStore:true peer writes
+                // `data`/`error`, leaving that peer's returned values stale.
                 if (syncStore && store.ref.current !== result) {
                   store.data = resultWithData;
 
@@ -599,7 +604,9 @@ export function GraphQLReactWS<ConnectionInitPayload extends Record<string, unkn
                 onErrorCallback(resultWithError);
               }
 
-              store.ref.current = result;
+              if (syncStore) {
+                store.ref.current = result;
+              }
             }
           } catch (err) {
             // A fatal per-operation error (the server terminates just this
