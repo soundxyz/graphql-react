@@ -97,7 +97,9 @@ const { data, error, store } = graphql.useSubscription({
     into the valtio store so returned `data`/`error` stay reactive. Set to
     `false` for callback-only consumers (e.g. writing into an external cache)
     to avoid re-rendering the calling component on every subscription frame.
-    Returned `data`/`error` do not update while `syncStore` is `false`.
+    Returned `data`/`error` stay `null` and do not track the store while
+    `syncStore` is `false`. The mount also does not subscribe to the shared
+    store via `useSnapshot`, so peer writers cannot re-render it either.
 
 - **Returns:**
   - `data`: Latest subscription data.

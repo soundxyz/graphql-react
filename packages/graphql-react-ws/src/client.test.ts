@@ -191,4 +191,37 @@ describe('syncStore', () => {
     await waitFor(() => expect(onDataFalse).toHaveBeenCalledTimes(1));
     await waitFor(() => expect(reactive.current.data?.data).toEqual({ foo: 'shared' }));
   });
+
+  it('does not re-render a syncStore:false mount when a syncStore:true peer writes the store', async () => {
+    sinks = [];
+
+    const { useSubscription } = GraphQLReactWS({
+      graphqlWsOptions: { url: 'wss://example.test' } as any,
+    });
+
+    let callbackOnlyRenders = 0;
+
+    renderHook(() => {
+      callbackOnlyRenders += 1;
+      return useSubscription({
+        query: TestSubscription,
+        syncStore: false,
+      });
+    });
+
+    const { result: reactive } = renderHook(() =>
+      useSubscription({
+        query: TestSubscription,
+        syncStore: true,
+      }),
+    );
+
+    await waitFor(() => expect(sinks).toHaveLength(1));
+    const rendersAfterMount = callbackOnlyRenders;
+
+    sinks[0]!.next({ data: { foo: 'peer-write' } });
+
+    await waitFor(() => expect(reactive.current.data?.data).toEqual({ foo: 'peer-write' }));
+    expect(callbackOnlyRenders).toBe(rendersAfterMount);
+  });
 });

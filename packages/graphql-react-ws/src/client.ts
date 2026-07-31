@@ -459,6 +459,18 @@ export function GraphQLReactWS<ConnectionInitPayload extends Record<string, unkn
 
   const subscriptionStores: Map<string, SubscriptionStore<StringDocumentNode>> = new Map();
 
+  /**
+   * Stable inert proxy for `useProxySnapshot` when `syncStore` is false.
+   * Callback-only mounts must not subscribe to the shared subscription store —
+   * otherwise a `syncStore: true` peer (or `setSubscriptionData`) writing that
+   * store would still re-render them via valtio.
+   */
+  const inertSubscriptionSnapshot = proxy({
+    data: null,
+    error: null,
+    ref: ref({ current: null }),
+  });
+
   function getSubscriptionStore<Doc extends StringDocumentNode>({
     query,
     variables,
@@ -504,10 +516,11 @@ export function GraphQLReactWS<ConnectionInitPayload extends Record<string, unkn
      * `useSnapshot`.
      *
      * Set to `false` when you only consume events through `onData`/`onError`
-     * (e.g. writing into an external cache). Skipping the store write avoids a
-     * React re-render of the calling component on every subscription frame —
-     * important for high-frequency fan-out. Returned `data`/`error` will not
-     * update while `syncStore` is `false`.
+     * (e.g. writing into an external cache). Skipping the store write — and
+     * unsubscribing this mount from the shared store snapshot — avoids a
+     * React re-render of the calling component on every subscription frame,
+     * including when a `syncStore: true` peer updates the same store.
+     * Returned `data`/`error` stay `null` while `syncStore` is `false`.
      */
     syncStore = true,
   }: {
@@ -530,12 +543,16 @@ export function GraphQLReactWS<ConnectionInitPayload extends Record<string, unkn
       initialData,
     });
 
-    if (initialData && !store.data) {
+    if (syncStore && initialData && !store.data) {
       store.data = initialData;
       store.ref.current = initialData;
     }
 
-    const { data, error } = useProxySnapshot(store);
+    // Snapshot the shared store only when this mount opts into store sync.
+    // Otherwise track an inert proxy so peer writes cannot re-render us.
+    const { data, error } = useProxySnapshot(
+      syncStore ? store : (inertSubscriptionSnapshot as SubscriptionStore<Doc>),
+    );
 
     const onDataCallback = useStableCallback<OnData<Doc>>(resultWithData => {
       if (!onData) return;
@@ -637,8 +654,8 @@ export function GraphQLReactWS<ConnectionInitPayload extends Record<string, unkn
     }, [stableVariables, enabled, query, syncStore]);
 
     return {
-      data,
-      error,
+      data: syncStore ? data : null,
+      error: syncStore ? error : null,
       store,
     };
   }
