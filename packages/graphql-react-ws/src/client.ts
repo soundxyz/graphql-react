@@ -459,6 +459,18 @@ export function GraphQLReactWS<ConnectionInitPayload extends Record<string, unkn
 
   const subscriptionStores: Map<string, SubscriptionStore<StringDocumentNode>> = new Map();
 
+  /**
+   * Stable inert proxy for `useProxySnapshot` when `syncStore` is false.
+   * Callback-only mounts must not subscribe to the shared subscription store —
+   * otherwise a `syncStore: true` peer (or `setSubscriptionData`) writing that
+   * store would still re-render them via valtio.
+   */
+  const inertSubscriptionSnapshot = proxy({
+    data: null,
+    error: null,
+    ref: ref({ current: null }),
+  });
+
   function getSubscriptionStore<Doc extends StringDocumentNode>({
     query,
     variables,
@@ -497,6 +509,20 @@ export function GraphQLReactWS<ConnectionInitPayload extends Record<string, unkn
     initialData = null,
 
     enabled = true,
+
+    /**
+     * When `true` (default), each result is mirrored into the valtio
+     * subscription store so `data`/`error` from this hook stay reactive via
+     * `useSnapshot`.
+     *
+     * Set to `false` when you only consume events through `onData`/`onError`
+     * (e.g. writing into an external cache). Skipping the store write — and
+     * unsubscribing this mount from the shared store snapshot — avoids a
+     * React re-render of the calling component on every subscription frame,
+     * including when a `syncStore: true` peer updates the same store.
+     * Returned `data`/`error` stay `null` while `syncStore` is `false`.
+     */
+    syncStore = true,
   }: {
     query: Doc;
     onData?: OnData<Doc>;
@@ -505,6 +531,8 @@ export function GraphQLReactWS<ConnectionInitPayload extends Record<string, unkn
     initialData?: ExecutionResultWithData<ResultOf<Doc>> | null;
 
     enabled?: boolean;
+
+    syncStore?: boolean;
   } & (VariablesOf<Doc> extends Record<string, never>
     ? { variables?: undefined }
     : { variables: VariablesOf<Doc> | false })) {
@@ -515,12 +543,16 @@ export function GraphQLReactWS<ConnectionInitPayload extends Record<string, unkn
       initialData,
     });
 
-    if (initialData && !store.data) {
+    if (syncStore && initialData && !store.data) {
       store.data = initialData;
       store.ref.current = initialData;
     }
 
-    const { data, error } = useProxySnapshot(store);
+    // Snapshot the shared store only when this mount opts into store sync.
+    // Otherwise track an inert proxy so peer writes cannot re-render us.
+    const { data, error } = useProxySnapshot(
+      syncStore ? store : (inertSubscriptionSnapshot as SubscriptionStore<Doc>),
+    );
 
     const onDataCallback = useStableCallback<OnData<Doc>>(resultWithData => {
       if (!onData) return;
@@ -562,7 +594,12 @@ export function GraphQLReactWS<ConnectionInitPayload extends Record<string, unkn
                   data: result.data,
                 };
 
-                if (store.ref.current !== result) {
+                // Only syncStore consumers participate in the shared-store
+                // dedup (`store.ref`). A syncStore:false peer must not advance
+                // the ref — otherwise it can mark this broadcast result as
+                // "already applied" before a syncStore:true peer writes
+                // `data`/`error`, leaving that peer's returned values stale.
+                if (syncStore && store.ref.current !== result) {
                   store.data = resultWithData;
 
                   if (!result.errors && store.error) {
@@ -579,12 +616,14 @@ export function GraphQLReactWS<ConnectionInitPayload extends Record<string, unkn
                   errors: result.errors,
                 };
 
-                if (store.ref.current !== result) store.error = resultWithError;
+                if (syncStore && store.ref.current !== result) store.error = resultWithError;
 
                 onErrorCallback(resultWithError);
               }
 
-              store.ref.current = result;
+              if (syncStore) {
+                store.ref.current = result;
+              }
             }
           } catch (err) {
             // A fatal per-operation error (the server terminates just this
@@ -598,7 +637,9 @@ export function GraphQLReactWS<ConnectionInitPayload extends Record<string, unkn
               errors: Array.isArray(err) ? err : [err],
             } as ExecutionResultWithErrors<ResultOf<Doc>>;
 
-            store.error = resultWithError;
+            if (syncStore) {
+              store.error = resultWithError;
+            }
 
             onErrorCallback(resultWithError);
           }
@@ -610,11 +651,11 @@ export function GraphQLReactWS<ConnectionInitPayload extends Record<string, unkn
       return () => {
         subscription.abortController.abort();
       };
-    }, [stableVariables, enabled, query]);
+    }, [stableVariables, enabled, query, syncStore]);
 
     return {
-      data,
-      error,
+      data: syncStore ? data : null,
+      error: syncStore ? error : null,
       store,
     };
   }

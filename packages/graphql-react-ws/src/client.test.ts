@@ -56,3 +56,172 @@ describe('fatal per-operation transport error', () => {
     await waitFor(() => expect(onError).toHaveBeenCalledTimes(1));
   });
 });
+
+describe('syncStore', () => {
+  it('still delivers onData when syncStore is false', async () => {
+    sinks = [];
+
+    const { useSubscription } = GraphQLReactWS({
+      graphqlWsOptions: { url: 'wss://example.test' } as any,
+    });
+
+    const onData = vi.fn();
+
+    renderHook(() =>
+      useSubscription({
+        query: TestSubscription,
+        onData,
+        syncStore: false,
+      }),
+    );
+
+    await waitFor(() => expect(sinks).toHaveLength(1));
+
+    sinks[0]!.next({ data: { foo: 'bar' } });
+
+    await waitFor(() => expect(onData).toHaveBeenCalledTimes(1));
+    expect(onData.mock.calls[0]![0]).toMatchObject({ data: { foo: 'bar' } });
+  });
+
+  it('does not re-render the caller on each frame when syncStore is false', async () => {
+    sinks = [];
+
+    const { useSubscription } = GraphQLReactWS({
+      graphqlWsOptions: { url: 'wss://example.test' } as any,
+    });
+
+    const onData = vi.fn();
+    let renderCount = 0;
+
+    renderHook(() => {
+      renderCount += 1;
+      return useSubscription({
+        query: TestSubscription,
+        onData,
+        syncStore: false,
+      });
+    });
+
+    await waitFor(() => expect(sinks).toHaveLength(1));
+    const rendersAfterMount = renderCount;
+
+    sinks[0]!.next({ data: { foo: 'one' } });
+    sinks[0]!.next({ data: { foo: 'two' } });
+    sinks[0]!.next({ data: { foo: 'three' } });
+
+    await waitFor(() => expect(onData).toHaveBeenCalledTimes(3));
+    expect(renderCount).toBe(rendersAfterMount);
+  });
+
+  it('updates returned data and re-renders when syncStore is true (default)', async () => {
+    sinks = [];
+
+    const { useSubscription } = GraphQLReactWS({
+      graphqlWsOptions: { url: 'wss://example.test' } as any,
+    });
+
+    const { result } = renderHook(() =>
+      useSubscription({
+        query: TestSubscription,
+      }),
+    );
+
+    await waitFor(() => expect(sinks).toHaveLength(1));
+    expect(result.current.data).toBeNull();
+
+    sinks[0]!.next({ data: { foo: 'live' } });
+
+    await waitFor(() => expect(result.current.data?.data).toEqual({ foo: 'live' }));
+  });
+
+  it('still reaches onError when syncStore is false', async () => {
+    sinks = [];
+
+    const { useSubscription } = GraphQLReactWS({
+      graphqlWsOptions: { url: 'wss://example.test' } as any,
+    });
+
+    const onError = vi.fn();
+
+    renderHook(() =>
+      useSubscription({
+        query: TestSubscription,
+        onError,
+        syncStore: false,
+      }),
+    );
+
+    await waitFor(() => expect(sinks).toHaveLength(1));
+
+    sinks[0]!.error(new Error('operation terminated by server'));
+
+    await waitFor(() => expect(onError).toHaveBeenCalledTimes(1));
+  });
+
+  it('does not let a syncStore:false peer starve a syncStore:true peer of store writes', async () => {
+    sinks = [];
+
+    const { useSubscription } = GraphQLReactWS({
+      graphqlWsOptions: { url: 'wss://example.test' } as any,
+    });
+
+    const onDataFalse = vi.fn();
+
+    // Mount the callback-only listener first so it is first in the broadcast
+    // Set and processes the shared result object before the reactive peer.
+    renderHook(() =>
+      useSubscription({
+        query: TestSubscription,
+        onData: onDataFalse,
+        syncStore: false,
+      }),
+    );
+
+    const { result: reactive } = renderHook(() =>
+      useSubscription({
+        query: TestSubscription,
+        syncStore: true,
+      }),
+    );
+
+    await waitFor(() => expect(sinks).toHaveLength(1));
+
+    sinks[0]!.next({ data: { foo: 'shared' } });
+
+    await waitFor(() => expect(onDataFalse).toHaveBeenCalledTimes(1));
+    await waitFor(() => expect(reactive.current.data?.data).toEqual({ foo: 'shared' }));
+  });
+
+  it('does not re-render a syncStore:false mount when a syncStore:true peer writes the store', async () => {
+    sinks = [];
+
+    const { useSubscription } = GraphQLReactWS({
+      graphqlWsOptions: { url: 'wss://example.test' } as any,
+    });
+
+    let callbackOnlyRenders = 0;
+
+    renderHook(() => {
+      callbackOnlyRenders += 1;
+      return useSubscription({
+        query: TestSubscription,
+        syncStore: false,
+      });
+    });
+
+    const { result: reactive } = renderHook(() =>
+      useSubscription({
+        query: TestSubscription,
+        syncStore: true,
+      }),
+    );
+
+    await waitFor(() => expect(sinks).toHaveLength(1));
+    const rendersAfterMount = callbackOnlyRenders;
+
+    sinks[0]!.next({ data: { foo: 'peer-write' } });
+
+    await waitFor(() => expect(reactive.current.data?.data).toEqual({ foo: 'peer-write' }));
+    expect(callbackOnlyRenders).toBe(rendersAfterMount);
+  });
+});
