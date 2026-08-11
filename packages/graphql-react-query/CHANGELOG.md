@@ -1,5 +1,15 @@
 # @soundxyz/graphql-react-query
 
+## 5.5.3
+
+### Patch Changes
+
+- [#182](https://github.com/soundxyz/graphql-react/pull/182)
+  [`a470fff`](https://github.com/soundxyz/graphql-react/commit/a470fff7231f7ac176a7cfdace617f8e087151ab)
+  Thanks [@jswirbs](https://github.com/jswirbs)! - Guard infinite-query `pages` access with optional
+  chaining so a malformed cache entry (truthy `data` without a `pages` array) no longer throws
+  during render.
+
 ## 5.5.2
 
 ### Patch Changes
