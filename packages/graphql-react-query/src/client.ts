@@ -965,8 +965,13 @@ export function GraphQLReactQueryClient<
       return null;
     });
 
-    const firstPage = data?.pages[0];
-    const lastPage = data?.pages[result.data.pages.length - 1];
+    // Optional-chain `pages` itself: a truthy `data` that isn't the
+    // `{ pages, pageParams }` infinite wrapper (e.g. RQ v4 hydrate +
+    // observer-less refetch writing a raw page) would otherwise throw on
+    // `data?.pages[0]` during render and take down the React tree.
+    const pages = data?.pages;
+    const firstPage = pages?.[0];
+    const lastPage = pages?.[pages.length - 1];
 
     const latestOrder = useLatestRef(order?.[0]);
     const latestListFn = useLatestRef(list);
@@ -1010,7 +1015,7 @@ export function GraphQLReactQueryClient<
 
       const initialValues = customPages ? customPages.reduce(reduceAccumulatedPages, {}) : {};
 
-      const values = data?.pages.reduce(reduceAccumulatedPages, initialValues) ?? initialValues;
+      const values = data?.pages?.reduce(reduceAccumulatedPages, initialValues) ?? initialValues;
 
       if (currentOrder) return orderBy(values, currentOrder, stableOrderType);
 
